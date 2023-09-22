@@ -36,12 +36,6 @@ public class InvoicingService {
         List<InvoiceWrapper> invoices = new ArrayList<>(machineEvents.size());
         List<PaymentWrapper> payments = new ArrayList<>(machineEvents.size());
         machineEvents.forEach(me -> processMachineEvents(invoices, payments, me));
-        if (!invoices.isEmpty()) {
-            invoiceWrapperService.save(invoices);
-        }
-        if (!payments.isEmpty()) {
-            paymentWrapperService.save(payments);
-        }
     }
 
     private void processMachineEvents(List<InvoiceWrapper> invoices,
@@ -56,6 +50,13 @@ public class InvoicingService {
                     handleInvoiceEvent(invoices, change, machineEvent, changeId);
                     handlePaymentEvent(payments, change, machineEvent, changeId);
                     handleOtherEvent(change, machineEvent, changeId);
+                    if (!invoices.isEmpty()) {
+                        invoiceWrapperService.save(invoices);
+                        invoices.clear();
+                    }
+                    if (!payments.isEmpty()) {
+                        paymentWrapperService.save(payments);
+                    }
                 }
             } catch (Throwable e) {
                 log.error("Unexpected error while handling events; machineId: {},  eventId: {}",
