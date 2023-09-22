@@ -56,6 +56,7 @@ public class InvoicingService {
                     }
                     if (!payments.isEmpty()) {
                         paymentWrapperService.save(payments);
+                        payments.clear();
                     }
                 }
             } catch (Throwable e) {
