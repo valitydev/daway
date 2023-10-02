@@ -14,6 +14,8 @@ public interface PaymentAdditionalInfoDao extends GenericDao {
 
     PaymentAdditionalInfo get(String invoiceId, String paymentId) throws DaoException;
 
+    PaymentAdditionalInfo getSafe(String invoiceId, String paymentId) throws DaoException;
+
     void switchCurrent(Set<InvoicingKey> invoicesSwitchIds) throws DaoException;
 
 }

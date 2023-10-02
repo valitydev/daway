@@ -76,7 +76,9 @@ public class InvoicingService {
                                     InvoiceChange change,
                                     MachineEvent machineEvent,
                                     int changeId) {
-        mapEntity(paymentMappers, change, machineEvent, changeId).ifPresent(payments::add);
+        mapEntity(paymentMappers, change, machineEvent, changeId).ifPresent(wrapper -> {
+            payments.add(wrapper);
+        });
     }
 
     private void handleInvoiceEvent(List<InvoiceWrapper> invoices,

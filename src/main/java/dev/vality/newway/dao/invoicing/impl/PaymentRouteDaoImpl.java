@@ -52,6 +52,16 @@ public class PaymentRouteDaoImpl extends AbstractGenericDao implements PaymentRo
     }
 
     @Override
+    public PaymentRoute getSafe(String invoiceId, String paymentId) throws DaoException {
+        Query query = getDslContext().selectFrom(PAYMENT_ROUTE)
+                .where(PAYMENT_ROUTE.INVOICE_ID.eq(invoiceId)
+                        .and(PAYMENT_ROUTE.PAYMENT_ID.eq(paymentId))
+                        .and(PAYMENT_ROUTE.CURRENT)
+                );
+        return fetchOne(query, rowMapper);
+    }
+
+    @Override
     public void switchCurrent(Set<InvoicingKey> invoicingKeys) throws DaoException {
         invoicingKeys.forEach(key -> {
             setOldRouteNotCurrent(key);

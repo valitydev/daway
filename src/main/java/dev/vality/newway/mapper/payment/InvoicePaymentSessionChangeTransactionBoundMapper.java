@@ -12,6 +12,7 @@ import dev.vality.geck.filter.PathConditionFilter;
 import dev.vality.geck.filter.condition.IsNullCondition;
 import dev.vality.geck.filter.rule.PathConditionRule;
 import dev.vality.machinegun.eventsink.MachineEvent;
+import dev.vality.newway.dao.invoicing.iface.PaymentAdditionalInfoDao;
 import dev.vality.newway.domain.tables.pojos.PaymentAdditionalInfo;
 import dev.vality.newway.mapper.Mapper;
 import dev.vality.newway.model.InvoicingKey;
@@ -28,6 +29,8 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class InvoicePaymentSessionChangeTransactionBoundMapper implements Mapper<PaymentWrapper> {
 
+    private final PaymentAdditionalInfoDao paymentAdditionalInfoDao;
+
     private Filter filter = new PathConditionFilter(new PathConditionRule(
             "invoice_payment_change.payload.invoice_payment_session_change.payload.session_transaction_bound",
             new IsNullCondition().not()));
@@ -38,13 +41,17 @@ public class InvoicePaymentSessionChangeTransactionBoundMapper implements Mapper
         String invoiceId = event.getSourceId();
         String paymentId = invoicePaymentChange.getId();
         long sequenceId = event.getEventId();
-        log.info("Start mapping session change transaction info, sequenceId='{}', changeId='{}', invoiceId='{}', paymentId='{}'",
+        log.info(
+                "Start mapping session change transaction info, sequenceId='{}', changeId='{}', invoiceId='{}', paymentId='{}'",
                 sequenceId, changeId, invoiceId, paymentId);
         InvoicePaymentSessionChange sessionChange = invoicePaymentChange.getPayload().getInvoicePaymentSessionChange();
         SessionChangePayload payload = sessionChange.getPayload();
         TransactionInfo transactionInfo = payload.getSessionTransactionBound().getTrx();
-
+        PaymentAdditionalInfo paymentAdditionalInfo = paymentAdditionalInfoDao.getSafe(invoiceId, paymentId);
         PaymentAdditionalInfo additionalInfo = new PaymentAdditionalInfo();
+        if (paymentAdditionalInfo != null) {
+            additionalInfo = paymentAdditionalInfo;
+        }
         additionalInfo.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
         additionalInfo.setInvoiceId(invoiceId);
         additionalInfo.setPaymentId(paymentId);
@@ -69,7 +76,8 @@ public class InvoicePaymentSessionChangeTransactionBoundMapper implements Mapper
         }
         additionalInfo.setSequenceId(sequenceId);
         additionalInfo.setChangeId(changeId);
-        log.info("Payment session transaction info has been mapped, sequenceId='{}', changeId='{}', invoiceId='{}', paymentId='{}'",
+        log.info(
+                "Payment session transaction info has been mapped, sequenceId='{}', changeId='{}', invoiceId='{}', paymentId='{}'",
                 sequenceId, changeId, invoiceId, paymentId);
         PaymentWrapper paymentWrapper = new PaymentWrapper();
         paymentWrapper.setKey(InvoicingKey.buildKey(invoiceId, paymentId));

@@ -53,6 +53,15 @@ public class PaymentAdditionalInfoDaoImpl extends AbstractGenericDao implements 
     }
 
     @Override
+    public PaymentAdditionalInfo getSafe(String invoiceId, String paymentId) throws DaoException {
+        Query query = getDslContext().selectFrom(PAYMENT_ADDITIONAL_INFO)
+                .where(PAYMENT_ADDITIONAL_INFO.INVOICE_ID.eq(invoiceId)
+                        .and(PAYMENT_ADDITIONAL_INFO.PAYMENT_ID.eq(paymentId))
+                        .and(PAYMENT_ADDITIONAL_INFO.CURRENT));
+        return fetchOne(query, rowMapper);
+    }
+
+    @Override
     public void switchCurrent(Set<InvoicingKey> invoicesSwitchIds) throws DaoException {
         invoicesSwitchIds.forEach(key -> {
             setOldAdditionalInfoNotCurrent(key);

@@ -14,6 +14,8 @@ public interface PaymentRouteDao extends GenericDao {
 
     PaymentRoute get(String invoiceId, String paymentId) throws DaoException;
 
+    PaymentRoute getSafe(String invoiceId, String paymentId) throws DaoException;
+
     void switchCurrent(Set<InvoicingKey> invoicingKeys) throws DaoException;
 
 }
