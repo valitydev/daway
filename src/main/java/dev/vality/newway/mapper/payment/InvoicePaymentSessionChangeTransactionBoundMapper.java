@@ -47,7 +47,7 @@ public class InvoicePaymentSessionChangeTransactionBoundMapper implements Mapper
         InvoicePaymentSessionChange sessionChange = invoicePaymentChange.getPayload().getInvoicePaymentSessionChange();
         SessionChangePayload payload = sessionChange.getPayload();
         TransactionInfo transactionInfo = payload.getSessionTransactionBound().getTrx();
-        PaymentAdditionalInfo paymentAdditionalInfo = paymentAdditionalInfoDao.getSafe(invoiceId, paymentId);
+        PaymentAdditionalInfo paymentAdditionalInfo = paymentAdditionalInfoDao.safeGet(invoiceId, paymentId);
         PaymentAdditionalInfo additionalInfo = new PaymentAdditionalInfo();
         if (paymentAdditionalInfo != null) {
             additionalInfo = paymentAdditionalInfo;

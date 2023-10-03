@@ -135,8 +135,8 @@ public class InvoicingServiceTest {
                 new MachineEventParser<>(new PaymentEventPayloadDeserializer())
         );
 
-        MachineEvent message = createInvoice(createPaymentChange());
-        MachineEvent message_2 = createInvoice(createPaymentChangeRoute());
+        MachineEvent message = TestData.createInvoice(TestData.createPaymentChange());
+        MachineEvent message_2 = TestData.createInvoice(TestData.createPaymentChangeRoute());
 
         EventPayload eventPayload = new EventPayload();
         eventPayload.setInvoiceChanges(Collections.singletonList(new InvoiceChange()));
@@ -146,55 +146,6 @@ public class InvoicingServiceTest {
 
         verify(rightHandlers.get(0), times(2)).accept(any());
         verify(rightHandlers.get(0), times(2)).map(any(), any(), any());
-    }
-
-    private MachineEvent createInvoice(InvoicePaymentChangePayload invoicePaymentChangePayload) {
-        PaymentEventPayloadSerializer paymentEventPayloadSerializer = new PaymentEventPayloadSerializer();
-        MachineEvent message = new MachineEvent();
-        message.setCreatedAt(TypeUtil.temporalToString(LocalDateTime.now().truncatedTo(ChronoUnit.MICROS)));
-        EventPayload payload = new EventPayload();
-        ArrayList<InvoiceChange> invoiceChanges = new ArrayList<>();
-        InvoiceChange invoiceChange = new InvoiceChange();
-
-        invoiceChange.setInvoicePaymentChange(new InvoicePaymentChange()
-                .setPayload(invoicePaymentChangePayload)
-                .setId("test"));
-        invoiceChanges.add(invoiceChange);
-        payload.setInvoiceChanges(invoiceChanges);
-        Value data = new Value();
-        data.setBin(paymentEventPayloadSerializer.serialize(payload));
-        message.setData(data);
-        return message;
-    }
-
-    @NotNull
-    private InvoicePaymentChangePayload createPaymentChange() {
-        InvoicePaymentChangePayload invoicePaymentChangePayload = new InvoicePaymentChangePayload();
-        TargetInvoicePaymentStatus targetInvoicePaymentStatus = new TargetInvoicePaymentStatus();
-        targetInvoicePaymentStatus.setCaptured(new InvoicePaymentCaptured());
-        SessionChangePayload sessionChangePayload = new SessionChangePayload();
-        SessionResult sessionResult = new SessionResult();
-        sessionResult.setSucceeded(new SessionSucceeded());
-        sessionChangePayload.setSessionFinished(
-                new SessionFinished().setResult(sessionResult));
-        invoicePaymentChangePayload.setInvoicePaymentSessionChange(
-                new InvoicePaymentSessionChange()
-                        .setTarget(targetInvoicePaymentStatus)
-                        .setPayload(sessionChangePayload));
-        return invoicePaymentChangePayload;
-    }
-
-    @NotNull
-    private InvoicePaymentChangePayload createPaymentChangeRoute() {
-        InvoicePaymentChangePayload invoicePaymentChangePayload = new InvoicePaymentChangePayload();
-        invoicePaymentChangePayload.setInvoicePaymentRouteChanged(
-                new InvoicePaymentRouteChanged()
-                        .setRoute(new PaymentRoute()
-                                .setTerminal(new TerminalRef()
-                                        .setId(123))
-                                .setProvider(new ProviderRef()
-                                        .setId(321))));
-        return invoicePaymentChangePayload;
     }
 
     @Test
