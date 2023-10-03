@@ -20,22 +20,23 @@ import dev.vality.newway.domain.enums.WithdrawalAdjustmentStatus;
 import dev.vality.newway.domain.enums.WithdrawalAdjustmentType;
 import dev.vality.newway.domain.tables.pojos.FistfulCashFlow;
 import dev.vality.newway.domain.tables.pojos.WithdrawalAdjustment;
+import dev.vality.sink.common.serialization.impl.PaymentEventPayloadSerializer;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.jetbrains.annotations.NotNull;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.time.temporal.ChronoUnit;
+import java.util.*;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class TestData {
 
     public static InvoiceChange buildInvoiceChangeChargebackCreated() {
         InvoicePaymentChargeback invoicePaymentChargeback =
-                dev.vality.testcontainers.annotations.util.RandomBeans.random(InvoicePaymentChargeback.class, "context", "status", "reason", "stage");
+                dev.vality.testcontainers.annotations.util.RandomBeans.random(InvoicePaymentChargeback.class, "context",
+                        "status", "reason", "stage");
         invoicePaymentChargeback.setCreatedAt(TypeUtil.temporalToString(Instant.now()));
         InvoicePaymentChargebackStatus invoicePaymentChargebackStatus = buildChargebackStatus();
         invoicePaymentChargeback.setStatus(invoicePaymentChargebackStatus);
@@ -133,7 +134,8 @@ public class TestData {
 
     private static InvoiceChange buildInvoiceChangeChargeback(InvoicePaymentChargebackChangePayload payload) {
         InvoicePaymentChargeback invoicePaymentChargeback =
-                dev.vality.testcontainers.annotations.util.RandomBeans.random(InvoicePaymentChargeback.class, "context", "status", "reason", "stage");
+                dev.vality.testcontainers.annotations.util.RandomBeans.random(InvoicePaymentChargeback.class, "context",
+                        "status", "reason", "stage");
         invoicePaymentChargeback.setCreatedAt(TypeUtil.temporalToString(Instant.now()));
         InvoicePaymentChargebackStatus invoicePaymentChargebackStatus = buildChargebackStatus();
         invoicePaymentChargeback.setStatus(invoicePaymentChargebackStatus);
@@ -373,7 +375,8 @@ public class TestData {
     }
 
     private static List<dev.vality.fistful.cashflow.FinalCashFlowPosting> getFinalCashFlowPostings() {
-        dev.vality.fistful.cashflow.FinalCashFlowPosting fistfulPosting = new dev.vality.fistful.cashflow.FinalCashFlowPosting();
+        dev.vality.fistful.cashflow.FinalCashFlowPosting fistfulPosting =
+                new dev.vality.fistful.cashflow.FinalCashFlowPosting();
         fistfulPosting.setDestination(
                 new dev.vality.fistful.cashflow.FinalCashFlowAccount()
                         .setAccountId("1")
@@ -386,7 +389,8 @@ public class TestData {
         fistfulPosting.setVolume(new dev.vality.fistful.base.Cash()
                 .setAmount(100L)
                 .setCurrency(new dev.vality.fistful.base.CurrencyRef("RUB")));
-        dev.vality.fistful.cashflow.FinalCashFlowPosting providerPosting = new dev.vality.fistful.cashflow.FinalCashFlowPosting();
+        dev.vality.fistful.cashflow.FinalCashFlowPosting providerPosting =
+                new dev.vality.fistful.cashflow.FinalCashFlowPosting();
         providerPosting.setDestination(
                 new dev.vality.fistful.cashflow.FinalCashFlowAccount()
                         .setAccountId("3")
@@ -399,7 +403,8 @@ public class TestData {
         providerPosting.setVolume(new dev.vality.fistful.base.Cash()
                 .setAmount(100L)
                 .setCurrency(new dev.vality.fistful.base.CurrencyRef("RUB")));
-        dev.vality.fistful.cashflow.FinalCashFlowPosting merchantSourcePosting = new dev.vality.fistful.cashflow.FinalCashFlowPosting();
+        dev.vality.fistful.cashflow.FinalCashFlowPosting merchantSourcePosting =
+                new dev.vality.fistful.cashflow.FinalCashFlowPosting();
         merchantSourcePosting.setDestination(
                 new dev.vality.fistful.cashflow.FinalCashFlowAccount()
                         .setAccountId("5")
@@ -412,7 +417,8 @@ public class TestData {
         merchantSourcePosting.setVolume(new dev.vality.fistful.base.Cash()
                 .setAmount(200L)
                 .setCurrency(new dev.vality.fistful.base.CurrencyRef("RUB")));
-        dev.vality.fistful.cashflow.FinalCashFlowPosting merchantDestinationPosting = new dev.vality.fistful.cashflow.FinalCashFlowPosting();
+        dev.vality.fistful.cashflow.FinalCashFlowPosting merchantDestinationPosting =
+                new dev.vality.fistful.cashflow.FinalCashFlowPosting();
         merchantDestinationPosting.setDestination(
                 new dev.vality.fistful.cashflow.FinalCashFlowAccount()
                         .setAccountId("7")
@@ -507,4 +513,52 @@ public class TestData {
         return timestampedChange;
     }
 
+    public static MachineEvent createInvoice(InvoicePaymentChangePayload invoicePaymentChangePayload) {
+        PaymentEventPayloadSerializer paymentEventPayloadSerializer = new PaymentEventPayloadSerializer();
+        MachineEvent message = new MachineEvent();
+        message.setCreatedAt(TypeUtil.temporalToString(LocalDateTime.now().truncatedTo(ChronoUnit.MICROS)));
+        EventPayload payload = new EventPayload();
+        ArrayList<InvoiceChange> invoiceChanges = new ArrayList<>();
+        InvoiceChange invoiceChange = new InvoiceChange();
+
+        invoiceChange.setInvoicePaymentChange(new InvoicePaymentChange()
+                .setPayload(invoicePaymentChangePayload)
+                .setId("test"));
+        invoiceChanges.add(invoiceChange);
+        payload.setInvoiceChanges(invoiceChanges);
+        Value data = new Value();
+        data.setBin(paymentEventPayloadSerializer.serialize(payload));
+        message.setData(data);
+        return message;
+    }
+
+    @NotNull
+    public static InvoicePaymentChangePayload createPaymentChange() {
+        InvoicePaymentChangePayload invoicePaymentChangePayload = new InvoicePaymentChangePayload();
+        TargetInvoicePaymentStatus targetInvoicePaymentStatus = new TargetInvoicePaymentStatus();
+        targetInvoicePaymentStatus.setCaptured(new InvoicePaymentCaptured());
+        SessionChangePayload sessionChangePayload = new SessionChangePayload();
+        SessionResult sessionResult = new SessionResult();
+        sessionResult.setSucceeded(new SessionSucceeded());
+        sessionChangePayload.setSessionFinished(
+                new SessionFinished().setResult(sessionResult));
+        invoicePaymentChangePayload.setInvoicePaymentSessionChange(
+                new InvoicePaymentSessionChange()
+                        .setTarget(targetInvoicePaymentStatus)
+                        .setPayload(sessionChangePayload));
+        return invoicePaymentChangePayload;
+    }
+
+    @NotNull
+    public static InvoicePaymentChangePayload createPaymentChangeRoute() {
+        InvoicePaymentChangePayload invoicePaymentChangePayload = new InvoicePaymentChangePayload();
+        invoicePaymentChangePayload.setInvoicePaymentRouteChanged(
+                new InvoicePaymentRouteChanged()
+                        .setRoute(new PaymentRoute()
+                                .setTerminal(new TerminalRef()
+                                        .setId(123))
+                                .setProvider(new ProviderRef()
+                                        .setId(321))));
+        return invoicePaymentChangePayload;
+    }
 }

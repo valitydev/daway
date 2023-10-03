@@ -1,11 +1,7 @@
 package dev.vality.newway.mapper.payment.session;
 
-import dev.vality.damsel.domain.AdditionalTransactionInfo;
-import dev.vality.damsel.domain.TransactionInfo;
 import dev.vality.damsel.payment_processing.InvoiceChange;
 import dev.vality.damsel.payment_processing.InvoicePaymentChange;
-import dev.vality.damsel.payment_processing.InvoicePaymentSessionChange;
-import dev.vality.damsel.payment_processing.SessionChangePayload;
 import dev.vality.geck.common.util.TypeUtil;
 import dev.vality.geck.filter.Filter;
 import dev.vality.geck.filter.PathConditionFilter;
@@ -13,17 +9,13 @@ import dev.vality.geck.filter.condition.IsNullCondition;
 import dev.vality.geck.filter.rule.PathConditionRule;
 import dev.vality.machinegun.eventsink.MachineEvent;
 import dev.vality.newway.domain.enums.PaymentSessionStatus;
-import dev.vality.newway.domain.tables.pojos.PaymentAdditionalInfo;
 import dev.vality.newway.domain.tables.pojos.PaymentSessionInfo;
 import dev.vality.newway.mapper.Mapper;
 import dev.vality.newway.model.InvoicingKey;
 import dev.vality.newway.model.PaymentWrapper;
-import dev.vality.newway.util.JsonUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-
-import java.util.Map;
 
 @Slf4j
 @Component

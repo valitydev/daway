@@ -1,13 +1,15 @@
 package dev.vality.newway.service;
 
-import dev.vality.damsel.payment_processing.EventPayload;
-import dev.vality.damsel.payment_processing.InvoiceChange;
+import dev.vality.damsel.domain.*;
+import dev.vality.damsel.payment_processing.*;
 import dev.vality.geck.common.util.TypeUtil;
 import dev.vality.machinegun.eventsink.MachineEvent;
+import dev.vality.machinegun.msgpack.Value;
 import dev.vality.newway.TestData;
 import dev.vality.newway.dao.invoicing.iface.CashFlowDao;
 import dev.vality.newway.dao.invoicing.iface.ChargebackDao;
 import dev.vality.newway.dao.invoicing.iface.PaymentDao;
+import dev.vality.newway.dao.invoicing.iface.PaymentRouteDao;
 import dev.vality.newway.domain.enums.PaymentChangeType;
 import dev.vality.newway.domain.tables.pojos.Chargeback;
 import dev.vality.newway.domain.tables.pojos.Payment;
@@ -15,8 +17,13 @@ import dev.vality.newway.factory.machine.event.MachineEventCopyFactory;
 import dev.vality.newway.handler.event.stock.impl.invoicing.InvoicingHandler;
 import dev.vality.newway.handler.event.stock.impl.invoicing.chargeback.*;
 import dev.vality.newway.mapper.Mapper;
+import dev.vality.newway.mapper.payment.InvoicePaymentRouteChangedMapper;
+import dev.vality.newway.mapper.payment.session.InvoicePaymentSessionChangeFinishedMapper;
 import dev.vality.newway.model.InvoiceWrapper;
 import dev.vality.sink.common.parser.impl.MachineEventParser;
+import dev.vality.sink.common.serialization.impl.PaymentEventPayloadDeserializer;
+import dev.vality.sink.common.serialization.impl.PaymentEventPayloadSerializer;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,6 +32,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 import static org.mockito.Mockito.*;
@@ -41,6 +50,8 @@ public class InvoicingServiceTest {
     private PaymentWrapperService paymentWrapperService;
     @MockBean
     private PartyShopCacheService partyShopCacheService;
+    @MockBean
+    private PaymentRouteDao paymentRouteDao;
     @Mock
     private MachineEventCopyFactory<Chargeback, Integer> machineEventCopyFactory;
     @Mock
@@ -60,7 +71,8 @@ public class InvoicingServiceTest {
         when(right.accept(any())).thenReturn(true);
         rightHandlers.add(right);
 
-        when(paymentDao.get(any(), any())).thenReturn(dev.vality.testcontainers.annotations.util.RandomBeans.random(Payment.class));
+        when(paymentDao.get(any(), any())).thenReturn(
+                dev.vality.testcontainers.annotations.util.RandomBeans.random(Payment.class));
 
         when(machineEventCopyFactory.create(any(), any(), any(), any())).thenReturn(new Chargeback());
         when(machineEventCopyFactory.create(any(), any(), any(), any(), any())).thenReturn(new Chargeback());
@@ -108,6 +120,32 @@ public class InvoicingServiceTest {
 
         verify(rightHandlers.get(0), times(1)).accept(any());
         verify(rightHandlers.get(0), times(1)).map(any(), any(), any());
+    }
+
+    @Test
+    public void handlerRewrites() {
+        InvoicingService invoicingService = new InvoicingService(
+                new ArrayList<>(),
+                rightHandlers,
+                List.of(new InvoicePaymentRouteChangedMapper(),
+                        new InvoicePaymentSessionChangeFinishedMapper(paymentRouteDao)),
+                partyShopCacheService,
+                invoiceWrapperService,
+                paymentWrapperService,
+                new MachineEventParser<>(new PaymentEventPayloadDeserializer())
+        );
+
+        MachineEvent message = TestData.createInvoice(TestData.createPaymentChange());
+        MachineEvent message_2 = TestData.createInvoice(TestData.createPaymentChangeRoute());
+
+        EventPayload eventPayload = new EventPayload();
+        eventPayload.setInvoiceChanges(Collections.singletonList(new InvoiceChange()));
+        when(parser.parse(any())).thenReturn(eventPayload);
+
+        invoicingService.handleEvents(List.of(message_2, message));
+
+        verify(rightHandlers.get(0), times(2)).accept(any());
+        verify(rightHandlers.get(0), times(2)).map(any(), any(), any());
     }
 
     @Test
