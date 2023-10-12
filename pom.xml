@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>newway</artifactId>
-    <version>1.4.0</version>
+    <version>1.4.1</version>
     <packaging>jar</packaging>
 
     <name>newway</name>
@@ -81,7 +81,7 @@
         <dependency>
             <groupId>net.logstash.logback</groupId>
             <artifactId>logstash-logback-encoder</artifactId>
-            <version>7.1.1</version>
+            <version>7.4</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -103,12 +103,12 @@
         <dependency>
             <groupId>net.javacrumbs.shedlock</groupId>
             <artifactId>shedlock-provider-jdbc-template</artifactId>
-            <version>4.34.0</version>
+            <version>4.46.0</version>
         </dependency>
         <dependency>
             <groupId>net.javacrumbs.shedlock</groupId>
             <artifactId>shedlock-spring</artifactId>
-            <version>4.34.0</version>
+            <version>4.46.0</version>
         </dependency>
         <dependency>
             <groupId>io.micrometer</groupId>
