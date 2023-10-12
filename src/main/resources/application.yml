@@ -1,15 +1,15 @@
 server:
-  port: '@server.port@'
+  port: "${server.port}"
 
 spring:
   application:
-    name: '@project.name@'
+    name: "${project.name}"
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
     driver-class-name: org.postgresql.Driver
-    url: '@db.url@'
-    username: '@db.user@'
-    password: '@db.password@'
+    url: "${db.url}"
+    username: '${db.user}'
+    password: "${db.password}"
     hikari:
       idle-timeout: 30000
       maximum-pool-size: 10
@@ -30,13 +30,13 @@ spring:
 
 management:
   server:
-    port: '@management.port@'
+    port: "${management.port}"
   metrics:
     export:
       prometheus:
         enabled: false
     tags:
-      application: '@project.name@'
+      application: "${project.name}"
   endpoint:
     health:
       probes:
