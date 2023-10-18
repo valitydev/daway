@@ -51,6 +51,7 @@ public class InvoicePaymentSessionChangeTransactionBoundMapper implements Mapper
         PaymentAdditionalInfo additionalInfo = new PaymentAdditionalInfo();
         if (paymentAdditionalInfo != null) {
             additionalInfo = paymentAdditionalInfo;
+            additionalInfo.setId(null);
         }
         additionalInfo.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
         additionalInfo.setInvoiceId(invoiceId);
