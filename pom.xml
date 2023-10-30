@@ -32,6 +32,14 @@
         </checkstyle.config.suppressions.path>
     </properties>
 
+    <repositories>
+        <repository>
+            <id>github</id>
+            <name>GitHub Packages</name>
+            <url>https://maven.pkg.github.com/empayre/swag-wallets</url>
+        </repository>
+    </repositories>
+
     <dependencies>
         <!--spring -->
         <dependency>
@@ -195,6 +203,11 @@
             <groupId>dev.vality.geck</groupId>
             <artifactId>filter</artifactId>
         </dependency>
+        <dependency>
+            <groupId>dev.vality</groupId>
+            <artifactId>wallets</artifactId>
+            <version>1.1-af2ca82-client</version>
+        </dependency>
 
         <!-- Test -->
         <dependency>
@@ -325,7 +338,7 @@
                             <inputSchema>${db.schema}</inputSchema>
                         </database>
                         <target>
-                            <packageName>dev.vality.newway.domain</packageName>
+                            <packageName>dev.vality.daway.domain</packageName>
                             <directory>target/generated-sources/</directory>
                         </target>
                     </generator>
