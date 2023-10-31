@@ -22,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -94,7 +95,7 @@ public class DestinationCreatedHandler implements DestinationHandler {
         } else if (resource.isSetGeneric()) {
             ResourceGeneric generic = resource.getGeneric();
             Content data = generic.getGeneric().getData();
-            String destinationResource = JsonUtil.stringToObject(data.getData(), String.class);
+            String destinationResource = new String(data.getData(), StandardCharsets.UTF_8);
             destination.setResourceGenericData(destinationResource);
         }
 
