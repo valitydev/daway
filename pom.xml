@@ -32,14 +32,6 @@
         </checkstyle.config.suppressions.path>
     </properties>
 
-    <repositories>
-        <repository>
-            <id>github</id>
-            <name>GitHub Packages</name>
-            <url>https://maven.pkg.github.com/empayre/swag-wallets</url>
-        </repository>
-    </repositories>
-
     <dependencies>
         <!--spring -->
         <dependency>
@@ -202,11 +194,6 @@
         <dependency>
             <groupId>dev.vality.geck</groupId>
             <artifactId>filter</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>dev.vality</groupId>
-            <artifactId>wallets</artifactId>
-            <version>1.1-af2ca82-client</version>
         </dependency>
 
         <!-- Test -->

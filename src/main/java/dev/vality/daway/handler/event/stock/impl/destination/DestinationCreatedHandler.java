@@ -17,8 +17,6 @@ import dev.vality.geck.filter.PathConditionFilter;
 import dev.vality.geck.filter.condition.IsNullCondition;
 import dev.vality.geck.filter.rule.PathConditionRule;
 import dev.vality.machinegun.eventsink.MachineEvent;
-import dev.vality.swag.wallets.model.wallets.DestinationResource;
-import dev.vality.swag.wallets.model.wallets.SBPTransfer;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -96,10 +94,8 @@ public class DestinationCreatedHandler implements DestinationHandler {
         } else if (resource.isSetGeneric()) {
             ResourceGeneric generic = resource.getGeneric();
             Content data = generic.getGeneric().getData();
-            DestinationResource destinationResource = JsonUtil.stringToObject(data.getData(), DestinationResource.class);
-            if (destinationResource instanceof SBPTransfer sbpTransfer) {
-                destination.setResourceGenericSbpTransferPhone(sbpTransfer.getPhoneNumber());
-            }
+            String destinationResource = JsonUtil.stringToObject(data.getData(), String.class);
+            destination.setResourceGenericData(destinationResource);
         }
 
         destinationDao.save(destination).ifPresentOrElse(

@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import static dev.vality.daway.domain.tables.Destination.DESTINATION;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
 
 @PostgresqlSpringBootITest
 class DestinationCreatedGenericSBPTransferHandlerTest {
@@ -46,9 +48,9 @@ class DestinationCreatedGenericSBPTransferHandlerTest {
         Destination destinationResult = jdbcTemplate.queryForObject(sqlStatement,
                 new RecordRowMapper<>(DESTINATION, Destination.class));
 
-        Assertions.assertNotNull(destinationResult.getResourceGenericSbpTransferPhone());
-        Assertions.assertEquals(DestinationHandlerTestUtils.PHONE_NUMBER,
-                destinationResult.getResourceGenericSbpTransferPhone());
+        Assertions.assertNotNull(destinationResult.getResourceGenericData());
+        assertThat(destinationResult.getResourceGenericData(),
+                containsString(DestinationHandlerTestUtils.PHONE_NUMBER));
     }
 
 }

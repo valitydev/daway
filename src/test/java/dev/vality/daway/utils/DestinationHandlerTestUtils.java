@@ -8,9 +8,6 @@ import dev.vality.fistful.destination.TimestampedChange;
 import dev.vality.kafka.common.serialization.ThriftSerializer;
 import dev.vality.machinegun.eventsink.MachineEvent;
 import dev.vality.machinegun.msgpack.Value;
-import dev.vality.swag.wallets.model.wallets.BankRU;
-import dev.vality.swag.wallets.model.wallets.DestinationResource;
-import dev.vality.swag.wallets.model.wallets.SBPTransfer;
 
 public class DestinationHandlerTestUtils {
 
@@ -88,14 +85,16 @@ public class DestinationHandlerTestUtils {
         return fistfulDestination;
     }
 
-    public static SBPTransfer createSbpTransfer() {
-        SBPTransfer sbpTransfer = new SBPTransfer();
-        sbpTransfer.setType(DestinationResource.TypeEnum.SBPTRANSFER);
-        BankRU bankRU = new BankRU();
-        bankRU.setBankCode(BankRU.BankCodeEnum.WB);
-        sbpTransfer.setBank(bankRU);
-        sbpTransfer.setPhoneNumber(PHONE_NUMBER);
-        return sbpTransfer;
+    public static String createSbpTransfer() {
+        return """
+                {
+                  "type": "SBPTransfer",
+                  "bank": {
+                    "bankCode": "WB"
+                  },
+                  "phoneNumber": "79111111111"
+                }
+                """;
     }
 
     public static ResourceGeneric createResourceGenericSBPTransfer() {
