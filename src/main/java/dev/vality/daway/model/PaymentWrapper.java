@@ -19,5 +19,6 @@ public class PaymentWrapper {
     private PaymentFee paymentFee;
     private PaymentRoute paymentRoute;
     private CashFlowWrapper cashFlowWrapper;
+    private PaymentCashChange paymentCashChange;
     private InvoicingKey key;
 }
