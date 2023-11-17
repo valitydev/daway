@@ -100,13 +100,6 @@ public class PaymentWrapperServiceTest {
         return paymentWrappers;
     }
 
-    private PaymentWrapper prepareCashChangePaymentWrappers() {
-        PaymentWrapper paymentWrappers = new PaymentWrapper();
-        PaymentCashChange random = RandomBeans.random(PaymentCashChange.class);
-        paymentWrappers.setPaymentCashChange(random);
-        return paymentWrappers;
-    }
-
     private void assertPaymentWrapperFromDao(PaymentWrapper expected, String invoiceId, String paymentId) {
         assertEquals(expected.getPayment(), paymentDao.get(invoiceId, paymentId));
         assertEquals(expected.getPaymentStatusInfo(), paymentStatusInfoDao.get(invoiceId, paymentId));
