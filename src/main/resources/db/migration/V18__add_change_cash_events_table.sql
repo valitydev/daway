@@ -14,6 +14,7 @@ CREATE TABLE dw.payment_cash_change
     wtime             timestamp without time zone NOT NULL DEFAULT (now() AT TIME ZONE 'utc'::text),
     sequence_id       bigint,
     change_id         integer,
+
     CONSTRAINT payment_cash_change_pkey PRIMARY KEY (id),
     CONSTRAINT payment_cash_change_uniq UNIQUE (invoice_id, payment_id, sequence_id, change_id)
 );

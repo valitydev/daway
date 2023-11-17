@@ -7,6 +7,7 @@ import dev.vality.daway.dao.invoicing.impl.PaymentDaoImpl;
 import dev.vality.daway.domain.enums.PaymentChangeType;
 import dev.vality.daway.domain.tables.pojos.CashFlow;
 import dev.vality.daway.domain.tables.pojos.CashFlowLink;
+import dev.vality.daway.domain.tables.pojos.PaymentCashChange;
 import dev.vality.daway.domain.tables.pojos.PaymentFee;
 import dev.vality.daway.model.CashFlowWrapper;
 import dev.vality.daway.model.InvoicingKey;
@@ -99,6 +100,13 @@ public class PaymentWrapperServiceTest {
         return paymentWrappers;
     }
 
+    private PaymentWrapper prepareCashChangePaymentWrappers() {
+        PaymentWrapper paymentWrappers = new PaymentWrapper();
+        PaymentCashChange random = RandomBeans.random(PaymentCashChange.class);
+        paymentWrappers.setPaymentCashChange(random);
+        return paymentWrappers;
+    }
+
     private void assertPaymentWrapperFromDao(PaymentWrapper expected, String invoiceId, String paymentId) {
         assertEquals(expected.getPayment(), paymentDao.get(invoiceId, paymentId));
         assertEquals(expected.getPaymentStatusInfo(), paymentStatusInfoDao.get(invoiceId, paymentId));
@@ -112,7 +120,8 @@ public class PaymentWrapperServiceTest {
         assertEquals(expected.getCashFlowWrapper().getCashFlowLink(), cashFlowLinkDao.get(invoiceId, paymentId));
         assertEquals(
                 new HashSet<>(expected.getCashFlowWrapper().getCashFlows()),
-                new HashSet<>(cashFlowDao.getByObjId(expected.getCashFlowWrapper().getCashFlowLink().getId(), PaymentChangeType.payment))
+                new HashSet<>(cashFlowDao.getByObjId(expected.getCashFlowWrapper().getCashFlowLink().getId(),
+                        PaymentChangeType.payment))
         );
     }
 

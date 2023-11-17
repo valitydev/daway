@@ -3,6 +3,8 @@ package dev.vality.daway.dao.invoicing.impl;
 import dev.vality.dao.impl.AbstractGenericDao;
 import dev.vality.daway.dao.invoicing.iface.PaymentCashChangeDao;
 import dev.vality.daway.domain.tables.pojos.PaymentCashChange;
+import dev.vality.daway.domain.tables.records.PaymentCashChangeRecord;
+import dev.vality.daway.domain.tables.records.PaymentFeeRecord;
 import dev.vality.daway.exception.DaoException;
 import dev.vality.daway.model.InvoicingKey;
 import dev.vality.mapper.RecordRowMapper;
@@ -17,6 +19,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static dev.vality.daway.domain.Tables.PAYMENT_CASH_CHANGE;
+import static dev.vality.daway.domain.tables.PaymentFee.PAYMENT_FEE;
 
 @Component
 public class PaymentCashChangeDaoImpl extends AbstractGenericDao implements PaymentCashChangeDao {
@@ -32,9 +35,21 @@ public class PaymentCashChangeDaoImpl extends AbstractGenericDao implements Paym
     public void saveBatch(List<PaymentCashChange> paymentCashChanges) throws DaoException {
         List<Query> queries = paymentCashChanges.stream()
                 .map(cashChange -> getDslContext().newRecord(PAYMENT_CASH_CHANGE, cashChange))
-                .map(cashChangeRecord -> getDslContext().insertInto(PAYMENT_CASH_CHANGE).set(cashChangeRecord))
+                .map(this::prepareInsertQuery)
                 .collect(Collectors.toList());
         batchExecute(queries);
+    }
+
+    private Query prepareInsertQuery(PaymentCashChangeRecord record) {
+        return getDslContext().insertInto(PAYMENT_CASH_CHANGE)
+                .set(record)
+                .onConflict(
+                        PAYMENT_CASH_CHANGE.INVOICE_ID,
+                        PAYMENT_CASH_CHANGE.PAYMENT_ID,
+                        PAYMENT_CASH_CHANGE.SEQUENCE_ID,
+                        PAYMENT_CASH_CHANGE.CHANGE_ID
+                )
+                .doNothing();
     }
 
     @Override
