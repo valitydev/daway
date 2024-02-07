@@ -46,6 +46,7 @@ public class DepositCreatedHandler implements DepositHandler {
         deposit.setCurrencyCode(cash.getCurrency().getSymbolicCode());
         deposit.setDepositStatus(DepositStatus.pending);
         deposit.setExternalId(depositDamsel.getExternalId());
+        deposit.setDescription(depositDamsel.getDescription());
 
         depositDao.save(deposit).ifPresentOrElse(
                 dbContractId -> log.info("Deposit created has been saved, sequenceId={}, depositId={}",
