@@ -1,0 +1,1 @@
+ALTER TABLE dw.deposit ADD COLUMN IF NOT EXISTS description character varying;
