@@ -1,0 +1,1 @@
+ALTER TYPE dw.payment_session_status ADD VALUE 'interaction_changed';
