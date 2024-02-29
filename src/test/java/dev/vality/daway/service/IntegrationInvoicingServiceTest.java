@@ -4,6 +4,7 @@ import dev.vality.damsel.user_interaction.UserInteraction;
 import dev.vality.daway.TestData;
 import dev.vality.daway.config.PostgresqlSpringBootITest;
 import dev.vality.daway.dao.invoicing.iface.PaymentSessionInfoDao;
+import dev.vality.daway.domain.enums.PaymentSessionStatus;
 import dev.vality.daway.domain.tables.pojos.PaymentSessionInfo;
 import dev.vality.machinegun.eventsink.MachineEvent;
 import org.junit.jupiter.api.Test;
@@ -37,6 +38,7 @@ class IntegrationInvoicingServiceTest {
         assertTrue(paymentSessionInfo.getUserInteraction());
         assertEquals(userInteraction.getRedirect().getGetRequest().getUri(),
                 paymentSessionInfo.getUserInteractionUrl());
+        assertEquals(PaymentSessionStatus.interaction_changed_redirect, paymentSessionInfo.getSessionStatus());
 
 
     }

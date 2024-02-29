@@ -2,8 +2,8 @@ package dev.vality.daway.mapper.payment.session;
 
 import dev.vality.damsel.payment_processing.InvoiceChange;
 import dev.vality.damsel.payment_processing.InvoicePaymentChange;
-import dev.vality.damsel.payment_processing.InvoicePaymentChangePayload;
 import dev.vality.damsel.user_interaction.BrowserHTTPRequest;
+import dev.vality.damsel.user_interaction.UserInteraction;
 import dev.vality.daway.domain.enums.PaymentSessionStatus;
 import dev.vality.daway.domain.tables.pojos.PaymentSessionInfo;
 import dev.vality.daway.mapper.Mapper;
@@ -43,9 +43,21 @@ public class InvoicePaymentSessionInteractionChangeMapper implements Mapper<Paym
         paymentSessionInfo.setPaymentId(paymentId);
         paymentSessionInfo.setSequenceId(sequenceId);
         paymentSessionInfo.setChangeId(changeId);
-        paymentSessionInfo.setSessionStatus(PaymentSessionStatus.interaction_changed);
         paymentSessionInfo.setUserInteraction(Boolean.TRUE);
-        paymentSessionInfo.setUserInteractionUrl(getUserInteractionUrl(invoicePaymentChange.getPayload()));
+        var invoicePaymentSessionChange = invoicePaymentChange.getPayload().getInvoicePaymentSessionChange();
+        var userInteraction = invoicePaymentSessionChange.getPayload().getSessionInteractionChanged().getInteraction();
+        if (userInteraction.isSetApiExtensionRequest()) {
+            paymentSessionInfo.setSessionStatus(PaymentSessionStatus.interaction_changed_api_extension);
+        } else if (userInteraction.isSetPaymentTerminalReciept()) {
+            paymentSessionInfo.setSessionStatus(PaymentSessionStatus.interaction_changed_terminal_receipt);
+        } else if (userInteraction.isSetQrCodeDisplayRequest()) {
+            paymentSessionInfo.setSessionStatus(PaymentSessionStatus.interaction_changed_qr_display);
+        } else if (userInteraction.isSetCryptoCurrencyTransferRequest()) {
+            paymentSessionInfo.setSessionStatus(PaymentSessionStatus.interaction_changed_crypto_transfer);
+        } else if (userInteraction.isSetRedirect()) {
+            paymentSessionInfo.setSessionStatus(PaymentSessionStatus.interaction_changed_redirect);
+            paymentSessionInfo.setUserInteractionUrl(getUserInteractionUrl(userInteraction));
+        }
         log.info(
                 "Payment session interaction change has been mapped, sequenceId='{}', changeId='{}', invoiceId='{}', paymentId='{}'",
                 sequenceId, changeId, invoiceId, paymentId);
@@ -55,9 +67,7 @@ public class InvoicePaymentSessionInteractionChangeMapper implements Mapper<Paym
         return paymentWrapper;
     }
 
-    private String getUserInteractionUrl(InvoicePaymentChangePayload invoicePaymentChangePayload) {
-        var invoicePaymentSessionChange = invoicePaymentChangePayload.getInvoicePaymentSessionChange();
-        var userInteraction = invoicePaymentSessionChange.getPayload().getSessionInteractionChanged().getInteraction();
+    private String getUserInteractionUrl(UserInteraction userInteraction) {
         BrowserHTTPRequest redirect = userInteraction.getRedirect();
         if (redirect.isSetGetRequest()) {
             return redirect.getGetRequest().getUri();
