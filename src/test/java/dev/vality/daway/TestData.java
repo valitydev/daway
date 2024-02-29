@@ -3,6 +3,9 @@ package dev.vality.daway;
 import dev.vality.damsel.domain.InvoicePaymentChargeback;
 import dev.vality.damsel.domain.*;
 import dev.vality.damsel.payment_processing.*;
+import dev.vality.damsel.user_interaction.BrowserGetRequest;
+import dev.vality.damsel.user_interaction.BrowserHTTPRequest;
+import dev.vality.damsel.user_interaction.UserInteraction;
 import dev.vality.daway.domain.enums.FistfulCashFlowChangeType;
 import dev.vality.daway.domain.enums.WithdrawalAdjustmentStatus;
 import dev.vality.daway.domain.enums.WithdrawalAdjustmentType;
@@ -517,6 +520,7 @@ public class TestData {
         PaymentEventPayloadSerializer paymentEventPayloadSerializer = new PaymentEventPayloadSerializer();
         MachineEvent message = new MachineEvent();
         message.setCreatedAt(TypeUtil.temporalToString(LocalDateTime.now().truncatedTo(ChronoUnit.MICROS)));
+        message.setSourceId("source_id");
         EventPayload payload = new EventPayload();
         ArrayList<InvoiceChange> invoiceChanges = new ArrayList<>();
         InvoiceChange invoiceChange = new InvoiceChange();
@@ -560,5 +564,28 @@ public class TestData {
                                 .setProvider(new ProviderRef()
                                         .setId(321))));
         return invoicePaymentChangePayload;
+    }
+
+    public static InvoicePaymentChangePayload createInvoicePaymentSessionInteractionChange(UserInteraction userInteraction) {
+        InvoicePaymentChangePayload invoicePaymentChangePayload = new InvoicePaymentChangePayload();
+        TargetInvoicePaymentStatus targetInvoicePaymentStatus = new TargetInvoicePaymentStatus();
+        targetInvoicePaymentStatus.setCaptured(new InvoicePaymentCaptured());
+        SessionChangePayload sessionChangePayload = new SessionChangePayload();
+        sessionChangePayload.setSessionInteractionChanged(
+                new SessionInteractionChanged().setInteraction(userInteraction));
+        invoicePaymentChangePayload.setInvoicePaymentSessionChange(
+                new InvoicePaymentSessionChange()
+                        .setTarget(targetInvoicePaymentStatus)
+                        .setPayload(sessionChangePayload));
+        return invoicePaymentChangePayload;
+    }
+
+    public static UserInteraction userInteraction() {
+        UserInteraction userInteraction = new UserInteraction();
+        BrowserHTTPRequest browserHTTPRequest = new BrowserHTTPRequest();
+        browserHTTPRequest.setGetRequest(new BrowserGetRequest()
+                .setUri("test.com"));
+        userInteraction.setRedirect(browserHTTPRequest);
+        return userInteraction;
     }
 }
