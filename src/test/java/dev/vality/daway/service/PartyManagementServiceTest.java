@@ -62,7 +62,7 @@ public class PartyManagementServiceTest {
         PartyChange partyChange = new PartyChange();
         partyChange.setPartyCreated(new PartyCreated()
                 .setContactInfo(new PartyContactInfo()
-                        .setEmail("test@mail.ru"))
+                        .setRegistrationEmail("test@mail.ru"))
                 .setCreatedAt(Instant.now().toString())
                 .setId("test"));
         changes.add(partyChange);

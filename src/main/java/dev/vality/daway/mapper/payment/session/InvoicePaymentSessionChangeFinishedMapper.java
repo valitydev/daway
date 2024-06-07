@@ -54,6 +54,7 @@ public class InvoicePaymentSessionChangeFinishedMapper implements Mapper<Payment
                 invoicePaymentChange.getPayload().getInvoicePaymentSessionChange().getPayload().getSessionFinished()
                         .getResult();
         PaymentRoute paymentRoute = paymentRouteDao.safeGet(invoiceId, paymentId);
+
         if (paymentRoute != null) {
             paymentSessionInfo.setPaymentTerminal(paymentRoute.getRouteTerminalId());
         }

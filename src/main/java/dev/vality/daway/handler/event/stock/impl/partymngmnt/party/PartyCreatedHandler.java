@@ -45,7 +45,9 @@ public class PartyCreatedHandler implements PartyManagementHandler {
 
         Party party = partyIntegerMachineEventCopyFactory.create(event, sequenceId, changeId, null);
         party.setPartyId(partyId);
-        party.setContactInfoEmail(partyCreated.getContactInfo().getEmail());
+        party.setRegistrationEmail(partyCreated.getContactInfo().getRegistrationEmail());
+        party.setManagerContactEmails(partyCreated.getContactInfo().getManagerContactEmails().toArray(new String[0]));
+        party.setPartyName(partyCreated.getPartyName());
         LocalDateTime partyCreatedAt = TypeUtil.stringToLocalDateTime(partyCreated.getCreatedAt());
         party.setCreatedAt(partyCreatedAt);
         party.setBlocking(Blocking.unblocked);
