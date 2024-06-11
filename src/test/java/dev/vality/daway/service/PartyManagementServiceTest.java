@@ -32,7 +32,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {PartyMachineEventCopyFactoryImpl.class,
         PartyCreatedHandler.class, SerializationConfig.class, PartyManagementService.class})
-public class PartyManagementServiceTest {
+class PartyManagementServiceTest {
 
     @Autowired
     PartyManagementService partyManagementService;
@@ -46,9 +46,7 @@ public class PartyManagementServiceTest {
     }
 
     @Test
-    public void handleEvents() {
-        PartyEventDataSerializer partyEventDataSerializer = new PartyEventDataSerializer();
-
+    void handleEvents() {
         List<MachineEvent> machineEvents = new ArrayList<>();
         machineEvents.add(createMessage());
         partyManagementService.handleEvents(machineEvents);
@@ -62,7 +60,7 @@ public class PartyManagementServiceTest {
         PartyChange partyChange = new PartyChange();
         partyChange.setPartyCreated(new PartyCreated()
                 .setContactInfo(new PartyContactInfo()
-                        .setEmail("test@mail.ru"))
+                        .setRegistrationEmail("test@mail.ru"))
                 .setCreatedAt(Instant.now().toString())
                 .setId("test"));
         changes.add(partyChange);
