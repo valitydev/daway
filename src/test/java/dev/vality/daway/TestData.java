@@ -466,6 +466,15 @@ public class TestData {
                 .setData(Value.bin(new ThriftSerializer<>().serialize("", timestampedChange)));
     }
 
+    public static MachineEvent createPartyEventDataMachineEvent(PartyEventData partyEventData, String id) {
+        return new MachineEvent()
+                .setEventId(2L)
+                .setSourceId(id)
+                .setSourceNs("2")
+                .setCreatedAt("2021-05-31T06:12:27Z")
+                .setData(Value.bin(new ThriftSerializer<>().serialize("", partyEventData)));
+    }
+
     public static WithdrawalAdjustment createWithdrawalAdjustment(String id) {
         WithdrawalAdjustment withdrawalAdjustment = new WithdrawalAdjustment();
         withdrawalAdjustment.setType(WithdrawalAdjustmentType.domain_revision);
@@ -587,5 +596,29 @@ public class TestData {
                 .setUri("test.com"));
         userInteraction.setRedirect(browserHTTPRequest);
         return userInteraction;
+    }
+
+    public static PartyChange createPartyChangeWithPartyModificationAdditionalInfo(String name, String comment, String... emails) {
+        AdditionalInfoModificationUnit additionalInfoModificationUnit = new AdditionalInfoModificationUnit();
+        additionalInfoModificationUnit.setPartyName(name);
+        additionalInfoModificationUnit.setComment(comment);
+        additionalInfoModificationUnit.setManagerContactEmails(Arrays.stream(emails).toList());
+        PartyModification partyModification = new PartyModification();
+        partyModification.setAdditionalInfoModification(additionalInfoModificationUnit);
+        Claim claim = createClaim();
+        claim.setChangeset(List.of(partyModification));
+        PartyChange partyChange = new PartyChange();
+        partyChange.setClaimCreated(claim);
+        return partyChange;
+    }
+
+
+    public static Claim createClaim() {
+        Claim claim = new Claim();
+        claim.setId(1);
+        claim.setCreatedAt("2023-07-03T10:15:30Z");
+        claim.setStatus(ClaimStatus.accepted(new ClaimAccepted()));
+        claim.setRevision(1);
+        return claim;
     }
 }

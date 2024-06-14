@@ -20,8 +20,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Slf4j
 @Component
@@ -45,7 +47,10 @@ public class PartyCreatedHandler implements PartyManagementHandler {
 
         Party party = partyIntegerMachineEventCopyFactory.create(event, sequenceId, changeId, null);
         party.setPartyId(partyId);
-        party.setContactInfoEmail(partyCreated.getContactInfo().getEmail());
+        party.setName(partyCreated.getPartyName());
+        party.setContactInfoEmail(partyCreated.getContactInfo().getRegistrationEmail());
+        List<String> managerContactEmails = partyCreated.getContactInfo().getManagerContactEmails();
+        party.setManagerContactEmails(StringUtils.collectionToDelimitedString(managerContactEmails, ","));
         LocalDateTime partyCreatedAt = TypeUtil.stringToLocalDateTime(partyCreated.getCreatedAt());
         party.setCreatedAt(partyCreatedAt);
         party.setBlocking(Blocking.unblocked);
@@ -55,7 +60,7 @@ public class PartyCreatedHandler implements PartyManagementHandler {
         party.setSuspensionActiveSince(partyCreatedAt);
         party.setRevision(0L);
         party.setRevisionChangedAt(partyCreatedAt);
-
+        party.setComment(partyCreated.getComment());
         partyDao.save(party).ifPresentOrElse(
                 atLong -> log.info("Party has been saved, sequenceId={}, partyId={}, changeId={}", sequenceId, partyId,
                         changeId),
