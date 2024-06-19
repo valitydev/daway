@@ -36,7 +36,7 @@ class WithdrawalAdjustmentCreatedHandlerTest {
     void handledStatusChange() {
         TimestampedChange timestampedChange = TestData.createWithdrawalAdjustmentCreatedChange("adjustmentId");
 
-        handler.handle(timestampedChange, TestData.createWithdrawalAdjustmentdMachineEvent(timestampedChange));
+        handler.handle(timestampedChange, TestData.createMachineEvent(timestampedChange));
 
         WithdrawalAdjustmentRecord record = dslContext.fetchAny(WITHDRAWAL_ADJUSTMENT);
         assertNotNull(record);
@@ -48,7 +48,7 @@ class WithdrawalAdjustmentCreatedHandlerTest {
     void handleDomainRevisionChange() {
         TimestampedChange timestampedChange = TestData.createWithdrawalAdjustmentCreatedDomainRevisionChange("adjustmentId");
 
-        handler.handle(timestampedChange, TestData.createWithdrawalAdjustmentdMachineEvent(timestampedChange));
+        handler.handle(timestampedChange, TestData.createMachineEvent(timestampedChange));
 
         WithdrawalAdjustmentRecord record = dslContext.fetchAny(WITHDRAWAL_ADJUSTMENT);
         assertNotNull(record);

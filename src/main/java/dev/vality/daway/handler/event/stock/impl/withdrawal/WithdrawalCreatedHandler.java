@@ -4,6 +4,7 @@ import dev.vality.daway.dao.withdrawal.iface.WithdrawalDao;
 import dev.vality.daway.domain.enums.WithdrawalStatus;
 import dev.vality.daway.domain.tables.pojos.Withdrawal;
 import dev.vality.daway.factory.machine.event.MachineEventCopyFactory;
+import dev.vality.daway.service.ExchangeRateCalculationService;
 import dev.vality.fistful.base.Cash;
 import dev.vality.fistful.withdrawal.Change;
 import dev.vality.fistful.withdrawal.TimestampedChange;
@@ -24,6 +25,7 @@ public class WithdrawalCreatedHandler implements WithdrawalHandler {
 
     private final WithdrawalDao withdrawalDao;
     private final MachineEventCopyFactory<Withdrawal, String> machineEventCopyFactory;
+    private final ExchangeRateCalculationService exchangeRateCalculationService;
 
     @Getter
     private final Filter filter = new PathConditionFilter(
@@ -51,6 +53,12 @@ public class WithdrawalCreatedHandler implements WithdrawalHandler {
         if (withdrawalDamsel.getRoute() != null && withdrawalDamsel.getRoute().isSetTerminalId()) {
             withdrawal.setTerminalId(String.valueOf(withdrawalDamsel.getRoute().getTerminalId()));
         }
+        if (withdrawalDamsel.isSetQuote()) {
+            long amountFrom = withdrawalDamsel.getQuote().getCashFrom().getAmount();
+            long amountTo = withdrawalDamsel.getQuote().getCashTo().getAmount();
+            var exchangeRate = exchangeRateCalculationService.calculate(amountFrom, amountTo);
+            withdrawal.setExchangeRate(exchangeRate.floatValue());
+        }
 
         withdrawalDao.save(withdrawal).ifPresentOrElse(
                 dbContractId -> log
@@ -59,5 +67,4 @@ public class WithdrawalCreatedHandler implements WithdrawalHandler {
                 () -> log.info("Withdrawal created bound duplicated, sequenceId={}, withdrawalId={}", sequenceId,
                         withdrawalId));
     }
-
 }

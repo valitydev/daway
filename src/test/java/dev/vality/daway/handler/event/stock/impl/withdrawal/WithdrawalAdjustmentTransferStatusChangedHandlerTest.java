@@ -54,7 +54,7 @@ class WithdrawalAdjustmentTransferStatusChangedHandlerTest {
                 .set(dslContext.newRecord(FISTFUL_CASH_FLOW, fistfulCashFlow))
                 .execute();
         TimestampedChange timestampedChange = TestData.createWithdrawalAdjustmentTransferStatusChange(adjustmentId);
-        MachineEvent event = TestData.createWithdrawalAdjustmentdMachineEvent(timestampedChange);
+        MachineEvent event = TestData.createMachineEvent(timestampedChange);
         event.setSourceId(withdrawalAdjustment.getWithdrawalId());
 
         handler.handle(timestampedChange, event);
