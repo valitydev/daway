@@ -10,8 +10,4 @@ public interface WithdrawalValidationDao extends GenericDao {
 
     Optional<Long> save(WithdrawalValidation withdrawalValidation) throws DaoException;
 
-    WithdrawalValidation get(String withdrawalId, String validationId) throws DaoException;
-
-    void updateNotCurrent(Long withdrawalValidationId) throws DaoException;
-
 }
