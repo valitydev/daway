@@ -12,6 +12,6 @@ public class ExchangeRateCalculationService {
         if (amountFrom == 0L || amountTo == 0L) {
             return null;
         }
-        return BigDecimal.valueOf(amountTo).divide(BigDecimal.valueOf(amountFrom), 6, RoundingMode.HALF_UP);
+        return BigDecimal.valueOf(amountTo).divide(BigDecimal.valueOf(amountFrom), 4, RoundingMode.HALF_UP);
     }
 }
