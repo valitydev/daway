@@ -2,6 +2,10 @@ package dev.vality.daway;
 
 import dev.vality.damsel.domain.InvoicePaymentChargeback;
 import dev.vality.damsel.domain.*;
+import dev.vality.damsel.payment_processing.SessionChangePayload;
+import dev.vality.damsel.payment_processing.SessionFinished;
+import dev.vality.damsel.payment_processing.SessionResult;
+import dev.vality.damsel.payment_processing.SessionSucceeded;
 import dev.vality.damsel.payment_processing.*;
 import dev.vality.damsel.user_interaction.BrowserGetRequest;
 import dev.vality.damsel.user_interaction.BrowserHTTPRequest;
@@ -14,10 +18,11 @@ import dev.vality.daway.domain.tables.pojos.WithdrawalAdjustment;
 import dev.vality.fistful.cashflow.FinalCashFlow;
 import dev.vality.fistful.transfer.Committed;
 import dev.vality.fistful.transfer.Transfer;
-import dev.vality.fistful.withdrawal.AdjustmentChange;
 import dev.vality.fistful.withdrawal.Change;
-import dev.vality.fistful.withdrawal.TimestampedChange;
-import dev.vality.fistful.withdrawal.Withdrawal;
+import dev.vality.fistful.withdrawal.*;
+import dev.vality.fistful.withdrawal.adjustment.CreatedChange;
+import dev.vality.fistful.withdrawal.adjustment.StatusChange;
+import dev.vality.fistful.withdrawal.adjustment.TransferChange;
 import dev.vality.fistful.withdrawal.adjustment.*;
 import dev.vality.geck.common.util.TypeUtil;
 import dev.vality.kafka.common.serialization.ThriftSerializer;
@@ -457,7 +462,7 @@ public class TestData {
         return timestampedChange;
     }
 
-    public static MachineEvent createWithdrawalAdjustmentdMachineEvent(TimestampedChange timestampedChange) {
+    public static MachineEvent createMachineEvent(TimestampedChange timestampedChange) {
         return new MachineEvent()
                 .setEventId(2L)
                 .setSourceId("sourceId")
@@ -620,5 +625,15 @@ public class TestData {
         claim.setStatus(ClaimStatus.accepted(new ClaimAccepted()));
         claim.setRevision(1);
         return claim;
+    }
+
+    public static ValidationResult testValidationResult() {
+        PersonalDataValidationResult personalDataValidationResult = new PersonalDataValidationResult();
+        personalDataValidationResult.setValidationId(randomString());
+        personalDataValidationResult.setToken(randomString());
+        personalDataValidationResult.setValidationStatus(ValidationStatus.valid);
+        ValidationResult result = new ValidationResult();
+        result.setPersonal(personalDataValidationResult);
+        return result;
     }
 }

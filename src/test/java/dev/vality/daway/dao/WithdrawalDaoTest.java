@@ -9,10 +9,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 
+import java.math.BigDecimal;
+
 import static org.junit.Assert.assertThrows;
 
 @PostgresqlSpringBootITest
-public class WithdrawalDaoTest {
+class WithdrawalDaoTest {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -21,10 +23,11 @@ public class WithdrawalDaoTest {
     private WithdrawalDao withdrawalDao;
 
     @Test
-    public void withdrawalDaoTest() {
+    void withdrawalDaoTest() {
         jdbcTemplate.execute("truncate table dw.withdrawal cascade");
         Withdrawal withdrawal = dev.vality.testcontainers.annotations.util.RandomBeans.random(Withdrawal.class);
         withdrawal.setCurrent(true);
+        withdrawal.setExchangeRate(new BigDecimal(1000000L).movePointLeft(4));
         Long id = withdrawalDao.save(withdrawal).get();
         withdrawal.setId(id);
         Withdrawal actual = withdrawalDao.get(withdrawal.getWithdrawalId());

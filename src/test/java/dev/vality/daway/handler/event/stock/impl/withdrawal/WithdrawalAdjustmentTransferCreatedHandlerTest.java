@@ -49,7 +49,7 @@ class WithdrawalAdjustmentTransferCreatedHandlerTest {
                 .execute();
         TimestampedChange timestampedChange = TestData.createWithdrawalAdjustmentTransferCreatedChange(adjustmentId);
 
-        MachineEvent event = TestData.createWithdrawalAdjustmentdMachineEvent(timestampedChange);
+        MachineEvent event = TestData.createMachineEvent(timestampedChange);
         event.setSourceId(withdrawalAdjustment.getWithdrawalId());
 
         handler.handle(timestampedChange, event);

@@ -4,8 +4,10 @@ import dev.vality.daway.dao.withdrawal.iface.WithdrawalDao;
 import dev.vality.daway.domain.enums.WithdrawalStatus;
 import dev.vality.daway.domain.tables.pojos.Withdrawal;
 import dev.vality.daway.factory.machine.event.MachineEventCopyFactory;
+import dev.vality.daway.service.ExchangeRateCalculationService;
 import dev.vality.fistful.base.Cash;
 import dev.vality.fistful.withdrawal.Change;
+import dev.vality.fistful.withdrawal.QuoteState;
 import dev.vality.fistful.withdrawal.TimestampedChange;
 import dev.vality.geck.filter.Filter;
 import dev.vality.geck.filter.PathConditionFilter;
@@ -24,6 +26,7 @@ public class WithdrawalCreatedHandler implements WithdrawalHandler {
 
     private final WithdrawalDao withdrawalDao;
     private final MachineEventCopyFactory<Withdrawal, String> machineEventCopyFactory;
+    private final ExchangeRateCalculationService exchangeRateCalculationService;
 
     @Getter
     private final Filter filter = new PathConditionFilter(
@@ -51,7 +54,17 @@ public class WithdrawalCreatedHandler implements WithdrawalHandler {
         if (withdrawalDamsel.getRoute() != null && withdrawalDamsel.getRoute().isSetTerminalId()) {
             withdrawal.setTerminalId(String.valueOf(withdrawalDamsel.getRoute().getTerminalId()));
         }
-
+        if (withdrawalDamsel.isSetQuote()) {
+            QuoteState quote = withdrawalDamsel.getQuote();
+            long amountFrom = quote.getCashFrom().getAmount();
+            long amountTo = quote.getCashTo().getAmount();
+            var exchangeRate = exchangeRateCalculationService.calculate(amountFrom, amountTo);
+            withdrawal.setExchangeRate(exchangeRate);
+            withdrawal.setExchangeAmountFrom(amountFrom);
+            withdrawal.setExchangeCurrencyFrom(quote.getCashFrom().getCurrency().getSymbolicCode());
+            withdrawal.setExchangeAmountTo(amountTo);
+            withdrawal.setExchangeCurrencyTo(quote.getCashTo().getCurrency().getSymbolicCode());
+        }
         withdrawalDao.save(withdrawal).ifPresentOrElse(
                 dbContractId -> log
                         .info("Withdrawal created has been saved, sequenceId={}, withdrawalId={}", sequenceId,
@@ -59,5 +72,4 @@ public class WithdrawalCreatedHandler implements WithdrawalHandler {
                 () -> log.info("Withdrawal created bound duplicated, sequenceId={}, withdrawalId={}", sequenceId,
                         withdrawalId));
     }
-
 }
