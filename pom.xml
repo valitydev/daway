@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>daway</artifactId>
-    <version>2.0.0</version>
+    <version>2.0.1</version>
     <packaging>jar</packaging>
 
     <name>daway</name>
@@ -168,7 +168,7 @@
         <dependency>
             <groupId>dev.vality</groupId>
             <artifactId>damsel</artifactId>
-            <version>1.633-63051a5</version>
+            <version>1.641-6051aa9</version>
         </dependency>
         <dependency>
             <groupId>dev.vality</groupId>
