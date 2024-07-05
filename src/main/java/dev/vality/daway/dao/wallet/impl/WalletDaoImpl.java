@@ -14,7 +14,6 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
-import javax.validation.constraints.NotNull;
 import java.util.Optional;
 
 import static dev.vality.daway.domain.tables.Wallet.WALLET;
@@ -45,7 +44,6 @@ public class WalletDaoImpl extends AbstractGenericDao implements WalletDao {
         return Optional.ofNullable(keyHolder.getKey()).map(Number::longValue);
     }
 
-    @NotNull
     @Override
     public Wallet get(String walletId) throws DaoException {
         Query query = getDslContext().selectFrom(WALLET)

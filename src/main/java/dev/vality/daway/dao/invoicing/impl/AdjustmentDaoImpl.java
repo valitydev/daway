@@ -14,7 +14,6 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
-import javax.validation.constraints.NotNull;
 import java.util.Optional;
 
 import static dev.vality.daway.domain.tables.Adjustment.ADJUSTMENT;
@@ -43,7 +42,6 @@ public class AdjustmentDaoImpl extends AbstractGenericDao implements AdjustmentD
         return Optional.ofNullable(keyHolder.getKey()).map(Number::longValue);
     }
 
-    @NotNull
     @Override
     public Adjustment get(String invoiceId, String paymentId, String adjustmentId) throws DaoException {
         Query query = getDslContext().selectFrom(ADJUSTMENT)

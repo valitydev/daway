@@ -13,7 +13,6 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
-import javax.validation.constraints.NotNull;
 import java.util.Optional;
 
 import static dev.vality.daway.domain.tables.RecurrentPaymentTool.RECURRENT_PAYMENT_TOOL;
@@ -43,7 +42,6 @@ public class RecurrentPaymentToolDaoImpl extends AbstractGenericDao implements R
         return Optional.ofNullable(keyHolder.getKey()).map(Number::longValue);
     }
 
-    @NotNull
     @Override
     public RecurrentPaymentTool get(String recurrentPaymentToolId) throws DaoException {
         Query query = getDslContext().selectFrom(RECURRENT_PAYMENT_TOOL)

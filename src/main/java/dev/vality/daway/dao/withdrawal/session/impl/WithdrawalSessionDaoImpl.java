@@ -15,7 +15,6 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
-import javax.validation.constraints.NotNull;
 import java.util.Optional;
 
 import static dev.vality.daway.domain.tables.WithdrawalSession.WITHDRAWAL_SESSION;
@@ -46,7 +45,6 @@ public class WithdrawalSessionDaoImpl extends AbstractGenericDao implements With
         return Optional.ofNullable(keyHolder.getKey()).map(Number::longValue);
     }
 
-    @NotNull
     @Override
     public WithdrawalSession get(String sessionId) throws DaoException {
         Query query = getDslContext().selectFrom(WITHDRAWAL_SESSION)

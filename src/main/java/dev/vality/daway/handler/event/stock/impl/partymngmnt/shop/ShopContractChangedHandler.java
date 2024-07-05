@@ -52,7 +52,6 @@ public class ShopContractChangedHandler extends AbstractClaimChangedHandler {
         Shop shopNew = claimEffectCopyFactory.create(event, sequenceId, claimEffectId, changeId, shopOld);
 
         shopNew.setContractId(contractChanged.getContractId());
-        shopNew.setPayoutToolId(contractChanged.getPayoutToolId());
 
         shopDao.saveWithUpdateCurrent(shopNew, shopOld.getId(), "contractChanged");
     }

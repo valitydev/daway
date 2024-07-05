@@ -14,7 +14,6 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
-import javax.validation.constraints.NotNull;
 import java.util.Optional;
 
 import static dev.vality.daway.domain.tables.Chargeback.CHARGEBACK;
@@ -43,7 +42,6 @@ public class ChargebackDaoImpl extends AbstractGenericDao implements ChargebackD
         return Optional.ofNullable(keyHolder.getKey()).map(Number::longValue);
     }
 
-    @NotNull
     @Override
     public Chargeback get(String invoiceId, String paymentId, String chargebackId) throws DaoException {
         Query query = getDslContext().selectFrom(CHARGEBACK)

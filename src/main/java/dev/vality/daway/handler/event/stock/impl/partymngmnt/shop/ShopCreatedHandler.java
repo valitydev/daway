@@ -110,10 +110,6 @@ public class ShopCreatedHandler extends AbstractClaimChangedHandler {
             ShopUtil.fillShopAccount(shop, shopCreated.getAccount());
         }
         shop.setContractId(shopCreated.getContractId());
-        shop.setPayoutToolId(shopCreated.getPayoutToolId());
-        if (shopCreated.isSetPayoutSchedule()) {
-            shop.setPayoutScheduleId(shopCreated.getPayoutSchedule().getId());
-        }
         return shop;
     }
 }

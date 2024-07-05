@@ -14,7 +14,6 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
-import javax.validation.constraints.NotNull;
 import java.util.Optional;
 
 import static dev.vality.daway.domain.tables.Deposit.DEPOSIT;
@@ -45,7 +44,6 @@ public class DepositDaoImpl extends AbstractGenericDao implements DepositDao {
         return Optional.ofNullable(keyHolder.getKey()).map(Number::longValue);
     }
 
-    @NotNull
     @Override
     public Deposit get(String depositId) throws DaoException {
         Query query = getDslContext().selectFrom(DEPOSIT)

@@ -8,7 +8,6 @@ import dev.vality.daway.handler.dominant.AbstractDominantHandler;
 import dev.vality.daway.util.PaymentMethodUtils;
 import org.springframework.stereotype.Component;
 
-import javax.validation.constraints.NotNull;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -52,12 +51,12 @@ public class PaymentMethodHandler extends AbstractDominantHandler<PaymentMethodO
     }
 
     private Supplier<Optional<dev.vality.damsel.domain.PaymentMethod>> wrapPaymentMethod(
-            @NotNull dev.vality.damsel.domain.PaymentMethod paymentMethod) {
+            dev.vality.damsel.domain.PaymentMethod paymentMethod) {
         return () -> Optional.of(paymentMethod);
     }
 
     private String getPaymentType(PaymentMethodObject pmObj) {
-        return pmObj.getRef().getId().getSetField().getFieldName().replaceAll(DEPRECATED, "");
+        return pmObj.getRef().getId().getSetField().getFieldName().replace(DEPRECATED, "");
     }
 
     @Override

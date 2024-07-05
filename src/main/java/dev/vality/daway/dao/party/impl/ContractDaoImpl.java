@@ -13,7 +13,6 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
-import javax.validation.constraints.NotNull;
 import java.util.Optional;
 
 import static dev.vality.daway.domain.Tables.CONTRACT;
@@ -41,7 +40,6 @@ public class ContractDaoImpl extends AbstractGenericDao implements ContractDao {
         return Optional.ofNullable(keyHolder.getKey()).map(Number::longValue);
     }
 
-    @NotNull
     @Override
     public Contract get(String partyId, String contractId) throws DaoException {
         Query query = getDslContext().selectFrom(CONTRACT)

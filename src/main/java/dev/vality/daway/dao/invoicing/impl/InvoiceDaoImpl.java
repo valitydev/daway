@@ -13,7 +13,6 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
-import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -40,7 +39,6 @@ public class InvoiceDaoImpl extends AbstractGenericDao implements InvoiceDao {
         batchExecute(queries);
     }
 
-    @NotNull
     @Override
     public Invoice get(String invoiceId) throws DaoException {
         Query query = getDslContext().selectFrom(INVOICE)

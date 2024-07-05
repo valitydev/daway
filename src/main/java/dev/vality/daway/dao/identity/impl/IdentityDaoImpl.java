@@ -14,7 +14,6 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
-import javax.validation.constraints.NotNull;
 import java.util.Optional;
 
 import static dev.vality.daway.domain.tables.Identity.IDENTITY;
@@ -45,7 +44,6 @@ public class IdentityDaoImpl extends AbstractGenericDao implements IdentityDao {
         return Optional.ofNullable(keyHolder.getKey()).map(Number::longValue);
     }
 
-    @NotNull
     @Override
     public Identity get(String identityId) throws DaoException {
         Query query = getDslContext().selectFrom(IDENTITY)

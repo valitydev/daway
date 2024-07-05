@@ -13,10 +13,8 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
-import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static dev.vality.daway.domain.tables.Payment.PAYMENT;
 
@@ -36,11 +34,10 @@ public class PaymentDaoImpl extends AbstractGenericDao implements PaymentDao {
         List<Query> queries = payments.stream()
                 .map(payment -> getDslContext().newRecord(PAYMENT, payment))
                 .map(this::prepareInsertQuery)
-                .collect(Collectors.toList());
+                .toList();
         batchExecute(queries);
     }
 
-    @NotNull
     @Override
     public Payment get(String invoiceId, String paymentId) throws DaoException {
         Query query = getDslContext().selectFrom(PAYMENT)

@@ -3,12 +3,14 @@ package dev.vality.daway.handler.event.stock.impl.partymngmnt.contract;
 import dev.vality.damsel.payment_processing.ClaimEffect;
 import dev.vality.damsel.payment_processing.ContractEffectUnit;
 import dev.vality.damsel.payment_processing.PartyChange;
-import dev.vality.daway.dao.party.iface.*;
+import dev.vality.daway.dao.party.iface.ContractAdjustmentDao;
+import dev.vality.daway.dao.party.iface.ContractDao;
+import dev.vality.daway.dao.party.iface.ContractorDao;
+import dev.vality.daway.dao.party.iface.PartyDao;
 import dev.vality.daway.domain.enums.ContractStatus;
 import dev.vality.daway.domain.tables.pojos.Contract;
 import dev.vality.daway.domain.tables.pojos.ContractAdjustment;
 import dev.vality.daway.domain.tables.pojos.Contractor;
-import dev.vality.daway.domain.tables.pojos.PayoutTool;
 import dev.vality.daway.factory.claim.effect.ClaimEffectCopyFactory;
 import dev.vality.daway.factory.contractor.ContractorFactory;
 import dev.vality.daway.handler.event.stock.impl.partymngmnt.AbstractClaimChangedHandler;
@@ -38,7 +40,6 @@ public class ContractCreatedHandler extends AbstractClaimChangedHandler {
     private final ContractorDao contractorDao;
     private final PartyDao partyDao;
     private final ContractAdjustmentDao contractAdjustmentDao;
-    private final PayoutToolDao payoutToolDao;
     private final ClaimEffectCopyFactory<Contract, Integer> claimEffectCopyFactory;
 
     @Override
@@ -125,10 +126,6 @@ public class ContractCreatedHandler extends AbstractClaimChangedHandler {
 
         List<ContractAdjustment> adjustments = ContractUtil.convertContractAdjustments(contractCreated, cntrctId);
         contractAdjustmentDao.save(adjustments);
-
-        List<PayoutTool> payoutTools =
-                ContractUtil.convertPayoutTools(contractCreated, cntrctId);
-        payoutToolDao.save(payoutTools);
 
         log.info("Contract has been saved, sequenceId={}, partyId={}, contractId={}, changeId={}",
                 sequenceId, partyId, contractId, changeId);

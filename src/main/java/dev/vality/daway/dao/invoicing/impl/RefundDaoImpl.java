@@ -16,7 +16,6 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
-import javax.validation.constraints.NotNull;
 import java.util.Optional;
 
 import static dev.vality.daway.domain.tables.Refund.REFUND;
@@ -45,7 +44,6 @@ public class RefundDaoImpl extends AbstractGenericDao implements RefundDao {
         return Optional.ofNullable(keyHolder.getKey()).map(Number::longValue);
     }
 
-    @NotNull
     @Override
     public Refund get(String invoiceId, String paymentId, String refundId) throws DaoException {
         Query query = getDslContext().selectFrom(REFUND)

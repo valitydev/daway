@@ -2,6 +2,7 @@ package dev.vality.daway.handler.dominant.impl;
 
 import dev.vality.damsel.domain.*;
 import dev.vality.daway.dao.dominant.impl.ProviderDaoImpl;
+import dev.vality.daway.util.JsonUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,20 +15,30 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 @ExtendWith(MockitoExtension.class)
-public class ProviderHandlerTest {
+class ProviderHandlerTest {
 
     @Mock
     private ProviderDaoImpl providerDao;
 
     @Test
-    public void convertToDatabaseObjectTest() throws IOException {
+    void test() throws Exception {
+        ProviderObject providerObject = buildProviderObject();
+        PaymentsProvisionTerms payments = providerObject.getData().getTerms().getPayments();
+        String jsonString = JsonUtil.thriftBaseToJsonString(payments);
+        assertNotNull(jsonString);
+    }
+
+    @Test
+    void convertToDatabaseObjectTest() throws IOException {
         ProviderObject providerObject = buildProviderObject();
         ProviderHandler providerHandler = new ProviderHandler(providerDao);
         providerHandler.setDomainObject(DomainObject.provider(providerObject));
         dev.vality.daway.domain.tables.pojos.Provider provider =
                 providerHandler.convertToDatabaseObject(providerObject, 1L, true);
-        Assertions.assertNotNull(provider);
+        assertNotNull(provider);
         Assertions.assertEquals(provider.getName(), providerObject.getData().getName());
         Assertions.assertEquals(provider.getIdentity(), providerObject.getData().getIdentity());
         Assertions.assertEquals(provider.getDescription(), providerObject.getData().getDescription());
@@ -97,7 +108,7 @@ public class ProviderHandlerTest {
 
     private CashFlowAccount buildMerchantCashFlowAccount() {
         CashFlowAccount cashFlowAccount = new CashFlowAccount();
-        cashFlowAccount.setMerchant(MerchantCashFlowAccount.guarantee);
+        cashFlowAccount.setMerchant(MerchantCashFlowAccount.payout);
         return cashFlowAccount;
     }
 
