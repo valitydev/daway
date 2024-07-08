@@ -54,3 +54,6 @@ $_$;
 
 -- remove the old type
 DROP TYPE dw.PAYMENT_CHANGE_TYPE_OLD;
+
+ALTER TABLE dw.shop DROP COLUMN payout_tool_id;
+ALTER TABLE dw.shop DROP COLUMN payout_schedule_id;
