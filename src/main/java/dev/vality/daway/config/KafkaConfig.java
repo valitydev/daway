@@ -2,13 +2,11 @@ package dev.vality.daway.config;
 
 import dev.vality.daway.config.properties.KafkaConsumerProperties;
 import dev.vality.daway.serde.CurrencyExchangeRateEventDeserializer;
-import dev.vality.daway.serde.PayoutEventDeserializer;
 import dev.vality.daway.serde.SinkEventDeserializer;
 import dev.vality.daway.service.FileService;
 import dev.vality.exrates.events.CurrencyEvent;
 import dev.vality.kafka.common.util.ExponentialBackOffDefaultErrorHandlerFactory;
 import dev.vality.machinegun.eventsink.MachineEvent;
-import dev.vality.payout.manager.Event;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
@@ -123,17 +121,6 @@ public class KafkaConfig {
         }
         ConsumerFactory<String, MachineEvent> consumerFactory = new DefaultKafkaConsumerFactory<>(props);
         return createConcurrentFactory(consumerFactory, kafkaConsumerProperties.getWithdrawalAdjustmentConcurrency());
-    }
-
-    @Bean
-    public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, Event>> payoutContainerFactory() {
-        DefaultKafkaConsumerFactory<String, Event> kafkaConsumerFactory =
-                new DefaultKafkaConsumerFactory<>(createConsumerConfig());
-        kafkaConsumerFactory.setValueDeserializer(new PayoutEventDeserializer());
-        ConcurrentKafkaListenerContainerFactory<String, Event> factory =
-                new ConcurrentKafkaListenerContainerFactory<>();
-        initFactory(kafkaConsumerFactory, kafkaConsumerProperties.getPayoutConcurrency(), factory);
-        return factory;
     }
 
     @Bean

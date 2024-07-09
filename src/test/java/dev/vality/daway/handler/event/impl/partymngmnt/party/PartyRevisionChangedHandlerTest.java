@@ -50,9 +50,6 @@ public class PartyRevisionChangedHandlerTest {
     private ContractAdjustmentDao contractAdjustmentDao;
 
     @Autowired
-    private PayoutToolDao payoutToolDao;
-
-    @Autowired
     private PartyDao partyDao;
     @Mock
     private MachineEventParser eventParser;
@@ -69,20 +66,15 @@ public class PartyRevisionChangedHandlerTest {
         partyDao.save(party);
         List<Contract> contracts = dev.vality.testcontainers.annotations.util.RandomBeans.randomListOf(CNT, Contract.class, "current");
         List<ContractAdjustment> allAdjustments = new ArrayList<>();
-        List<PayoutTool> allPayoutTools = new ArrayList<>();
         contracts.forEach(c -> {
             c.setContractId(UUID.randomUUID().toString());
             c.setPartyId(party.getPartyId());
             List<ContractAdjustment> adjustments = dev.vality.testcontainers.annotations.util.RandomBeans.randomListOf(2, ContractAdjustment.class, "id");
             adjustments.forEach(ca -> ca.setCntrctId(c.getId()));
             allAdjustments.addAll(adjustments);
-            List<PayoutTool> payoutTools = dev.vality.testcontainers.annotations.util.RandomBeans.randomListOf(2, PayoutTool.class, "id");
-            payoutTools.forEach(pt -> pt.setCntrctId(c.getId()));
-            allPayoutTools.addAll(payoutTools);
         });
         contracts.forEach(c -> contractDao.save(c));
         contractAdjustmentDao.save(allAdjustments);
-        payoutToolDao.save(allPayoutTools);
 
         List<Shop> shops = dev.vality.testcontainers.annotations.util.RandomBeans.randomListOf(CNT, Shop.class, "id", "current", "wtime");
         shops.forEach(s -> {

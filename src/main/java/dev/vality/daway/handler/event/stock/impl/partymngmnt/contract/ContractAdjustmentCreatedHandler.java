@@ -5,10 +5,8 @@ import dev.vality.damsel.payment_processing.ContractEffectUnit;
 import dev.vality.damsel.payment_processing.PartyChange;
 import dev.vality.daway.dao.party.iface.ContractAdjustmentDao;
 import dev.vality.daway.dao.party.iface.ContractDao;
-import dev.vality.daway.dao.party.iface.PayoutToolDao;
 import dev.vality.daway.domain.tables.pojos.Contract;
 import dev.vality.daway.domain.tables.pojos.ContractAdjustment;
-import dev.vality.daway.domain.tables.pojos.PayoutTool;
 import dev.vality.daway.factory.claim.effect.ClaimEffectCopyFactory;
 import dev.vality.daway.handler.event.stock.impl.partymngmnt.AbstractClaimChangedHandler;
 import dev.vality.daway.util.ContractUtil;
@@ -29,7 +27,6 @@ public class ContractAdjustmentCreatedHandler extends AbstractClaimChangedHandle
 
     private final ContractDao contractDao;
     private final ContractAdjustmentDao contractAdjustmentDao;
-    private final PayoutToolDao payoutToolDao;
     private final ClaimEffectCopyFactory<Contract, Integer> claimEffectCopyFactory;
 
     @Override
@@ -83,13 +80,6 @@ public class ContractAdjustmentCreatedHandler extends AbstractClaimChangedHandle
         });
         adjustments.add(ContractUtil.convertContractAdjustment(adjustmentCreated, cntrctId));
         contractAdjustmentDao.save(adjustments);
-
-        List<PayoutTool> payoutTools = payoutToolDao.getByCntrctId(contractSourceId);
-        payoutTools.forEach(pt -> {
-            pt.setId(null);
-            pt.setCntrctId(cntrctId);
-        });
-        payoutToolDao.save(payoutTools);
     }
 
 }

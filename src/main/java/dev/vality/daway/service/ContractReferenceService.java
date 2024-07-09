@@ -1,9 +1,7 @@
 package dev.vality.daway.service;
 
 import dev.vality.daway.dao.party.iface.ContractAdjustmentDao;
-import dev.vality.daway.dao.party.iface.PayoutToolDao;
 import dev.vality.daway.domain.tables.pojos.ContractAdjustment;
-import dev.vality.daway.domain.tables.pojos.PayoutTool;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
@@ -16,22 +14,10 @@ import java.util.List;
 public class ContractReferenceService {
 
     private final ContractAdjustmentDao contractAdjustmentDao;
-    private final PayoutToolDao payoutToolDao;
 
     @Transactional(propagation = Propagation.REQUIRED)
     public void updateContractReference(Long contractSourceId, Long contractId) {
         updateAdjustments(contractSourceId, contractId);
-        updatePayoutTools(contractSourceId, contractId);
-    }
-
-    @Transactional(propagation = Propagation.REQUIRED)
-    public void updatePayoutTools(Long contractSourceId, Long contractId) {
-        List<PayoutTool> payoutTools = payoutToolDao.getByCntrctId(contractSourceId);
-        payoutTools.forEach(pt -> {
-            pt.setId(null);
-            pt.setCntrctId(contractId);
-        });
-        payoutToolDao.save(payoutTools);
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
