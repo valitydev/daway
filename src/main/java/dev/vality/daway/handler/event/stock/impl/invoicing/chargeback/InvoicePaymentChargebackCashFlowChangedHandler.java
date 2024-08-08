@@ -13,6 +13,8 @@ import dev.vality.daway.factory.cash.flow.CashFlowFactory;
 import dev.vality.daway.factory.machine.event.MachineEventCopyFactory;
 import dev.vality.daway.handler.event.stock.impl.invoicing.InvoicingHandler;
 import dev.vality.daway.service.CashFlowService;
+import dev.vality.daway.util.CashFlowUtil;
+import dev.vality.daway.util.FeeType;
 import dev.vality.geck.filter.Filter;
 import dev.vality.geck.filter.PathConditionFilter;
 import dev.vality.geck.filter.condition.IsNullCondition;
@@ -24,6 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Component
@@ -59,7 +62,10 @@ public class InvoicePaymentChargebackCashFlowChangedHandler implements Invoicing
 
         Chargeback chargebackOld = chargebackDao.get(invoiceId, paymentId, chargebackId);
         Chargeback chargebackNew = machineEventCopyFactory.create(event, sequenceId, changeId, chargebackOld, null);
-
+        Map<FeeType, Long> fees = CashFlowUtil.getFees(invoicePaymentChargebackCashFlowChanged.getCashFlow());
+        chargebackNew.setChargebackFee(fees.getOrDefault(FeeType.FEE, 0L));
+        chargebackNew.setChargebackProviderFee(fees.getOrDefault(FeeType.PROVIDER_FEE, 0L));
+        chargebackNew.setChargebackExternalFee(fees.getOrDefault(FeeType.EXTERNAL_FEE, 0L));
         chargebackDao.save(chargebackNew).ifPresentOrElse(
                 id -> {
                     Long oldId = chargebackOld.getId();
