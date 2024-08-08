@@ -27,8 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @PostgresqlJooqSpringBootITest
 @ContextConfiguration(classes = {InvoicePaymentChargebackCashFlowChangedHandler.class, ChargebackDaoImpl.class,
-        CashFlowService.class, CashFlowDaoImpl.class,
-        ChargebackMachineEventCopyFactoryImpl.class,})
+        CashFlowService.class, CashFlowDaoImpl.class, ChargebackMachineEventCopyFactoryImpl.class,})
 class InvoicePaymentChargebackCashFlowChangedHandlerTest {
 
     @Autowired
@@ -65,7 +64,5 @@ class InvoicePaymentChargebackCashFlowChangedHandlerTest {
         assertEquals(100, recordNew.get(0).getChargebackProviderFee());
         assertEquals(100, recordNew.get(0).getChargebackExternalFee());
         assertEquals(finalCashFlowPostings.size(), dslContext.fetchCount(CASH_FLOW));
-
-
     }
 }

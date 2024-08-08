@@ -13,7 +13,6 @@ import dev.vality.damsel.user_interaction.BrowserGetRequest;
 import dev.vality.damsel.user_interaction.BrowserHTTPRequest;
 import dev.vality.damsel.user_interaction.UserInteraction;
 import dev.vality.daway.domain.enums.*;
-import dev.vality.daway.domain.tables.pojos.CashFlow;
 import dev.vality.daway.domain.tables.pojos.Chargeback;
 import dev.vality.daway.domain.tables.pojos.FistfulCashFlow;
 import dev.vality.daway.domain.tables.pojos.WithdrawalAdjustment;
@@ -731,19 +730,4 @@ public class TestData {
                 provider,
                 merchant);
     }
-
-    public static CashFlow createCashFlow() {
-        CashFlow cashFlow = new CashFlow();
-        cashFlow.setAmount(100L);
-        cashFlow.setCurrencyCode("RUB");
-        cashFlow.setObjType(PaymentChangeType.chargeback);
-        cashFlow.setDestinationAccountId(1L);
-        cashFlow.setDestinationAccountType(dev.vality.daway.domain.enums.CashFlowAccount.system);
-        cashFlow.setDestinationAccountTypeValue("type");
-        cashFlow.setSourceAccountTypeValue("type");
-        cashFlow.setSourceAccountType(dev.vality.daway.domain.enums.CashFlowAccount.merchant);
-        cashFlow.setSourceAccountId(2L);
-        return cashFlow;
-    }
-
 }
