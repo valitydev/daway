@@ -2,6 +2,7 @@ package dev.vality.daway.util;
 
 import dev.vality.damsel.domain.*;
 import dev.vality.daway.model.CashFlowType;
+import lombok.experimental.UtilityClass;
 
 import java.util.List;
 import java.util.Map;
@@ -9,6 +10,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+@UtilityClass
 public class CashFlowUtil {
 
     public static Long computeMerchantAmount(List<FinalCashFlowPosting> finalCashFlow) {
@@ -113,5 +115,43 @@ public class CashFlowUtil {
                                 )
                         )
                 );
+    }
+
+    public static Map<FeeType, Long> getFees(List<FinalCashFlowPosting> finalCashFlowPostings) {
+        return finalCashFlowPostings.stream()
+                .collect(
+                        Collectors.groupingBy(
+                                CashFlowUtil::getFeeType,
+                                Collectors.summingLong(posting -> posting.getVolume().getAmount())
+                        )
+                );
+    }
+
+    private static FeeType getFeeType(FinalCashFlowPosting cashFlowPosting) {
+        CashFlowAccount source = cashFlowPosting.getSource().getAccountType();
+        CashFlowAccount destination = cashFlowPosting.getDestination().getAccountType();
+
+        if (source.isSetProvider() && source.getProvider() == ProviderCashFlowAccount.settlement
+                && destination.isSetMerchant() && destination.getMerchant() == MerchantCashFlowAccount.settlement) {
+            return FeeType.AMOUNT;
+        }
+
+        if (source.isSetMerchant()
+                && source.getMerchant() == MerchantCashFlowAccount.settlement
+                && destination.isSetSystem()) {
+            return FeeType.FEE;
+        }
+
+        if (source.isSetSystem()
+                && destination.isSetExternal()) {
+            return FeeType.EXTERNAL_FEE;
+        }
+
+        if (source.isSetSystem()
+                && destination.isSetProvider()) {
+            return FeeType.PROVIDER_FEE;
+        }
+
+        return FeeType.UNKNOWN;
     }
 }

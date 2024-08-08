@@ -1,6 +1,8 @@
 package dev.vality.daway;
 
+import dev.vality.damsel.domain.CashFlowAccount;
 import dev.vality.damsel.domain.InvoicePaymentChargeback;
+import dev.vality.damsel.domain.LegalEntity;
 import dev.vality.damsel.domain.*;
 import dev.vality.damsel.payment_processing.SessionChangePayload;
 import dev.vality.damsel.payment_processing.SessionFinished;
@@ -10,9 +12,9 @@ import dev.vality.damsel.payment_processing.*;
 import dev.vality.damsel.user_interaction.BrowserGetRequest;
 import dev.vality.damsel.user_interaction.BrowserHTTPRequest;
 import dev.vality.damsel.user_interaction.UserInteraction;
-import dev.vality.daway.domain.enums.FistfulCashFlowChangeType;
-import dev.vality.daway.domain.enums.WithdrawalAdjustmentStatus;
-import dev.vality.daway.domain.enums.WithdrawalAdjustmentType;
+import dev.vality.daway.domain.enums.*;
+import dev.vality.daway.domain.tables.pojos.CashFlow;
+import dev.vality.daway.domain.tables.pojos.Chargeback;
 import dev.vality.daway.domain.tables.pojos.FistfulCashFlow;
 import dev.vality.daway.domain.tables.pojos.WithdrawalAdjustment;
 import dev.vality.fistful.cashflow.FinalCashFlow;
@@ -119,6 +121,18 @@ public class TestData {
         InvoicePaymentChargebackCashFlowChanged invoicePaymentChargebackCashFlowChanged =
                 new InvoicePaymentChargebackCashFlowChanged();
         invoicePaymentChargebackCashFlowChanged.setCashFlow(Collections.singletonList(buildCashFlowPosting()));
+        InvoicePaymentChargebackChangePayload invoicePaymentChargebackChangePayload =
+                new InvoicePaymentChargebackChangePayload();
+        invoicePaymentChargebackChangePayload
+                .setInvoicePaymentChargebackCashFlowChanged(invoicePaymentChargebackCashFlowChanged);
+
+        return buildInvoiceChangeChargeback(invoicePaymentChargebackChangePayload);
+    }
+
+    public static InvoiceChange buildInvoiceChangeChargebackCashFlowChanged(List<FinalCashFlowPosting> postings) {
+        InvoicePaymentChargebackCashFlowChanged invoicePaymentChargebackCashFlowChanged =
+                new InvoicePaymentChargebackCashFlowChanged();
+        invoicePaymentChargebackCashFlowChanged.setCashFlow(postings);
         InvoicePaymentChargebackChangePayload invoicePaymentChargebackChangePayload =
                 new InvoicePaymentChargebackChangePayload();
         invoicePaymentChargebackChangePayload
@@ -480,6 +494,15 @@ public class TestData {
                 .setData(Value.bin(new ThriftSerializer<>().serialize("", partyEventData)));
     }
 
+    public static MachineEvent createMachineEvent(EventPayload eventPayload, String id) {
+        return new MachineEvent()
+                .setEventId(2L)
+                .setSourceId(id)
+                .setSourceNs("2")
+                .setCreatedAt("2021-05-31T06:12:27Z")
+                .setData(Value.bin(new ThriftSerializer<>().serialize("", eventPayload)));
+    }
+
     public static WithdrawalAdjustment createWithdrawalAdjustment(String id) {
         WithdrawalAdjustment withdrawalAdjustment = new WithdrawalAdjustment();
         withdrawalAdjustment.setType(WithdrawalAdjustmentType.domain_revision);
@@ -636,4 +659,91 @@ public class TestData {
         result.setPersonal(personalDataValidationResult);
         return result;
     }
+
+    public static Chargeback createChargeback(String id) {
+        Chargeback chargeback = new Chargeback();
+        chargeback.setSequenceId(1L);
+        chargeback.setChangeId(3);
+        chargeback.setDomainRevision(1L);
+        chargeback.setPartyRevision(2L);
+        chargeback.setChargebackId(id);
+        chargeback.setPaymentId("testPaymentId");
+        chargeback.setInvoiceId(randomString());
+        chargeback.setShopId("shopId");
+        chargeback.setPartyId("partyId");
+        chargeback.setExternalId("id");
+        chargeback.setEventCreatedAt(LocalDateTime.now());
+        chargeback.setCreatedAt(LocalDateTime.now());
+        chargeback.setStatus(ChargebackStatus.pending);
+        chargeback.setStage(ChargebackStage.chargeback);
+        chargeback.setReasonCategory(ChargebackCategory.dispute);
+        chargeback.setCurrent(true);
+        chargeback.setWtime(LocalDateTime.now());
+        return chargeback;
+    }
+
+
+    public static List<FinalCashFlowPosting> buildCashFlowPostings() {
+        FinalCashFlowPosting external =
+                new FinalCashFlowPosting();
+        external.setDestination(
+                new FinalCashFlowAccount()
+                        .setAccountId(1)
+                        .setAccountType(CashFlowAccount.external(
+                                ExternalCashFlowAccount.income)));
+        external.setSource(new FinalCashFlowAccount()
+                .setAccountId(2)
+                .setAccountType(CashFlowAccount.system(
+                        SystemCashFlowAccount.settlement)));
+        external.setVolume(new Cash()
+                .setAmount(100L)
+                .setCurrency(new CurrencyRef("RUB")));
+        FinalCashFlowPosting provider =
+                new FinalCashFlowPosting();
+        provider.setDestination(
+                new FinalCashFlowAccount()
+                        .setAccountId(3)
+                        .setAccountType(CashFlowAccount.provider(
+                                ProviderCashFlowAccount.settlement)));
+        provider.setSource(new FinalCashFlowAccount()
+                .setAccountId(4)
+                .setAccountType(CashFlowAccount.system(
+                        SystemCashFlowAccount.settlement)));
+        provider.setVolume(new Cash()
+                .setAmount(100L)
+                .setCurrency(new CurrencyRef("RUB")));
+        FinalCashFlowPosting merchant =
+                new FinalCashFlowPosting();
+        merchant.setDestination(
+                new FinalCashFlowAccount()
+                        .setAccountId(5)
+                        .setAccountType(CashFlowAccount.system(
+                                SystemCashFlowAccount.settlement)));
+        merchant.setSource(new FinalCashFlowAccount()
+                .setAccountId(6)
+                .setAccountType(CashFlowAccount.merchant(
+                        MerchantCashFlowAccount.settlement)));
+        merchant.setVolume(new Cash()
+                .setAmount(200L)
+                .setCurrency(new CurrencyRef("RUB")));
+        return List.of(
+                external,
+                provider,
+                merchant);
+    }
+
+    public static CashFlow createCashFlow() {
+        CashFlow cashFlow = new CashFlow();
+        cashFlow.setAmount(100L);
+        cashFlow.setCurrencyCode("RUB");
+        cashFlow.setObjType(PaymentChangeType.chargeback);
+        cashFlow.setDestinationAccountId(1L);
+        cashFlow.setDestinationAccountType(dev.vality.daway.domain.enums.CashFlowAccount.system);
+        cashFlow.setDestinationAccountTypeValue("type");
+        cashFlow.setSourceAccountTypeValue("type");
+        cashFlow.setSourceAccountType(dev.vality.daway.domain.enums.CashFlowAccount.merchant);
+        cashFlow.setSourceAccountId(2L);
+        return cashFlow;
+    }
+
 }
