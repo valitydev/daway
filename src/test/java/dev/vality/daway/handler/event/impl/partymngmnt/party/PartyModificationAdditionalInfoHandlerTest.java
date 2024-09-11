@@ -52,7 +52,7 @@ class PartyModificationAdditionalInfoHandlerTest {
         dslContext.insertInto(PARTY)
                 .set(dslContext.newRecord(PARTY, party))
                 .execute();
-        PartyChange partyChange = TestData.createPartyChangeWithPartyModificationAdditionalInfo(partyName, comment, email);
+        PartyChange partyChange = TestData.createPartyChangeWithPartyAdditionalInfoEffect(partyName, comment, email);
         PartyEventData partyEventData = new PartyEventData();
         partyEventData.setChanges(List.of(partyChange));
         MachineEvent machineEvent = TestData.createPartyEventDataMachineEvent(partyEventData, party.getPartyId());
