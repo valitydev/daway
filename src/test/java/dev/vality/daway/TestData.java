@@ -625,28 +625,42 @@ public class TestData {
         return userInteraction;
     }
 
-    public static PartyChange createPartyChangeWithPartyModificationAdditionalInfo(String name, String comment, String... emails) {
-        AdditionalInfoModificationUnit additionalInfoModificationUnit = new AdditionalInfoModificationUnit();
-        additionalInfoModificationUnit.setPartyName(name);
-        additionalInfoModificationUnit.setComment(comment);
-        additionalInfoModificationUnit.setManagerContactEmails(Arrays.stream(emails).toList());
-        PartyModification partyModification = new PartyModification();
-        partyModification.setAdditionalInfoModification(additionalInfoModificationUnit);
-        Claim claim = createClaim();
-        claim.setChangeset(List.of(partyModification));
+    public static PartyChange createPartyChangeWithPartyAdditionalInfoEffect(String name, String comment, String... emails) {
+        AdditionalInfoEffect additionalInfoPartyNameEffect = AdditionalInfoEffect.party_name(name);
+        ClaimEffect claimEffectPartyName = createAdditionalInfoEffect(additionalInfoPartyNameEffect);
+        AdditionalInfoEffect additionalInfoCommentEffect = AdditionalInfoEffect.party_comment(comment);
+        ClaimEffect claimEffectComment = createAdditionalInfoEffect(additionalInfoCommentEffect);
+        AdditionalInfoEffect additionalInfoContactInfoEffect = AdditionalInfoEffect.contact_info(
+                new PartyContactInfo()
+                        .setManagerContactEmails(Arrays.stream(emails).toList())
+                        .setRegistrationEmail("test@test.com")
+        );
+        ClaimEffect claimEffectContactInfo = createAdditionalInfoEffect(additionalInfoContactInfoEffect);
+        ClaimAccepted claimAccepted = new ClaimAccepted();
+        claimAccepted.setEffects(List.of(claimEffectPartyName, claimEffectComment, claimEffectContactInfo));
+        ClaimStatusChanged claimStatusChanged = createClaimStatusChanged();
+        claimStatusChanged.setStatus(ClaimStatus.accepted(claimAccepted));
         PartyChange partyChange = new PartyChange();
-        partyChange.setClaimCreated(claim);
+        partyChange.setClaimStatusChanged(claimStatusChanged);
         return partyChange;
     }
 
+    @NotNull
+    private static ClaimEffect createAdditionalInfoEffect(AdditionalInfoEffect additionalInfoPartyNameEffect) {
+        AdditionalInfoEffectUnit additionalInfoEffectPartyNameUnit = new AdditionalInfoEffectUnit();
+        additionalInfoEffectPartyNameUnit.setEffect(additionalInfoPartyNameEffect);
+        ClaimEffect claimEffectPartyName = new ClaimEffect();
+        claimEffectPartyName.setAdditionalInfoEffect(additionalInfoEffectPartyNameUnit);
+        return claimEffectPartyName;
+    }
 
-    public static Claim createClaim() {
-        Claim claim = new Claim();
-        claim.setId(1);
-        claim.setCreatedAt("2023-07-03T10:15:30Z");
-        claim.setStatus(ClaimStatus.accepted(new ClaimAccepted()));
-        claim.setRevision(1);
-        return claim;
+
+    public static ClaimStatusChanged createClaimStatusChanged() {
+        ClaimStatusChanged claimStatusChanged = new ClaimStatusChanged();
+        claimStatusChanged.setId(1);
+        claimStatusChanged.setChangedAt("2023-07-03T10:15:30Z");
+        claimStatusChanged.setRevision(1);
+        return claimStatusChanged;
     }
 
     public static ValidationResult testValidationResult() {
