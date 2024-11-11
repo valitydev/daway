@@ -1,0 +1,1 @@
+ALTER TYPE dw.risk_score ADD VALUE 'trusted';
