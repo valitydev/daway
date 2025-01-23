@@ -8,7 +8,6 @@ import dev.vality.daway.util.JsonUtil;
 import dev.vality.fistful.base.TransactionInfo;
 import dev.vality.fistful.withdrawal_session.Change;
 import dev.vality.fistful.withdrawal_session.TimestampedChange;
-import dev.vality.fistful.withdrawal_session.TransactionBoundChange;
 import dev.vality.geck.common.util.TBaseUtil;
 import dev.vality.geck.common.util.TypeUtil;
 import dev.vality.geck.filter.Filter;
@@ -48,6 +47,9 @@ public class WithdrawalSessionFinishedHandler implements WithdrawalSessionHandle
         WithdrawalSession withdrawalSessionNew = withdrawalSessionMachineEventCopyFactory
                 .create(event, sequenceId, withdrawalSessionId, withdrawalSessionOld, timestampedChange.getOccuredAt());
 
+        withdrawalSessionNew.setWithdrawalSessionStatus(
+                TBaseUtil.unionFieldToEnum(change.getFinished(), WithdrawalSessionStatus.class));
+
         if (change.getFinished().isSetSuccess()) {
             TransactionInfo trxInfo = change.getFinished().getSuccess().getTrxInfo();
             withdrawalSessionNew.setTranInfoId(trxInfo.getId());
@@ -63,8 +65,6 @@ public class WithdrawalSessionFinishedHandler implements WithdrawalSessionHandle
             }
         }
 
-        withdrawalSessionNew.setWithdrawalSessionStatus(
-                TBaseUtil.unionFieldToEnum(change.getFinished(), WithdrawalSessionStatus.class));
         if (change.getFinished().isSetFailed()) {
             withdrawalSessionNew.setFailureJson(JsonUtil.thriftBaseToJsonString(change.getFinished().getFailed()));
         }
