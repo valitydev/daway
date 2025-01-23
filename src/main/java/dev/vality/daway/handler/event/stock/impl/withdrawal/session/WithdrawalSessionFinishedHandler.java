@@ -48,17 +48,19 @@ public class WithdrawalSessionFinishedHandler implements WithdrawalSessionHandle
         WithdrawalSession withdrawalSessionNew = withdrawalSessionMachineEventCopyFactory
                 .create(event, sequenceId, withdrawalSessionId, withdrawalSessionOld, timestampedChange.getOccuredAt());
 
-        TransactionBoundChange transactionBound = change.getTransactionBound();
-        TransactionInfo trxInfo = transactionBound.getTrxInfo();
-        withdrawalSessionNew.setTranInfoId(trxInfo.getId());
-        if (trxInfo.isSetTimestamp()) {
-            withdrawalSessionNew.setTranInfoTimestamp(TypeUtil.stringToLocalDateTime(trxInfo.getTimestamp()));
-        }
-        withdrawalSessionNew.setTranInfoJson(JsonUtil.objectToJsonString(trxInfo.getExtra()));
-        if (trxInfo.isSetAdditionalInfo()) {
-            withdrawalSessionNew.setTranAdditionalInfoRrn(trxInfo.getAdditionalInfo().getRrn());
-            withdrawalSessionNew
-                    .setTranAdditionalInfoJson(JsonUtil.thriftBaseToJsonString(trxInfo.getAdditionalInfo()));
+        if (change.getFinished().isSetSuccess()) {
+            TransactionInfo trxInfo = change.getFinished().getSuccess().getTrxInfo();
+            withdrawalSessionNew.setTranInfoId(trxInfo.getId());
+
+            if (trxInfo.isSetTimestamp()) {
+                withdrawalSessionNew.setTranInfoTimestamp(TypeUtil.stringToLocalDateTime(trxInfo.getTimestamp()));
+            }
+            withdrawalSessionNew.setTranInfoJson(JsonUtil.objectToJsonString(trxInfo.getExtra()));
+            if (trxInfo.isSetAdditionalInfo()) {
+                withdrawalSessionNew.setTranAdditionalInfoRrn(trxInfo.getAdditionalInfo().getRrn());
+                withdrawalSessionNew
+                        .setTranAdditionalInfoJson(JsonUtil.thriftBaseToJsonString(trxInfo.getAdditionalInfo()));
+            }
         }
 
         withdrawalSessionNew.setWithdrawalSessionStatus(
