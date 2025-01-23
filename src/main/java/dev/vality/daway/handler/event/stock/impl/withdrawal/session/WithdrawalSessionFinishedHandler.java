@@ -50,7 +50,7 @@ public class WithdrawalSessionFinishedHandler implements WithdrawalSessionHandle
         withdrawalSessionNew.setWithdrawalSessionStatus(
                 TBaseUtil.unionFieldToEnum(change.getFinished(), WithdrawalSessionStatus.class));
 
-        if (change.getFinished().isSetSuccess()) {
+        if (change.getFinished().isSetSuccess() && change.getFinished().getSuccess().getTrxInfo() != null) {
             TransactionInfo trxInfo = change.getFinished().getSuccess().getTrxInfo();
             withdrawalSessionNew.setTranInfoId(trxInfo.getId());
 
