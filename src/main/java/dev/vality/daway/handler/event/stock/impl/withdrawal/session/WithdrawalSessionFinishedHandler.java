@@ -48,12 +48,6 @@ public class WithdrawalSessionFinishedHandler implements WithdrawalSessionHandle
         WithdrawalSession withdrawalSessionNew = withdrawalSessionMachineEventCopyFactory
                 .create(event, sequenceId, withdrawalSessionId, withdrawalSessionOld, timestampedChange.getOccuredAt());
 
-        withdrawalSessionNew.setWithdrawalSessionStatus(
-                TBaseUtil.unionFieldToEnum(change.getFinished(), WithdrawalSessionStatus.class));
-        if (change.getFinished().isSetFailed()) {
-            withdrawalSessionNew.setFailureJson(JsonUtil.thriftBaseToJsonString(change.getFinished().getFailed()));
-        }
-
         TransactionBoundChange transactionBound = change.getTransactionBound();
         TransactionInfo trxInfo = transactionBound.getTrxInfo();
         withdrawalSessionNew.setTranInfoId(trxInfo.getId());
@@ -65,6 +59,12 @@ public class WithdrawalSessionFinishedHandler implements WithdrawalSessionHandle
             withdrawalSessionNew.setTranAdditionalInfoRrn(trxInfo.getAdditionalInfo().getRrn());
             withdrawalSessionNew
                     .setTranAdditionalInfoJson(JsonUtil.thriftBaseToJsonString(trxInfo.getAdditionalInfo()));
+        }
+
+        withdrawalSessionNew.setWithdrawalSessionStatus(
+                TBaseUtil.unionFieldToEnum(change.getFinished(), WithdrawalSessionStatus.class));
+        if (change.getFinished().isSetFailed()) {
+            withdrawalSessionNew.setFailureJson(JsonUtil.thriftBaseToJsonString(change.getFinished().getFailed()));
         }
 
         withdrawalSessionDao.save(withdrawalSessionNew).ifPresentOrElse(
