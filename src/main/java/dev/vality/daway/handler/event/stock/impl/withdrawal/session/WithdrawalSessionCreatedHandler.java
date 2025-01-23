@@ -85,12 +85,6 @@ public class WithdrawalSessionCreatedHandler implements WithdrawalSessionHandler
             }
         }
 
-        var transactionInfo = change.getTransactionBound().getTrxInfo();
-        var additionalInfo = transactionInfo.getAdditionalInfo();
-        if (transactionInfo.isSetAdditionalInfo()) {
-            withdrawalSession.setTranAdditionalInfoRrn(additionalInfo.getRrn());
-        }
-
         Cash cash = withdrawal.getCash();
         withdrawalSession.setAmount(cash.getAmount());
         withdrawalSession.setCurrencyCode(cash.getCurrency().getSymbolicCode());
