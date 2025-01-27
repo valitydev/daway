@@ -40,6 +40,7 @@ public class WithdrawalSessionCreatedHandler implements WithdrawalSessionHandler
         String withdrawalSessionId = event.getSourceId();
         log.info("Start withdrawal session created handling, sequenceId={}, withdrawalId={}",
                 sequenceId, withdrawalSessionId);
+        log.debug(String.valueOf(change));
 
         WithdrawalSession withdrawalSession = withdrawalSessionMachineEventCopyFactory
                 .create(event, sequenceId, withdrawalSessionId, timestampedChange.getOccuredAt());
