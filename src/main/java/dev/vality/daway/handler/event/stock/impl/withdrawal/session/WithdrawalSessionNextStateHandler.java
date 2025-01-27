@@ -38,6 +38,7 @@ public class WithdrawalSessionNextStateHandler implements WithdrawalSessionHandl
         String withdrawalSessionId = event.getSourceId();
         log.info("Start adapter state for withdrawal session handling, sequenceId={}, withdrawalSessionId={}",
                 sequenceId, withdrawalSessionId);
+        log.debug(String.valueOf(change));
         final WithdrawalSession withdrawalSessionOld = withdrawalSessionDao.get(withdrawalSessionId);
         WithdrawalSession withdrawalSessionNew = withdrawalSessionMachineEventCopyFactory
                 .create(event, sequenceId, withdrawalSessionId, withdrawalSessionOld, timestampedChange.getOccuredAt());

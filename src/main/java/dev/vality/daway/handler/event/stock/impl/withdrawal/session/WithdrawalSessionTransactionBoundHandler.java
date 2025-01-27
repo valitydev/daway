@@ -42,7 +42,7 @@ public class WithdrawalSessionTransactionBoundHandler implements WithdrawalSessi
         String withdrawalSessionId = event.getSourceId();
         log.info("Start withdrawal transaction bound handling, sequenceId={}, withdrawalSessionId={}",
                 sequenceId, withdrawalSessionId);
-
+        log.debug(String.valueOf(change));
         final WithdrawalSession withdrawalSessionOld = withdrawalSessionDao.get(withdrawalSessionId);
         WithdrawalSession withdrawalSessionNew = withdrawalSessionMachineEventCopyFactory
                 .create(event, sequenceId, withdrawalSessionId, withdrawalSessionOld, timestampedChange.getOccuredAt());
