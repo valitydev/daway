@@ -75,7 +75,7 @@ public class DestinationCreatedHandler implements DestinationHandler {
                 destination.setResourceBankCardIssuerCountry(bankCard.getIssuerCountry().toString());
             }
             if (bankCard.isSetPaymentSystem()) {
-                destination.setResourceBankCardPaymentSystem(bankCard.getPaymentSystem().toString());
+                destination.setResourceBankCardPaymentSystem(bankCard.getPaymentSystem().getId());
             }
             if (bankCard.isSetCardType()) {
                 destination.setResourceBankCardType(bankCard.getCardType().toString());
