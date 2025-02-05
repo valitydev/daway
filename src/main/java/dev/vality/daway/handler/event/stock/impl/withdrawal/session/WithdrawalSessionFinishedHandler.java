@@ -5,11 +5,9 @@ import dev.vality.daway.domain.enums.WithdrawalSessionStatus;
 import dev.vality.daway.domain.tables.pojos.WithdrawalSession;
 import dev.vality.daway.factory.machine.event.MachineEventCopyFactory;
 import dev.vality.daway.util.JsonUtil;
-import dev.vality.fistful.base.TransactionInfo;
 import dev.vality.fistful.withdrawal_session.Change;
 import dev.vality.fistful.withdrawal_session.TimestampedChange;
 import dev.vality.geck.common.util.TBaseUtil;
-import dev.vality.geck.common.util.TypeUtil;
 import dev.vality.geck.filter.Filter;
 import dev.vality.geck.filter.PathConditionFilter;
 import dev.vality.geck.filter.condition.IsNullCondition;
@@ -50,22 +48,6 @@ public class WithdrawalSessionFinishedHandler implements WithdrawalSessionHandle
 
         withdrawalSessionNew.setWithdrawalSessionStatus(
                 TBaseUtil.unionFieldToEnum(change.getFinished(), WithdrawalSessionStatus.class));
-
-        if (change.getFinished().isSetSuccess() && change.getFinished().getSuccess().isSetTrxInfo()) {
-            TransactionInfo trxInfo = change.getFinished().getSuccess().getTrxInfo();
-            withdrawalSessionNew.setTranInfoId(trxInfo.getId());
-
-            if (trxInfo.isSetTimestamp()) {
-                withdrawalSessionNew.setTranInfoTimestamp(TypeUtil.stringToLocalDateTime(trxInfo.getTimestamp()));
-            }
-            withdrawalSessionNew.setTranInfoJson(JsonUtil.objectToJsonString(trxInfo.getExtra()));
-            if (trxInfo.isSetAdditionalInfo()) {
-                withdrawalSessionNew.setTranAdditionalInfoRrn(trxInfo.getAdditionalInfo().getRrn());
-                withdrawalSessionNew
-                        .setTranAdditionalInfoJson(JsonUtil.thriftBaseToJsonString(trxInfo.getAdditionalInfo()));
-            }
-        }
-
         if (change.getFinished().isSetFailed()) {
             withdrawalSessionNew.setFailureJson(JsonUtil.thriftBaseToJsonString(change.getFinished().getFailed()));
         }
