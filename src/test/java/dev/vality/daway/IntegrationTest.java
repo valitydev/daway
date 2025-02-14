@@ -35,7 +35,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 @Slf4j
 @PostgresqlSpringBootITest
-public class IntegrationTest {
+class IntegrationTest {
 
     @Autowired
     private InvoicingService invoicingService;
@@ -77,7 +77,7 @@ public class IntegrationTest {
     private final String shopId = "shop_id";
 
     @Test
-    public void test() {
+    void test() {
         cleanUpTables();
 
         List<MachineEvent> machineEventsFirst = getInitialInvoicePaymentEvents(invoiceId, paymentId);

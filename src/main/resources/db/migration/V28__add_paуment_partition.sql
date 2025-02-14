@@ -1,8 +1,8 @@
---payments partition
+--payment partition
 DO
 $$
     DECLARE
-        table_name              TEXT     := 'dw.payments';
+        table_name              TEXT     := 'payment';
         is_partitioned          BOOLEAN;
         partition_name          TEXT;
         partition_field         TEXT     := 'event_created_at';
@@ -20,29 +20,28 @@ $$
 
         IF is_partitioned THEN
             --- Таблица уже является партиционированной. Пропускаем партиционирование
-            EXIT;
+            RETURN;
         ELSE
             --- Таблица не является партиционированной. Создаем партиционированную таблицу и партиции для нее
-
             --- 1. Переименовываем текущую таблицу в ***_old
             EXECUTE format('ALTER TABLE %I RENAME TO %I_old', table_name, table_name);
 
             --- 2. Добавляем в индексы поле партиционирования
             --- Удаляем старые индексы
-            EXECUTE format('ALTER TABLE %I_old DROP CONSTRAINT %I_old_pkey;', table_name);
-            EXECUTE format('ALTER TABLE %I_old DROP CONSTRAINT %I_old_invoice_id_payment_id_sequence_id_change_id_key;',
-                           table_name, table_name);
+            EXECUTE format('ALTER TABLE %I_old DROP CONSTRAINT %I_pkey;', table_name, table_name);
+            EXECUTE format('ALTER TABLE %I_old DROP CONSTRAINT %I_uniq;', table_name, table_name);
             --- Создаем новые индексы с полем партиционирования
-            EXECUTE format('ALTER TABLE %I_old ADD CONSTRAINT %I_old_pkey PRIMARY KEY (id, %L);', table_name,
-                           table_name, partition_field);
+            EXECUTE format('ALTER TABLE %I_old ADD CONSTRAINT %I_pkey PRIMARY KEY (id, %s);', table_name, table_name,
+                           partition_field);
             EXECUTE format(
-                    'ALTER TABLE %I_old ADD CONSTRAINT %I_old_invoice_id_payment_id_sequence_id_change_id_event_created_at_key UNIQUE (invoice_id, payment_id, sequence_id, change_id, %L);',
+                    'ALTER TABLE %I_old ADD CONSTRAINT %I_uniq UNIQUE (invoice_id, payment_id, sequence_id, change_id, %s);',
                     table_name, table_name, partition_field);
 
             --- 3. Создаем новую партиционированную таблицу с сохранением старого имени для обеспечения совместимости.
             --- Также сохраняется структура и индексы таблицы оригинала.
-            EXECUTE format('CREATE TABLE %I (LIKE %I_old INCLUDING ALL) PARTITION BY RANGE ( %L );', table_name,
+            EXECUTE format('CREATE TABLE %I (LIKE %I_old INCLUDING ALL) PARTITION BY RANGE ( %s );', table_name,
                            table_name, partition_field);
+
 
             --- 4. Создаем партиции
             WHILE start_date < end_date

@@ -7,7 +7,6 @@ import dev.vality.daway.dao.invoicing.impl.PaymentDaoImpl;
 import dev.vality.daway.domain.enums.PaymentChangeType;
 import dev.vality.daway.domain.tables.pojos.CashFlow;
 import dev.vality.daway.domain.tables.pojos.CashFlowLink;
-import dev.vality.daway.domain.tables.pojos.PaymentCashChange;
 import dev.vality.daway.domain.tables.pojos.PaymentFee;
 import dev.vality.daway.model.CashFlowWrapper;
 import dev.vality.daway.model.InvoicingKey;
@@ -28,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @PostgresqlSpringBootITest
-public class PaymentWrapperServiceTest {
+class PaymentWrapperServiceTest {
 
     @Autowired
     private PaymentWrapperService paymentWrapperService;
@@ -65,7 +64,7 @@ public class PaymentWrapperServiceTest {
     private static final String paymentIdSecond = "paymentIdSecond";
 
     @Test
-    public void processTest() {
+    void processTest() {
         List<PaymentWrapper> paymentWrappers = preparePaymentWrappers();
 
         paymentWrapperService.save(paymentWrappers);
@@ -74,7 +73,7 @@ public class PaymentWrapperServiceTest {
     }
 
     @Test
-    public void duplicationTest() {
+    void duplicationTest() {
         List<PaymentWrapper> paymentWrappers = preparePaymentWrappers();
 
         paymentWrapperService.save(paymentWrappers);
@@ -87,6 +86,9 @@ public class PaymentWrapperServiceTest {
 
     private List<PaymentWrapper> preparePaymentWrappers() {
         List<PaymentWrapper> paymentWrappers = RandomBeans.randomListOf(2, PaymentWrapper.class);
+        paymentWrappers.stream()
+                .map(PaymentWrapper::getPayment)
+                .forEach(payment -> payment.setEventCreatedAt(LocalDateTime.now()));
         paymentWrappers.forEach(pw -> {
             pw.setCashFlowWrapper(new CashFlowWrapper(
                     RandomBeans.random(CashFlowLink.class),
