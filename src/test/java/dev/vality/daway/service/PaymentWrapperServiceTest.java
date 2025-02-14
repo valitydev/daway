@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
 import java.util.List;
 
@@ -88,7 +89,7 @@ class PaymentWrapperServiceTest {
         List<PaymentWrapper> paymentWrappers = RandomBeans.randomListOf(2, PaymentWrapper.class);
         paymentWrappers.stream()
                 .map(PaymentWrapper::getPayment)
-                .forEach(payment -> payment.setEventCreatedAt(LocalDateTime.now()));
+                .forEach(payment -> payment.setEventCreatedAt(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)));
         paymentWrappers.forEach(pw -> {
             pw.setCashFlowWrapper(new CashFlowWrapper(
                     RandomBeans.random(CashFlowLink.class),
