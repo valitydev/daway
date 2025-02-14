@@ -13,13 +13,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 @ExtendWith(MockitoExtension.class)
-public class PaymentRouningRulesHandlerTest {
+class PaymentRoutingRulesHandlerTest {
 
     @Mock
     private PaymentRoutingRulesDaoImpl paymentRoutingRulesDao;
 
     @Test
-    public void convertToDatabaseObjectTest() {
+    void convertToDatabaseObjectTest() {
         RoutingRulesObject paymentRoutingRulesObject = buildPaymentRoutingRulesObject();
         PaymentRoutingRulesHandler handler = new PaymentRoutingRulesHandler(paymentRoutingRulesDao);
         handler.setDomainObject(DomainObject.routing_rules(paymentRoutingRulesObject));

@@ -55,7 +55,8 @@ public class PaymentDaoImpl extends AbstractGenericDao implements PaymentDao {
                         PAYMENT.INVOICE_ID,
                         PAYMENT.PAYMENT_ID,
                         PAYMENT.SEQUENCE_ID,
-                        PAYMENT.CHANGE_ID
+                        PAYMENT.CHANGE_ID,
+                        PAYMENT.EVENT_CREATED_AT
                 )
                 .doNothing();
     }
