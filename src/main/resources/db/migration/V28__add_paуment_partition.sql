@@ -20,16 +20,6 @@ $$
 
         IF is_partitioned THEN
             --- Таблица уже является партиционированной. Пропускаем партиционирование
-            --- Для обратной совместимости создаем новые индексы с полем партиционирования для тестов
-            --- Удаляем старые индексы
-            EXECUTE format('ALTER TABLE %I DROP CONSTRAINT %I_pkey;', table_name, table_name);
-            EXECUTE format('ALTER TABLE %I DROP CONSTRAINT %I_uniq;', table_name, table_name);
-            --- Создаем новые индексы с полем партиционирования
-            EXECUTE format('ALTER TABLE %I ADD CONSTRAINT %I_pkey PRIMARY KEY (id, %s);', table_name, table_name,
-                           partition_field);
-            EXECUTE format(
-                    'ALTER TABLE %I ADD CONSTRAINT %I_uniq UNIQUE (invoice_id, payment_id, sequence_id, change_id, %s);',
-                    table_name, table_name, partition_field);
             RETURN;
         ELSE
             --- Таблица не является партиционированной.
