@@ -6,7 +6,7 @@ $$
         is_partitioned          BOOLEAN;
         partition_name          TEXT;
         partition_field         TEXT     := 'event_created_at';
-        partition_interval      INTERVAL := '7 months'; --- задаем нужный интервал для создания партиций
+        partition_interval INTERVAL := '24 months'; --- задаем нужный интервал для создания партиций
         partition_step_interval INTERVAL := '1 month'; --- задаем нужный шаг интервала партиции
         start_date              DATE     := date_trunc('MONTH', now())::DATE;
         end_date                DATE     := date_trunc('MONTH', now())::DATE + partition_interval;
