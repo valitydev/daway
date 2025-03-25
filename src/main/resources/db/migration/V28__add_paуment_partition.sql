@@ -5,11 +5,11 @@ $$
         table_name              TEXT     := 'payment';
         is_partitioned          BOOLEAN;
         partition_name          TEXT;
-        partition_field         TEXT     := 'event_created_at';
-        partition_interval INTERVAL := '24 months'; --- задаем нужный интервал для создания партиций
+        partition_field    TEXT     := 'event_created_at';
+        partition_interval INTERVAL := '60 months'; --- задаем нужный интервал для создания партиций
         partition_step_interval INTERVAL := '1 month'; --- задаем нужный шаг интервала партиции
-        start_date              DATE     := date_trunc('MONTH', now())::DATE;
-        end_date                DATE     := date_trunc('MONTH', now())::DATE + partition_interval;
+        start_date         DATE     := '2021-12-01'; --- начало времен
+        end_date           DATE     := date_trunc('MONTH', start_date)::DATE + partition_interval;
     BEGIN
         -- Проверяем, является ли таблица партиционированной
         SELECT COUNT(*) > 0
@@ -43,10 +43,10 @@ $$
                                 sequence_id                     BIGINT,
                                 change_id                       INTEGER,
                                 wtime                           TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT (now() AT TIME ZONE ''utc''::text),
-                                external_id                     character varying COLLATE pg_catalog."default",
-                                payment_flow_type               dw.payment_flow_type        NOT NULL,
-                                payment_flow_on_hold_expiration character varying COLLATE pg_catalog."default",
-                                payment_flow_held_until         timestamp without time zone,
+                                external_id                     CHARACTER VARYING COLLATE pg_catalog."default",
+                                payment_flow_type                dw.payment_flow_type        NOT NULL,
+                                payment_flow_on_hold_expiration  CHARACTER VARYING COLLATE pg_catalog."default",
+                                payment_flow_held_until          TIMESTAMP WITHOUT TIME ZONE,
 
                                 CONSTRAINT %I_new_pkey PRIMARY KEY (id, %s),
                                 CONSTRAINT %I_new_uniq UNIQUE (invoice_id, payment_id, sequence_id, change_id, %s)
@@ -64,7 +64,7 @@ $$
                 LOOP
                     partition_name := table_name || '_' || TO_CHAR(start_date, 'YYYY_MM');
                     EXECUTE format('
-                CREATE TABLE %I PARTITION OF %I_new FOR VALUES FROM (%L) TO (%L);',
+                CREATE TABLE dw.%I PARTITION OF dw.%I_new FOR VALUES FROM (%L) TO (%L);',
                                    partition_name,
                                    table_name,
                                    start_date,
