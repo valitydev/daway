@@ -57,6 +57,11 @@ ELSE
                                 withdrawal_status_failed_failure_json CHARACTER VARYING,
                                 provider_id                           INTEGER,
                                 terminal_id                           CHARACTER VARYING,
+                                exchange_rate                         DECIMAL (10,4),
+                                exchange_amount_from                  BIGINT,
+                                exchange_currency_from                CHARACTER VARYING,
+                                exchange_amount_to                    BIGINT,
+                                exchange_currency_to                  CHARACTER VARYING,
 
                                 CONSTRAINT %I_new_pkey PRIMARY KEY (id, %s),
                                 CONSTRAINT %I_new_uniq UNIQUE (withdrawal_id, sequence_id, %s)

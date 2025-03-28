@@ -44,10 +44,10 @@ ELSE
                                 provider_fee                    BIGINT,
                                 external_fee                    BIGINT,
                                 guarantee_deposit               BIGINT,
+                                current                         BOOLEAN                     NOT NULL DEFAULT false,
+                                wtime                           TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT (now() AT TIME ZONE ''utc''::text),
                                 sequence_id                     BIGINT,
                                 change_id                       INTEGER,
-                                wtime                           TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT (now() AT TIME ZONE ''utc''::text),
-                                current                         BOOLEAN                     NOT NULL DEFAULT false,
 
                                 CONSTRAINT %I_new_pkey PRIMARY KEY (id, %s),
                                 CONSTRAINT %I_new_uniq UNIQUE (invoice_id, payment_id, sequence_id, change_id, %s)

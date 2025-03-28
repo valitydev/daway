@@ -46,6 +46,8 @@ ELSE
                                 reason                            character varying,
                                 payment_session_result            dw.payment_session_result,
                                 payment_terminal                  INTEGER,
+                                user_interaction                  BOOLEAN,
+                                user_interaction_url              CHARACTER VARYING,
 
                                 CONSTRAINT %I_new_pkey PRIMARY KEY (id, %s),
                                 CONSTRAINT %I_new_uniq UNIQUE (invoice_id, payment_id, sequence_id, change_id, %s)
