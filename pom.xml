@@ -330,7 +330,7 @@
                             <name>org.jooq.meta.postgres.PostgresDatabase</name>
                             <includes>.*</includes>
                             <excludes>
-                                schema_version|.*func|get_adjustment.*|get_cashflow.*|get_payment.*|get_payout.*|get_refund.*
+                                schema_version|.*func|get_adjustment.*|get_cashflow.*|get_payment.*|get_payout.*|get_refund.*|.*_new|.*_20.*
                             </excludes>
                             <inputSchema>${db.schema}</inputSchema>
                         </database>
