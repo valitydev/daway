@@ -25,7 +25,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.Instant;
@@ -39,13 +39,13 @@ public class InvoicingServiceTest {
     private final List<Mapper<InvoiceWrapper>> wrongHandlers = new ArrayList<>();
     private final List<Mapper<InvoiceWrapper>> rightHandlers = new ArrayList<>();
 
-    @MockBean
+    @MockitoBean
     private InvoiceWrapperService invoiceWrapperService;
-    @MockBean
+    @MockitoBean
     private PaymentWrapperService paymentWrapperService;
-    @MockBean
+    @MockitoBean
     private PartyShopCacheService partyShopCacheService;
-    @MockBean
+    @MockitoBean
     private PaymentRouteDao paymentRouteDao;
     @Mock
     private MachineEventCopyFactory<Chargeback, Integer> machineEventCopyFactory;

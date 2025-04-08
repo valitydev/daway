@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -29,10 +29,10 @@ class WithdrawalKafkaListenerAdjustmentTest {
     @Autowired
     private KafkaProducer kafkaProducer;
 
-    @MockBean
+    @MockitoBean
     private WithdrawalAdjustmentDao withdrawalAdjustmentDao;
 
-    @MockBean
+    @MockitoBean
     private FistfulCashFlowDao fistfulCashFlowDao;
 
     @BeforeEach
