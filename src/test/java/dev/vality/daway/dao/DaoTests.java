@@ -26,6 +26,8 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.LongStream;
 
@@ -311,8 +313,10 @@ class DaoTests {
         jdbcTemplate.execute("truncate table dw.payment cascade");
         Payment first = RandomBeans.random(Payment.class);
         first.setId(1L);
+        first.setEventCreatedAt(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS));
         Payment second = RandomBeans.random(Payment.class);
         second.setId(2L);
+        second.setEventCreatedAt(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS));
         paymentDao.saveBatch(Arrays.asList(first, second));
         assertEquals(first, paymentDao.get(first.getInvoiceId(), first.getPaymentId()));
         assertEquals(second, paymentDao.get(second.getInvoiceId(), second.getPaymentId()));
