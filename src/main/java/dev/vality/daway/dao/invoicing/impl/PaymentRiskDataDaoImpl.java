@@ -66,7 +66,8 @@ public class PaymentRiskDataDaoImpl extends AbstractGenericDao implements Paymen
                         PAYMENT_RISK_DATA.INVOICE_ID,
                         PAYMENT_RISK_DATA.PAYMENT_ID,
                         PAYMENT_RISK_DATA.SEQUENCE_ID,
-                        PAYMENT_RISK_DATA.CHANGE_ID
+                        PAYMENT_RISK_DATA.CHANGE_ID,
+                        PAYMENT_RISK_DATA.EVENT_CREATED_AT
                 )
                 .doNothing();
     }

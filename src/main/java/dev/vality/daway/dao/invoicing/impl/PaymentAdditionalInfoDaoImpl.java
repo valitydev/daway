@@ -76,7 +76,8 @@ public class PaymentAdditionalInfoDaoImpl extends AbstractGenericDao implements 
                         PAYMENT_ADDITIONAL_INFO.INVOICE_ID,
                         PAYMENT_ADDITIONAL_INFO.PAYMENT_ID,
                         PAYMENT_ADDITIONAL_INFO.SEQUENCE_ID,
-                        PAYMENT_ADDITIONAL_INFO.CHANGE_ID
+                        PAYMENT_ADDITIONAL_INFO.CHANGE_ID,
+                        PAYMENT_ADDITIONAL_INFO.EVENT_CREATED_AT
                 )
                 .doNothing();
     }

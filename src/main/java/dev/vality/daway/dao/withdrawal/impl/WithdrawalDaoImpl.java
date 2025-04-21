@@ -35,7 +35,10 @@ public class WithdrawalDaoImpl extends AbstractGenericDao implements WithdrawalD
         Query query = getDslContext()
                 .insertInto(WITHDRAWAL)
                 .set(record)
-                .onConflict(WITHDRAWAL.WITHDRAWAL_ID, WITHDRAWAL.SEQUENCE_ID)
+                .onConflict(
+                        WITHDRAWAL.WITHDRAWAL_ID,
+                        WITHDRAWAL.SEQUENCE_ID,
+                        WITHDRAWAL.EVENT_CREATED_AT)
                 .doNothing()
                 .returning(WITHDRAWAL.ID);
 

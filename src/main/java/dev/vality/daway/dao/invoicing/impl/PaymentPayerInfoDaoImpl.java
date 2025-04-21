@@ -53,7 +53,8 @@ public class PaymentPayerInfoDaoImpl extends AbstractGenericDao implements Payme
                         PAYMENT_PAYER_INFO.INVOICE_ID,
                         PAYMENT_PAYER_INFO.PAYMENT_ID,
                         PAYMENT_PAYER_INFO.SEQUENCE_ID,
-                        PAYMENT_PAYER_INFO.CHANGE_ID
+                        PAYMENT_PAYER_INFO.CHANGE_ID,
+                        PAYMENT_PAYER_INFO.EVENT_CREATED_AT
                 )
                 .doNothing();
     }

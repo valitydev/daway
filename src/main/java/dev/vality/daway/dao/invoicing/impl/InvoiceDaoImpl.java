@@ -54,7 +54,8 @@ public class InvoiceDaoImpl extends AbstractGenericDao implements InvoiceDao {
                 .onConflict(
                         INVOICE.INVOICE_ID,
                         INVOICE.SEQUENCE_ID,
-                        INVOICE.CHANGE_ID
+                        INVOICE.CHANGE_ID,
+                        INVOICE.EVENT_CREATED_AT
                 )
                 .doNothing();
     }

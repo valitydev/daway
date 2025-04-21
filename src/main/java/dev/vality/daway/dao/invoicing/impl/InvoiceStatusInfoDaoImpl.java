@@ -62,7 +62,8 @@ public class InvoiceStatusInfoDaoImpl extends AbstractGenericDao implements Invo
                 .onConflict(
                         INVOICE_STATUS_INFO.INVOICE_ID,
                         INVOICE_STATUS_INFO.SEQUENCE_ID,
-                        INVOICE_STATUS_INFO.CHANGE_ID)
+                        INVOICE_STATUS_INFO.CHANGE_ID,
+                        INVOICE_STATUS_INFO.EVENT_CREATED_AT)
                 .doNothing();
     }
 

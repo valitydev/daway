@@ -66,7 +66,8 @@ public class PaymentFeeDaoImpl extends AbstractGenericDao implements PaymentFeeD
                         PAYMENT_FEE.INVOICE_ID,
                         PAYMENT_FEE.PAYMENT_ID,
                         PAYMENT_FEE.SEQUENCE_ID,
-                        PAYMENT_FEE.CHANGE_ID
+                        PAYMENT_FEE.CHANGE_ID,
+                        PAYMENT_FEE.EVENT_CREATED_AT
                 )
                 .doNothing();
     }

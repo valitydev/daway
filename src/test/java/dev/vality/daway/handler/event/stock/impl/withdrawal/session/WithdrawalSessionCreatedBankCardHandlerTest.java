@@ -10,6 +10,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.jdbc.Sql;
 
 import java.util.Objects;
 
@@ -17,7 +18,8 @@ import static dev.vality.daway.domain.tables.WithdrawalSession.WITHDRAWAL_SESSIO
 import static dev.vality.daway.utils.WithdrawalSessionCreatedHandlerUtils.createSession;
 
 @KafkaPostgresqlSpringBootITest
-public class WithdrawalSessionCreatedBankCardHandlerTest {
+@Sql(scripts = "classpath:sql/partition/withdrawal_session.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+class WithdrawalSessionCreatedBankCardHandlerTest {
 
     @Autowired
     private WithdrawalSessionCreatedHandler withdrawalSessionCreatedHandler;
@@ -29,12 +31,12 @@ public class WithdrawalSessionCreatedBankCardHandlerTest {
     String sqlStatement = "select * from dw.withdrawal_session LIMIT 1;";
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         destination.setCurrent(true);
     }
 
     @Test
-    public void bankCardTest() {
+    void bankCardTest() {
         dev.vality.fistful.base.Resource resource = new dev.vality.fistful.base.Resource();
         resource.setBankCard(WithdrawalSessionCreatedHandlerUtils.createDestinationResourceBankCard());
         dev.vality.fistful.withdrawal_session.Session session = createSession(resource);
@@ -51,5 +53,4 @@ public class WithdrawalSessionCreatedBankCardHandlerTest {
         Assertions.assertNotNull(result.getDestinationCardMaskedPan());
         Assertions.assertNotNull(result.getDestinationCardToken());
     }
-
 }

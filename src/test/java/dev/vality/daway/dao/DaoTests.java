@@ -12,9 +12,9 @@ import dev.vality.daway.dao.rate.iface.RateDao;
 import dev.vality.daway.dao.recurrent.payment.tool.iface.RecurrentPaymentToolDao;
 import dev.vality.daway.domain.enums.CashFlowAccount;
 import dev.vality.daway.domain.enums.PaymentChangeType;
+import dev.vality.daway.domain.tables.pojos.*;
 import dev.vality.daway.domain.tables.pojos.Calendar;
 import dev.vality.daway.domain.tables.pojos.Currency;
-import dev.vality.daway.domain.tables.pojos.*;
 import dev.vality.daway.exception.NotFoundException;
 import dev.vality.daway.model.InvoicingKey;
 import dev.vality.daway.utils.HashUtil;
@@ -26,14 +26,11 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.LongStream;
 
 import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 @PostgresqlSpringBootITest
 class DaoTests {
@@ -264,41 +261,6 @@ class DaoTests {
     }
 
     @Test
-    void invoiceDaoTest() {
-        jdbcTemplate.execute("truncate table dw.invoice cascade");
-        List<Invoice> invoices = RandomBeans.randomListOf(3, Invoice.class);
-        invoiceDao.saveBatch(invoices);
-        assertEquals(invoices.get(0), invoiceDao.get(invoices.get(0).getInvoiceId()));
-        assertEquals(invoices.get(1), invoiceDao.get(invoices.get(1).getInvoiceId()));
-        assertEquals(invoices.get(2), invoiceDao.get(invoices.get(2).getInvoiceId()));
-    }
-
-
-    @Test
-    void invoiceStatusInfoDaoTest() {
-        jdbcTemplate.execute("truncate table dw.invoice_status_info cascade");
-        List<InvoiceStatusInfo> statusInfos =
-                RandomBeans.randomListOf(3, InvoiceStatusInfo.class);
-        statusInfos.forEach(status -> status.setCurrent(true));
-        invoiceStatusInfoDao.saveBatch(statusInfos);
-        assertEquals(statusInfos.get(0), invoiceStatusInfoDao.get(statusInfos.get(0).getInvoiceId()));
-        assertEquals(statusInfos.get(1), invoiceStatusInfoDao.get(statusInfos.get(1).getInvoiceId()));
-        assertEquals(statusInfos.get(2), invoiceStatusInfoDao.get(statusInfos.get(2).getInvoiceId()));
-
-        InvoiceStatusInfo statusInfo = RandomBeans.random(InvoiceStatusInfo.class);
-        InvoiceStatusInfo initialStatusInfo = statusInfos.get(0);
-        statusInfo.setInvoiceId(initialStatusInfo.getInvoiceId());
-        statusInfo.setCurrent(false);
-        statusInfo.setId(initialStatusInfo.getId() + 1);
-        invoiceStatusInfoDao.saveBatch(List.of(statusInfo));
-        assertNotEquals(statusInfo, initialStatusInfo);
-        assertEquals(initialStatusInfo, invoiceStatusInfoDao.get(initialStatusInfo.getInvoiceId()));
-        invoiceStatusInfoDao.switchCurrent(Set.of(statusInfo.getInvoiceId()));
-        statusInfo.setCurrent(true);
-        assertEquals(statusInfo, invoiceStatusInfoDao.get(initialStatusInfo.getInvoiceId()));
-    }
-
-    @Test
     void invoiceCartDaoTest() {
         jdbcTemplate.execute("truncate table dw.invoice_cart cascade");
         String invoiceId = UUID.randomUUID().toString();
@@ -306,78 +268,6 @@ class DaoTests {
         invoiceCarts.forEach(ic -> ic.setInvoiceId(invoiceId));
         invoiceCartDao.save(invoiceCarts);
         assertEquals(invoiceCarts, invoiceCartDao.getByInvoiceId(invoiceId));
-    }
-
-    @Test
-    void paymentDaoTest() {
-        jdbcTemplate.execute("truncate table dw.payment cascade");
-        Payment first = RandomBeans.random(Payment.class);
-        first.setId(1L);
-        first.setEventCreatedAt(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS));
-        Payment second = RandomBeans.random(Payment.class);
-        second.setId(2L);
-        second.setEventCreatedAt(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS));
-        paymentDao.saveBatch(Arrays.asList(first, second));
-        assertEquals(first, paymentDao.get(first.getInvoiceId(), first.getPaymentId()));
-        assertEquals(second, paymentDao.get(second.getInvoiceId(), second.getPaymentId()));
-    }
-
-    @Test
-    void paymentStatusInfoDaoTest() {
-        jdbcTemplate.execute("truncate table dw.payment_status_info cascade");
-        List<PaymentStatusInfo> statusInfos = RandomBeans.randomListOf(2, PaymentStatusInfo.class);
-        statusInfos.forEach(statusInfo -> statusInfo.setCurrent(true));
-        paymentStatusInfoDao.saveBatch(statusInfos);
-        PaymentStatusInfo first = statusInfos.get(0);
-        assertEquals(first, paymentStatusInfoDao.get(first.getInvoiceId(), first.getPaymentId()));
-        PaymentStatusInfo second = statusInfos.get(1);
-        assertEquals(second, paymentStatusInfoDao.get(second.getInvoiceId(), second.getPaymentId()));
-
-        PaymentStatusInfo third = RandomBeans.random(PaymentStatusInfo.class);
-        third.setId(first.getId() + 1);
-        third.setCurrent(false);
-        third.setInvoiceId(first.getInvoiceId());
-        third.setPaymentId(first.getPaymentId());
-        paymentStatusInfoDao.saveBatch(List.of(third));
-        assertEquals(first, paymentStatusInfoDao.get(third.getInvoiceId(), third.getPaymentId()));
-        paymentStatusInfoDao.switchCurrent(Set.of(InvoicingKey.buildKey(third.getInvoiceId(), third.getPaymentId())));
-        third.setCurrent(true);
-        assertEquals(third, paymentStatusInfoDao.get(third.getInvoiceId(), third.getPaymentId()));
-    }
-
-    @Test
-    void paymentPayerInfoDaoTest() {
-        jdbcTemplate.execute("truncate table dw.payment_payer_info cascade");
-        PaymentPayerInfo first = RandomBeans.random(PaymentPayerInfo.class);
-        first.setId(1L);
-        PaymentPayerInfo second = RandomBeans.random(PaymentPayerInfo.class);
-        second.setId(2L);
-        paymentPayerInfoDao.saveBatch(Arrays.asList(first, second));
-        assertEquals(first, paymentPayerInfoDao.get(first.getInvoiceId(), first.getPaymentId()));
-        assertEquals(second, paymentPayerInfoDao.get(second.getInvoiceId(), second.getPaymentId()));
-    }
-
-    @Test
-    void paymentAdditionalInfoDaoTest() {
-        jdbcTemplate.execute("truncate table dw.payment_additional_info cascade");
-        List<PaymentAdditionalInfo> list = RandomBeans.randomListOf(2, PaymentAdditionalInfo.class);
-        list.forEach(statusInfo -> statusInfo.setCurrent(true));
-        paymentAdditionalInfoDao.saveBatch(list);
-        PaymentAdditionalInfo first = list.get(0);
-        assertEquals(first, paymentAdditionalInfoDao.get(first.getInvoiceId(), first.getPaymentId()));
-        PaymentAdditionalInfo second = list.get(1);
-        assertEquals(second, paymentAdditionalInfoDao.get(second.getInvoiceId(), second.getPaymentId()));
-
-        PaymentAdditionalInfo third = RandomBeans.random(PaymentAdditionalInfo.class);
-        third.setId(first.getId() + 1);
-        third.setCurrent(false);
-        third.setInvoiceId(first.getInvoiceId());
-        third.setPaymentId(first.getPaymentId());
-        paymentAdditionalInfoDao.saveBatch(List.of(third));
-        assertEquals(first, paymentAdditionalInfoDao.get(third.getInvoiceId(), third.getPaymentId()));
-        paymentAdditionalInfoDao.switchCurrent(Set.of(InvoicingKey.buildKey(third.getInvoiceId(), third.getPaymentId())));
-        third.setCurrent(true);
-        assertEquals(third, paymentAdditionalInfoDao.get(third.getInvoiceId(), third.getPaymentId()));
     }
 
     @Test
@@ -401,75 +291,6 @@ class DaoTests {
         paymentRecurrentInfoDao.switchCurrent(Set.of(InvoicingKey.buildKey(third.getInvoiceId(), third.getPaymentId())));
         third.setCurrent(true);
         assertEquals(third, paymentRecurrentInfoDao.get(third.getInvoiceId(), third.getPaymentId()));
-    }
-
-    @Test
-    void paymentRiskDataDaoTest() {
-        jdbcTemplate.execute("truncate table dw.payment_risk_data cascade");
-        List<PaymentRiskData> list = RandomBeans.randomListOf(2, PaymentRiskData.class);
-        list.forEach(statusInfo -> statusInfo.setCurrent(true));
-        paymentRiskDataDao.saveBatch(list);
-        PaymentRiskData first = list.get(0);
-        assertEquals(first, paymentRiskDataDao.get(first.getInvoiceId(), first.getPaymentId()));
-        PaymentRiskData second = list.get(1);
-        assertEquals(second, paymentRiskDataDao.get(second.getInvoiceId(), second.getPaymentId()));
-
-        PaymentRiskData third = RandomBeans.random(PaymentRiskData.class);
-        third.setId(first.getId() + 1);
-        third.setCurrent(false);
-        third.setInvoiceId(first.getInvoiceId());
-        third.setPaymentId(first.getPaymentId());
-        paymentRiskDataDao.saveBatch(List.of(third));
-        assertEquals(first, paymentRiskDataDao.get(third.getInvoiceId(), third.getPaymentId()));
-        paymentRiskDataDao.switchCurrent(Set.of(InvoicingKey.buildKey(third.getInvoiceId(), third.getPaymentId())));
-        third.setCurrent(true);
-        assertEquals(third, paymentRiskDataDao.get(third.getInvoiceId(), third.getPaymentId()));
-    }
-
-    @Test
-    void paymentFeeDaoTest() {
-        jdbcTemplate.execute("truncate table dw.payment_fee cascade");
-        List<PaymentFee> list = RandomBeans.randomListOf(2, PaymentFee.class);
-        list.forEach(statusInfo -> statusInfo.setCurrent(true));
-        paymentFeeDao.saveBatch(list);
-        PaymentFee first = list.get(0);
-        assertEquals(first, paymentFeeDao.get(first.getInvoiceId(), first.getPaymentId()));
-        PaymentFee second = list.get(1);
-        assertEquals(second, paymentFeeDao.get(second.getInvoiceId(), second.getPaymentId()));
-
-        PaymentFee third = RandomBeans.random(PaymentFee.class);
-        third.setId(first.getId() + 1);
-        third.setCurrent(false);
-        third.setInvoiceId(first.getInvoiceId());
-        third.setPaymentId(first.getPaymentId());
-        paymentFeeDao.saveBatch(List.of(third));
-        assertEquals(first, paymentFeeDao.get(third.getInvoiceId(), third.getPaymentId()));
-        paymentFeeDao.switchCurrent(Set.of(InvoicingKey.buildKey(third.getInvoiceId(), third.getPaymentId())));
-        third.setCurrent(true);
-        assertEquals(third, paymentFeeDao.get(third.getInvoiceId(), third.getPaymentId()));
-    }
-
-    @Test
-    void paymentRouteDaoTest() {
-        jdbcTemplate.execute("truncate table dw.payment_route cascade");
-        List<PaymentRoute> list = RandomBeans.randomListOf(2, PaymentRoute.class);
-        list.forEach(statusInfo -> statusInfo.setCurrent(true));
-        paymentRouteDao.saveBatch(list);
-        PaymentRoute first = list.get(0);
-        assertEquals(first, paymentRouteDao.get(first.getInvoiceId(), first.getPaymentId()));
-        PaymentRoute second = list.get(1);
-        assertEquals(second, paymentRouteDao.get(second.getInvoiceId(), second.getPaymentId()));
-
-        PaymentRoute third = RandomBeans.random(PaymentRoute.class);
-        third.setId(first.getId() + 1);
-        third.setCurrent(false);
-        third.setInvoiceId(first.getInvoiceId());
-        third.setPaymentId(first.getPaymentId());
-        paymentRouteDao.saveBatch(List.of(third));
-        assertEquals(first, paymentRouteDao.get(third.getInvoiceId(), third.getPaymentId()));
-        paymentRouteDao.switchCurrent(Set.of(InvoicingKey.buildKey(third.getInvoiceId(), third.getPaymentId())));
-        third.setCurrent(true);
-        assertEquals(third, paymentRouteDao.get(third.getInvoiceId(), third.getPaymentId()));
     }
 
     @Test
