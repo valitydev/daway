@@ -1,7 +1,0 @@
-ALTER TABLE dw.payment_payer_info DROP CONSTRAINT payment_payment_payer_info_pkey;
-ALTER TABLE dw.payment_payer_info DROP CONSTRAINT payment_payment_payer_info_uniq;
---- Создаем новые индексы с полем партиционирования
-ALTER TABLE dw.payment_payer_info
-    ADD CONSTRAINT payment_payer_info_pkey PRIMARY KEY (id, event_created_at);
-ALTER TABLE dw.payment_payer_info
-    ADD CONSTRAINT payment_payer_info_uniq UNIQUE (invoice_id, payment_id, sequence_id, change_id, event_created_at);

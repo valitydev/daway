@@ -18,7 +18,7 @@ import static dev.vality.daway.domain.tables.WithdrawalSession.WITHDRAWAL_SESSIO
 import static dev.vality.daway.utils.WithdrawalSessionCreatedHandlerUtils.createSession;
 
 @KafkaPostgresqlSpringBootITest
-@Sql(scripts = "classpath:sql/partition/withdrawal_session.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+@Sql(scripts = {"classpath:sql/partition_idx.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_CLASS)
 class WithdrawalSessionCreatedBankCardHandlerTest {
 
     @Autowired

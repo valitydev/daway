@@ -36,12 +36,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
         PaymentAdditionalInfoDaoImpl.class, PaymentRiskDataDaoImpl.class, PaymentFeeDaoImpl.class,
         PaymentRouteDaoImpl.class, InvoiceDaoImpl.class, InvoiceStatusInfoDaoImpl.class})
 @PostgresqlJooqSpringBootITest
-@Sql(scripts = {"classpath:sql/partition/payment.sql", "classpath:sql/partition/payment_status_info.sql",
-        "classpath:sql/partition/payment_payer_info.sql", "classpath:sql/partition/payment_additional_info.sql",
-        "classpath:sql/partition/payment_risk_data.sql", "classpath:sql/partition/payment_fee.sql",
-        "classpath:sql/partition/payment_route.sql", "classpath:sql/partition/invoice.sql",
-        "classpath:sql/partition/invoice_status_info.sql"},
-        executionPhase = Sql.ExecutionPhase.BEFORE_TEST_CLASS)
+@Sql(scripts = {"classpath:sql/partition_idx.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_CLASS)
 class DaoTests {
 
     @Autowired

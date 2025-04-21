@@ -23,7 +23,7 @@ import static dev.vality.daway.utils.JdbcUtil.countInvoiceEntity;
 import static org.junit.jupiter.api.Assertions.*;
 
 @PostgresqlSpringBootITest
-@Sql(scripts = {"classpath:/sql/partition/invoice.sql", "classpath:/sql/partition/invoice_status_info.sql"})
+@Sql(scripts = {"classpath:sql/partition_idx.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_CLASS)
 class InvoiceWrapperServiceTest {
 
     @Autowired

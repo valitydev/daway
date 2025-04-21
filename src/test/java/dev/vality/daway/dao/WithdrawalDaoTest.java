@@ -20,6 +20,7 @@ import static org.junit.Assert.assertThrows;
 
 @ContextConfiguration(classes = {WithdrawalDaoImpl.class})
 @PostgresqlJooqSpringBootITest
+@Sql(scripts = {"classpath:sql/partition_idx.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_CLASS)
 class WithdrawalDaoTest {
 
     @Autowired
@@ -34,7 +35,6 @@ class WithdrawalDaoTest {
     }
 
     @Test
-    @Sql(scripts = "classpath:sql/partition/withdrawal.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     void withdrawalDaoTest() {
         Withdrawal withdrawal = dev.vality.testcontainers.annotations.util.RandomBeans.random(Withdrawal.class);
         withdrawal.setCurrent(true);
