@@ -33,7 +33,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
         "classpath:sql/partition/payment_payer_info.sql", "classpath:sql/partition/payment_additional_info.sql",
         "classpath:sql/partition/payment_risk_data.sql", "classpath:sql/partition/payment_fee.sql",
         "classpath:sql/partition/payment_route.sql", "classpath:sql/partition/invoice.sql",
-        "classpath:sql/partition/invoice_status_info.sql"},
+        "classpath:sql/partition/invoice_status_info.sql", "classpath:sql/partition/payment_session_info.sql"},
         executionPhase = Sql.ExecutionPhase.BEFORE_TEST_CLASS)
 class PaymentWrapperServiceTest {
 
