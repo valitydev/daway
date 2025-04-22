@@ -1,7 +1,7 @@
 package dev.vality.daway;
 
-import dev.vality.damsel.domain.PaymentRoute;
 import dev.vality.damsel.domain.*;
+import dev.vality.damsel.domain.PaymentRoute;
 import dev.vality.damsel.payment_processing.*;
 import dev.vality.daway.config.PostgresqlSpringBootITest;
 import dev.vality.daway.dao.invoicing.iface.*;
@@ -9,9 +9,9 @@ import dev.vality.daway.domain.enums.PayerType;
 import dev.vality.daway.domain.enums.PaymentChangeType;
 import dev.vality.daway.domain.enums.PaymentStatus;
 import dev.vality.daway.domain.enums.PaymentToolType;
+import dev.vality.daway.domain.tables.pojos.*;
 import dev.vality.daway.domain.tables.pojos.Invoice;
 import dev.vality.daway.domain.tables.pojos.InvoiceCart;
-import dev.vality.daway.domain.tables.pojos.*;
 import dev.vality.daway.service.InvoicingService;
 import dev.vality.daway.utils.MockUtils;
 import dev.vality.geck.common.util.TypeUtil;
@@ -23,6 +23,7 @@ import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.jdbc.Sql;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -35,6 +36,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 @Slf4j
 @PostgresqlSpringBootITest
+@Sql(scripts = {"classpath:sql/partition_idx.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_CLASS)
 class IntegrationTest {
 
     @Autowired

@@ -67,7 +67,8 @@ public class PaymentStatusInfoDaoImpl extends AbstractGenericDao implements Paym
                         PAYMENT_STATUS_INFO.INVOICE_ID,
                         PAYMENT_STATUS_INFO.PAYMENT_ID,
                         PAYMENT_STATUS_INFO.SEQUENCE_ID,
-                        PAYMENT_STATUS_INFO.CHANGE_ID
+                        PAYMENT_STATUS_INFO.CHANGE_ID,
+                        PAYMENT_STATUS_INFO.EVENT_CREATED_AT
                 )
                 .doNothing();
     }

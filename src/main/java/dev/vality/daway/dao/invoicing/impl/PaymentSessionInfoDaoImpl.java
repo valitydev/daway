@@ -55,7 +55,8 @@ public class PaymentSessionInfoDaoImpl extends AbstractGenericDao implements Pay
                         PAYMENT_SESSION_INFO.INVOICE_ID,
                         PAYMENT_SESSION_INFO.PAYMENT_ID,
                         PAYMENT_SESSION_INFO.SEQUENCE_ID,
-                        PAYMENT_SESSION_INFO.CHANGE_ID
+                        PAYMENT_SESSION_INFO.CHANGE_ID,
+                        PAYMENT_SESSION_INFO.EVENT_CREATED_AT
                 )
                 .doNothing();
     }

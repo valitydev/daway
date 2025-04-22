@@ -12,6 +12,7 @@ import dev.vality.testcontainers.annotations.util.RandomBeans;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.jdbc.Sql;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,7 +23,8 @@ import static dev.vality.daway.utils.JdbcUtil.countInvoiceEntity;
 import static org.junit.jupiter.api.Assertions.*;
 
 @PostgresqlSpringBootITest
-public class InvoiceWrapperServiceTest {
+@Sql(scripts = {"classpath:sql/partition_idx.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_CLASS)
+class InvoiceWrapperServiceTest {
 
     @Autowired
     private InvoiceWrapperService invoiceWrapperService;
@@ -40,14 +42,14 @@ public class InvoiceWrapperServiceTest {
     private JdbcTemplate jdbcTemplate;
 
     @Test
-    public void processTest() {
+    void processTest() {
         List<InvoiceWrapper> invoiceWrappers = prepareInvoiceWrappers();
         invoiceWrapperService.save(invoiceWrappers);
         invoiceWrappers.forEach(this::assertInvoiceWrapper);
     }
 
     @Test
-    public void duplicationTest() {
+    void duplicationTest() {
         List<InvoiceWrapper> invoiceWrappers = prepareInvoiceWrappers();
         invoiceWrapperService.save(invoiceWrappers);
 

@@ -10,6 +10,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.jdbc.Sql;
 
 import java.util.Objects;
 
@@ -17,7 +18,8 @@ import static dev.vality.daway.domain.tables.WithdrawalSession.WITHDRAWAL_SESSIO
 import static dev.vality.daway.utils.WithdrawalSessionCreatedHandlerUtils.createSession;
 
 @KafkaPostgresqlSpringBootITest
-public class WithdrawalSessionCreatedDigitalWalletHandlerTest {
+@Sql(scripts = {"classpath:sql/partition_idx.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_CLASS)
+class WithdrawalSessionCreatedDigitalWalletHandlerTest {
 
     @Autowired
     private WithdrawalSessionCreatedHandler withdrawalSessionCreatedHandler;
@@ -29,12 +31,12 @@ public class WithdrawalSessionCreatedDigitalWalletHandlerTest {
     String sqlStatement = "select * from dw.withdrawal_session LIMIT 1;";
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         destination.setCurrent(true);
     }
 
     @Test
-    public void digitalWalletTest() {
+    void digitalWalletTest() {
         dev.vality.fistful.base.Resource resource = new dev.vality.fistful.base.Resource();
         resource.setDigitalWallet(WithdrawalSessionCreatedHandlerUtils.createDestinationResourceDigitalWallet());
         dev.vality.fistful.withdrawal_session.Session session = createSession(resource);
@@ -50,5 +52,4 @@ public class WithdrawalSessionCreatedDigitalWalletHandlerTest {
         Assertions.assertNotNull(Objects.requireNonNull(result).getResourceDigitalWalletId());
         Assertions.assertNotNull(result.getResourceDigitalWalletData());
     }
-
 }
