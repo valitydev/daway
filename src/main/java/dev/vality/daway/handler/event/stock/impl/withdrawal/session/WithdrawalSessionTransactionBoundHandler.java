@@ -4,6 +4,7 @@ import dev.vality.daway.dao.withdrawal.session.iface.WithdrawalSessionDao;
 import dev.vality.daway.domain.tables.pojos.WithdrawalSession;
 import dev.vality.daway.factory.machine.event.MachineEventCopyFactory;
 import dev.vality.daway.util.JsonUtil;
+import dev.vality.daway.util.TimeUtil;
 import dev.vality.fistful.base.TransactionInfo;
 import dev.vality.fistful.withdrawal_session.Change;
 import dev.vality.fistful.withdrawal_session.TimestampedChange;
@@ -43,7 +44,8 @@ public class WithdrawalSessionTransactionBoundHandler implements WithdrawalSessi
         log.info("Start withdrawal transaction bound handling, sequenceId={}, withdrawalSessionId={}",
                 sequenceId, withdrawalSessionId);
         log.debug(String.valueOf(change));
-        final WithdrawalSession withdrawalSessionOld = withdrawalSessionDao.get(withdrawalSessionId);
+        var timeRange = TimeUtil.getTimeRange(event.getCreatedAt());
+        final WithdrawalSession withdrawalSessionOld = withdrawalSessionDao.get(withdrawalSessionId, timeRange.getLeft(), timeRange.getRight());
         WithdrawalSession withdrawalSessionNew = withdrawalSessionMachineEventCopyFactory
                 .create(event, sequenceId, withdrawalSessionId, withdrawalSessionOld, timestampedChange.getOccuredAt());
 

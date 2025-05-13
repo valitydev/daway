@@ -8,6 +8,7 @@ import dev.vality.daway.domain.tables.pojos.FistfulCashFlow;
 import dev.vality.daway.domain.tables.pojos.Withdrawal;
 import dev.vality.daway.factory.machine.event.MachineEventCopyFactory;
 import dev.vality.daway.util.JsonUtil;
+import dev.vality.daway.util.TimeUtil;
 import dev.vality.fistful.withdrawal.Change;
 import dev.vality.fistful.withdrawal.TimestampedChange;
 import dev.vality.fistful.withdrawal.status.Status;
@@ -49,7 +50,8 @@ public class WithdrawalStatusChangedHandler implements WithdrawalHandler {
         log.info("Start withdrawal status changed handling, sequenceId={}, withdrawalId={}, status={}",
                 sequenceId, withdrawalId, change.getStatusChanged());
 
-        final Withdrawal withdrawalOld = withdrawalDao.get(withdrawalId);
+        var timeRange = TimeUtil.getTimeRange(event.getCreatedAt());
+        final Withdrawal withdrawalOld = withdrawalDao.get(withdrawalId, timeRange.getLeft(), timeRange.getRight());
         Withdrawal withdrawalNew = machineEventCopyFactory
                 .create(event, sequenceId, withdrawalId, withdrawalOld, timestampedChange.getOccuredAt());
 

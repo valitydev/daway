@@ -14,6 +14,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static dev.vality.daway.domain.tables.Withdrawal.WITHDRAWAL;
@@ -52,6 +53,19 @@ public class WithdrawalDaoImpl extends AbstractGenericDao implements WithdrawalD
         Query query = getDslContext().selectFrom(WITHDRAWAL)
                 .where(WITHDRAWAL.WITHDRAWAL_ID.eq(withdrawalId)
                         .and(WITHDRAWAL.CURRENT));
+        return Optional.ofNullable(fetchOne(query, withdrawalRowMapper))
+                .orElseThrow(() -> new NotFoundException(
+                        String.format("Withdrawal not found, withdrawalId='%s'", withdrawalId)));
+    }
+
+    @Override
+    public Withdrawal get(String withdrawalId, LocalDateTime from, LocalDateTime to) throws DaoException {
+        Query query = getDslContext().selectFrom(WITHDRAWAL)
+                .where(
+                        WITHDRAWAL.EVENT_CREATED_AT.between(from, to)
+                                .and(WITHDRAWAL.WITHDRAWAL_ID.eq(withdrawalId))
+                                .and(WITHDRAWAL.CURRENT)
+                );
         return Optional.ofNullable(fetchOne(query, withdrawalRowMapper))
                 .orElseThrow(() -> new NotFoundException(
                         String.format("Withdrawal not found, withdrawalId='%s'", withdrawalId)));

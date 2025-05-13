@@ -14,6 +14,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 import static dev.vality.daway.domain.tables.Withdrawal.WITHDRAWAL;
 import static org.junit.Assert.assertThrows;
@@ -41,14 +42,16 @@ class WithdrawalDaoTest {
         withdrawal.setExchangeRate(new BigDecimal(1000000L).movePointLeft(4));
         Long id = withdrawalDao.save(withdrawal).get();
         withdrawal.setId(id);
-        Withdrawal actual = withdrawalDao.get(withdrawal.getWithdrawalId());
+        LocalDateTime toTime = withdrawal.getEventCreatedAt();
+        String withdrawalId = withdrawal.getWithdrawalId();
+        Withdrawal actual = withdrawalDao.get(withdrawalId, toTime.minusMonths(1), toTime);
         Assertions.assertEquals(withdrawal, actual);
         withdrawalDao.updateNotCurrent(actual.getId());
 
         //check duplicate not error
         withdrawalDao.save(withdrawal);
 
-        assertThrows(NotFoundException.class, () -> withdrawalDao.get(withdrawal.getWithdrawalId()));
+        assertThrows(NotFoundException.class, () -> withdrawalDao.get(withdrawalId, toTime.minusMonths(1), toTime));
     }
 
 }

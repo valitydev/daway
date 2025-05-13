@@ -5,6 +5,7 @@ import dev.vality.daway.domain.enums.WithdrawalSessionStatus;
 import dev.vality.daway.domain.tables.pojos.WithdrawalSession;
 import dev.vality.daway.factory.machine.event.MachineEventCopyFactory;
 import dev.vality.daway.util.JsonUtil;
+import dev.vality.daway.util.TimeUtil;
 import dev.vality.fistful.withdrawal_session.Change;
 import dev.vality.fistful.withdrawal_session.TimestampedChange;
 import dev.vality.geck.common.util.TBaseUtil;
@@ -42,7 +43,8 @@ public class WithdrawalSessionFinishedHandler implements WithdrawalSessionHandle
         log.info("Start withdrawal session next state handling, sequenceId={}, withdrawalSessionId={}",
                 sequenceId, withdrawalSessionId);
         log.debug(String.valueOf(change));
-        final WithdrawalSession withdrawalSessionOld = withdrawalSessionDao.get(withdrawalSessionId);
+        var timeRange = TimeUtil.getTimeRange(event.getCreatedAt());
+        final WithdrawalSession withdrawalSessionOld = withdrawalSessionDao.get(withdrawalSessionId, timeRange.getLeft(), timeRange.getRight());
         WithdrawalSession withdrawalSessionNew = withdrawalSessionMachineEventCopyFactory
                 .create(event, sequenceId, withdrawalSessionId, withdrawalSessionOld, timestampedChange.getOccuredAt());
 
