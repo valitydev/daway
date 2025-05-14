@@ -26,6 +26,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Component
@@ -51,7 +52,9 @@ public class WithdrawalStatusChangedHandler implements WithdrawalHandler {
                 sequenceId, withdrawalId, change.getStatusChanged());
 
         var timeRange = TimeUtil.getTimeRange(event.getCreatedAt());
-        final Withdrawal withdrawalOld = withdrawalDao.get(withdrawalId, timeRange.getLeft(), timeRange.getRight());
+        final Withdrawal withdrawalOld =
+                Optional.ofNullable(withdrawalDao.get(withdrawalId, timeRange.getLeft(), timeRange.getRight()))
+                        .orElse(withdrawalDao.get(withdrawalId));
         Withdrawal withdrawalNew = machineEventCopyFactory
                 .create(event, sequenceId, withdrawalId, withdrawalOld, timestampedChange.getOccuredAt());
 
