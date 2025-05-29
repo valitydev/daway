@@ -4,7 +4,6 @@ import dev.vality.daway.config.PostgresqlJooqSpringBootITest;
 import dev.vality.daway.dao.withdrawal.iface.WithdrawalDao;
 import dev.vality.daway.dao.withdrawal.impl.WithdrawalDaoImpl;
 import dev.vality.daway.domain.tables.pojos.Withdrawal;
-import dev.vality.daway.exception.NotFoundException;
 import org.jooq.DSLContext;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,7 +16,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 import static dev.vality.daway.domain.tables.Withdrawal.WITHDRAWAL;
-import static org.junit.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 @ContextConfiguration(classes = {WithdrawalDaoImpl.class})
 @PostgresqlJooqSpringBootITest
@@ -51,7 +50,7 @@ class WithdrawalDaoTest {
         //check duplicate not error
         withdrawalDao.save(withdrawal);
 
-        assertThrows(NotFoundException.class, () -> withdrawalDao.get(withdrawalId, toTime.minusMonths(1), toTime));
+        assertNull(withdrawalDao.get(withdrawalId, toTime.minusMonths(1), toTime));
     }
 
 }
