@@ -66,9 +66,7 @@ public class WithdrawalSessionDaoImpl extends AbstractGenericDao implements With
                         WITHDRAWAL_SESSION.EVENT_CREATED_AT.between(from, to)
                                 .and(WITHDRAWAL_SESSION.WITHDRAWAL_SESSION_ID.eq(sessionId))
                                 .and(WITHDRAWAL_SESSION.CURRENT));
-        return Optional.ofNullable(fetchOne(query, withdrawalSessionRowMapper))
-                .orElseThrow(() -> new NotFoundException(
-                        String.format("WithdrawalSession not found, sessionId='%s'", sessionId)));
+        return fetchOne(query, withdrawalSessionRowMapper);
     }
 
     @Override

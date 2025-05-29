@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 public class TimeUtil {
 
     public static Pair<LocalDateTime, LocalDateTime> getTimeRange(String eventCreateAt) {
-        LocalDateTime toTime = TypeUtil.stringToLocalDateTime(eventCreateAt);
+        LocalDateTime toTime = TypeUtil.stringToLocalDateTime(eventCreateAt).plusHours(1);
         LocalDateTime fromTime = toTime.minusMonths(1);
         return Pair.of(fromTime, toTime);
     }

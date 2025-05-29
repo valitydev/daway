@@ -66,9 +66,7 @@ public class WithdrawalDaoImpl extends AbstractGenericDao implements WithdrawalD
                                 .and(WITHDRAWAL.WITHDRAWAL_ID.eq(withdrawalId))
                                 .and(WITHDRAWAL.CURRENT)
                 );
-        return Optional.ofNullable(fetchOne(query, withdrawalRowMapper))
-                .orElseThrow(() -> new NotFoundException(
-                        String.format("Withdrawal not found, withdrawalId='%s'", withdrawalId)));
+        return fetchOne(query, withdrawalRowMapper);
     }
 
     @Override
