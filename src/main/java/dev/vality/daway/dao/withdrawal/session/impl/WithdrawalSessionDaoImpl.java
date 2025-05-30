@@ -15,6 +15,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static dev.vality.daway.domain.tables.WithdrawalSession.WITHDRAWAL_SESSION;
@@ -56,6 +57,16 @@ public class WithdrawalSessionDaoImpl extends AbstractGenericDao implements With
         return Optional.ofNullable(fetchOne(query, withdrawalSessionRowMapper))
                 .orElseThrow(() -> new NotFoundException(
                         String.format("WithdrawalSession not found, sessionId='%s'", sessionId)));
+    }
+
+    @Override
+    public WithdrawalSession get(String sessionId, LocalDateTime from, LocalDateTime to) throws DaoException {
+        Query query = getDslContext().selectFrom(WITHDRAWAL_SESSION)
+                .where(
+                        WITHDRAWAL_SESSION.EVENT_CREATED_AT.between(from, to)
+                                .and(WITHDRAWAL_SESSION.WITHDRAWAL_SESSION_ID.eq(sessionId))
+                                .and(WITHDRAWAL_SESSION.CURRENT));
+        return fetchOne(query, withdrawalSessionRowMapper);
     }
 
     @Override

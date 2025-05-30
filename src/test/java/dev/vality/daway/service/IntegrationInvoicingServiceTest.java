@@ -9,12 +9,14 @@ import dev.vality.daway.domain.tables.pojos.PaymentSessionInfo;
 import dev.vality.machinegun.eventsink.MachineEvent;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.jdbc.Sql;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @PostgresqlSpringBootITest
+@Sql(scripts = {"classpath:sql/partition_idx.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_CLASS)
 class IntegrationInvoicingServiceTest {
 
     @Autowired

@@ -4,6 +4,7 @@ import dev.vality.daway.dao.withdrawal.session.iface.WithdrawalSessionDao;
 import dev.vality.daway.domain.tables.pojos.WithdrawalSession;
 import dev.vality.daway.factory.machine.event.MachineEventCopyFactory;
 import dev.vality.daway.util.JsonUtil;
+import dev.vality.daway.util.TimeUtil;
 import dev.vality.fistful.base.TransactionInfo;
 import dev.vality.fistful.withdrawal_session.Change;
 import dev.vality.fistful.withdrawal_session.TimestampedChange;
@@ -20,6 +21,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Slf4j
 @Component
@@ -43,7 +46,10 @@ public class WithdrawalSessionTransactionBoundHandler implements WithdrawalSessi
         log.info("Start withdrawal transaction bound handling, sequenceId={}, withdrawalSessionId={}",
                 sequenceId, withdrawalSessionId);
         log.debug(String.valueOf(change));
-        final WithdrawalSession withdrawalSessionOld = withdrawalSessionDao.get(withdrawalSessionId);
+        var timeRange = TimeUtil.getTimeRange(event.getCreatedAt());
+        final WithdrawalSession withdrawalSessionOld = Optional
+                .ofNullable(withdrawalSessionDao.get(withdrawalSessionId, timeRange.getLeft(), timeRange.getRight()))
+                .orElse(withdrawalSessionDao.get(withdrawalSessionId));
         WithdrawalSession withdrawalSessionNew = withdrawalSessionMachineEventCopyFactory
                 .create(event, sequenceId, withdrawalSessionId, withdrawalSessionOld, timestampedChange.getOccuredAt());
 
