@@ -44,6 +44,8 @@ import java.util.*;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class TestData {
 
+    public static final String OCCURED_AT = "2023-07-03T10:15:30Z";
+
     public static InvoiceChange buildInvoiceChangeChargebackCreated() {
         InvoicePaymentChargeback invoicePaymentChargeback =
                 dev.vality.testcontainers.annotations.util.RandomBeans.random(InvoicePaymentChargeback.class, "context",
@@ -316,8 +318,8 @@ public class TestData {
     public static TimestampedChange createWithdrawalAdjustmentCreatedChange(String id) {
         Adjustment adjustment = new Adjustment();
         adjustment.setId(id);
-        adjustment.setOperationTimestamp("2023-07-03T10:15:30Z");
-        adjustment.setCreatedAt("2023-07-03T10:15:30Z");
+        adjustment.setOperationTimestamp(OCCURED_AT);
+        adjustment.setCreatedAt(OCCURED_AT);
         adjustment.setStatus(Status.pending(new Pending()));
         var newStatus = new dev.vality.fistful.withdrawal.status.Status();
         newStatus.setPending(new dev.vality.fistful.withdrawal.status.Pending());
@@ -333,7 +335,7 @@ public class TestData {
         Change change = new Change();
         change.setAdjustment(adjustmentChange);
         TimestampedChange timestampedChange = new TimestampedChange();
-        timestampedChange.setOccuredAt("2023-07-03T10:15:30Z");
+        timestampedChange.setOccuredAt(OCCURED_AT);
         timestampedChange.setChange(change);
         return timestampedChange;
     }
@@ -341,8 +343,8 @@ public class TestData {
     public static TimestampedChange createWithdrawalAdjustmentCreatedDomainRevisionChange(String id) {
         Adjustment adjustment = new Adjustment();
         adjustment.setId(id);
-        adjustment.setOperationTimestamp("2023-07-03T10:15:30Z");
-        adjustment.setCreatedAt("2023-07-03T10:15:30Z");
+        adjustment.setOperationTimestamp(OCCURED_AT);
+        adjustment.setCreatedAt(OCCURED_AT);
         adjustment.setStatus(Status.pending(new Pending()));
         var newStatus = new dev.vality.fistful.withdrawal.status.Status();
         newStatus.setPending(new dev.vality.fistful.withdrawal.status.Pending());
@@ -358,7 +360,7 @@ public class TestData {
         Change change = new Change();
         change.setAdjustment(adjustmentChange);
         TimestampedChange timestampedChange = new TimestampedChange();
-        timestampedChange.setOccuredAt("2023-07-03T10:15:30Z");
+        timestampedChange.setOccuredAt(OCCURED_AT);
         timestampedChange.setChange(change);
         return timestampedChange;
     }
@@ -372,7 +374,7 @@ public class TestData {
         Change change = new Change();
         change.setAdjustment(adjustmentChange);
         TimestampedChange timestampedChange = new TimestampedChange();
-        timestampedChange.setOccuredAt("2023-07-03T10:15:30Z");
+        timestampedChange.setOccuredAt(OCCURED_AT);
         timestampedChange.setChange(change);
         return timestampedChange;
     }
@@ -392,7 +394,7 @@ public class TestData {
         Change change = new Change();
         change.setAdjustment(adjustmentChange);
         TimestampedChange timestampedChange = new TimestampedChange();
-        timestampedChange.setOccuredAt("2023-07-03T10:15:30Z");
+        timestampedChange.setOccuredAt(OCCURED_AT);
         timestampedChange.setChange(change);
         return timestampedChange;
     }
@@ -496,7 +498,7 @@ public class TestData {
         Change change = new Change();
         change.setAdjustment(adjustmentChange);
         TimestampedChange timestampedChange = new TimestampedChange();
-        timestampedChange.setOccuredAt("2023-07-03T10:15:30Z");
+        timestampedChange.setOccuredAt(OCCURED_AT);
         timestampedChange.setChange(change);
         return timestampedChange;
     }
@@ -562,6 +564,7 @@ public class TestData {
         Withdrawal withdrawal = new Withdrawal();
         withdrawal.setId(id);
         withdrawal.setDestinationId(randomString());
+        withdrawal.setCreatedAt(OCCURED_AT);
         withdrawal.setWalletId(randomString());
         withdrawal.setPartyId(randomString());
         withdrawal.setBody(new dev.vality.fistful.base.Cash()
@@ -573,7 +576,7 @@ public class TestData {
         Change change = new Change();
         change.setCreated(createdChange);
         TimestampedChange timestampedChange = new TimestampedChange();
-        timestampedChange.setOccuredAt("2023-07-03T10:15:30Z");
+        timestampedChange.setOccuredAt(OCCURED_AT);
         timestampedChange.setChange(change);
         return timestampedChange;
     }
@@ -686,7 +689,7 @@ public class TestData {
     public static ClaimStatusChanged createClaimStatusChanged() {
         ClaimStatusChanged claimStatusChanged = new ClaimStatusChanged();
         claimStatusChanged.setId(1);
-        claimStatusChanged.setChangedAt("2023-07-03T10:15:30Z");
+        claimStatusChanged.setChangedAt(OCCURED_AT);
         claimStatusChanged.setRevision(1);
         return claimStatusChanged;
     }
