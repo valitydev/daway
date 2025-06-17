@@ -563,6 +563,7 @@ public class TestData {
         withdrawal.setId(id);
         withdrawal.setDestinationId(randomString());
         withdrawal.setWalletId(randomString());
+        withdrawal.setPartyId(randomString());
         withdrawal.setBody(new dev.vality.fistful.base.Cash()
                 .setAmount(100L)
                 .setCurrency(new dev.vality.fistful.base.CurrencyRef()
