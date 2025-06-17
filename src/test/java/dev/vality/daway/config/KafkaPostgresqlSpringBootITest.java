@@ -40,7 +40,6 @@ import java.lang.annotation.Target;
                 "kafka.topics.source.id",
                 "kafka.topics.destination.id",
                 "kafka.topics.limit-config.id",
-                "kafka.topics.limit-config.id",
                 "kafka.topics.exrate.id"}
 )
 @DefaultSpringBootTest
