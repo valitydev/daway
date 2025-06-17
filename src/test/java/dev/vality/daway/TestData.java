@@ -1,14 +1,14 @@
 package dev.vality.daway;
 
+import dev.vality.damsel.domain.*;
 import dev.vality.damsel.domain.CashFlowAccount;
 import dev.vality.damsel.domain.InvoicePaymentChargeback;
 import dev.vality.damsel.domain.LegalEntity;
-import dev.vality.damsel.domain.*;
+import dev.vality.damsel.payment_processing.*;
 import dev.vality.damsel.payment_processing.SessionChangePayload;
 import dev.vality.damsel.payment_processing.SessionFinished;
 import dev.vality.damsel.payment_processing.SessionResult;
 import dev.vality.damsel.payment_processing.SessionSucceeded;
-import dev.vality.damsel.payment_processing.*;
 import dev.vality.damsel.user_interaction.BrowserGetRequest;
 import dev.vality.damsel.user_interaction.BrowserHTTPRequest;
 import dev.vality.damsel.user_interaction.UserInteraction;
@@ -16,15 +16,17 @@ import dev.vality.daway.domain.enums.*;
 import dev.vality.daway.domain.tables.pojos.Chargeback;
 import dev.vality.daway.domain.tables.pojos.FistfulCashFlow;
 import dev.vality.daway.domain.tables.pojos.WithdrawalAdjustment;
+import dev.vality.fistful.account.Account;
+import dev.vality.fistful.base.Realm;
 import dev.vality.fistful.cashflow.FinalCashFlow;
 import dev.vality.fistful.transfer.Committed;
 import dev.vality.fistful.transfer.Transfer;
-import dev.vality.fistful.withdrawal.Change;
 import dev.vality.fistful.withdrawal.*;
+import dev.vality.fistful.withdrawal.Change;
+import dev.vality.fistful.withdrawal.adjustment.*;
 import dev.vality.fistful.withdrawal.adjustment.CreatedChange;
 import dev.vality.fistful.withdrawal.adjustment.StatusChange;
 import dev.vality.fistful.withdrawal.adjustment.TransferChange;
-import dev.vality.fistful.withdrawal.adjustment.*;
 import dev.vality.geck.common.util.TypeUtil;
 import dev.vality.kafka.common.serialization.ThriftSerializer;
 import dev.vality.machinegun.eventsink.MachineEvent;
@@ -41,6 +43,8 @@ import java.util.*;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class TestData {
+
+    public static final String OCCURED_AT = "2023-07-03T10:15:30Z";
 
     public static InvoiceChange buildInvoiceChangeChargebackCreated() {
         InvoicePaymentChargeback invoicePaymentChargeback =
@@ -314,8 +318,8 @@ public class TestData {
     public static TimestampedChange createWithdrawalAdjustmentCreatedChange(String id) {
         Adjustment adjustment = new Adjustment();
         adjustment.setId(id);
-        adjustment.setOperationTimestamp("2023-07-03T10:15:30Z");
-        adjustment.setCreatedAt("2023-07-03T10:15:30Z");
+        adjustment.setOperationTimestamp(OCCURED_AT);
+        adjustment.setCreatedAt(OCCURED_AT);
         adjustment.setStatus(Status.pending(new Pending()));
         var newStatus = new dev.vality.fistful.withdrawal.status.Status();
         newStatus.setPending(new dev.vality.fistful.withdrawal.status.Pending());
@@ -331,7 +335,7 @@ public class TestData {
         Change change = new Change();
         change.setAdjustment(adjustmentChange);
         TimestampedChange timestampedChange = new TimestampedChange();
-        timestampedChange.setOccuredAt("2023-07-03T10:15:30Z");
+        timestampedChange.setOccuredAt(OCCURED_AT);
         timestampedChange.setChange(change);
         return timestampedChange;
     }
@@ -339,8 +343,8 @@ public class TestData {
     public static TimestampedChange createWithdrawalAdjustmentCreatedDomainRevisionChange(String id) {
         Adjustment adjustment = new Adjustment();
         adjustment.setId(id);
-        adjustment.setOperationTimestamp("2023-07-03T10:15:30Z");
-        adjustment.setCreatedAt("2023-07-03T10:15:30Z");
+        adjustment.setOperationTimestamp(OCCURED_AT);
+        adjustment.setCreatedAt(OCCURED_AT);
         adjustment.setStatus(Status.pending(new Pending()));
         var newStatus = new dev.vality.fistful.withdrawal.status.Status();
         newStatus.setPending(new dev.vality.fistful.withdrawal.status.Pending());
@@ -356,7 +360,7 @@ public class TestData {
         Change change = new Change();
         change.setAdjustment(adjustmentChange);
         TimestampedChange timestampedChange = new TimestampedChange();
-        timestampedChange.setOccuredAt("2023-07-03T10:15:30Z");
+        timestampedChange.setOccuredAt(OCCURED_AT);
         timestampedChange.setChange(change);
         return timestampedChange;
     }
@@ -370,7 +374,7 @@ public class TestData {
         Change change = new Change();
         change.setAdjustment(adjustmentChange);
         TimestampedChange timestampedChange = new TimestampedChange();
-        timestampedChange.setOccuredAt("2023-07-03T10:15:30Z");
+        timestampedChange.setOccuredAt(OCCURED_AT);
         timestampedChange.setChange(change);
         return timestampedChange;
     }
@@ -390,7 +394,7 @@ public class TestData {
         Change change = new Change();
         change.setAdjustment(adjustmentChange);
         TimestampedChange timestampedChange = new TimestampedChange();
-        timestampedChange.setOccuredAt("2023-07-03T10:15:30Z");
+        timestampedChange.setOccuredAt(OCCURED_AT);
         timestampedChange.setChange(change);
         return timestampedChange;
     }
@@ -400,11 +404,17 @@ public class TestData {
                 new dev.vality.fistful.cashflow.FinalCashFlowPosting();
         fistfulPosting.setDestination(
                 new dev.vality.fistful.cashflow.FinalCashFlowAccount()
-                        .setAccountId("1")
+                        .setAccount(new Account()
+                                .setRealm(Realm.test)
+                                .setCurrency(new dev.vality.fistful.base.CurrencyRef("RUB"))
+                                .setAccountId(1))
                         .setAccountType(dev.vality.fistful.cashflow.CashFlowAccount.system(
                                 dev.vality.fistful.cashflow.SystemCashFlowAccount.settlement)));
         fistfulPosting.setSource(new dev.vality.fistful.cashflow.FinalCashFlowAccount()
-                .setAccountId("2")
+                .setAccount(new Account()
+                        .setRealm(Realm.test)
+                        .setCurrency(new dev.vality.fistful.base.CurrencyRef("RUB"))
+                        .setAccountId(2))
                 .setAccountType(dev.vality.fistful.cashflow.CashFlowAccount.wallet(
                         dev.vality.fistful.cashflow.WalletCashFlowAccount.receiver_destination)));
         fistfulPosting.setVolume(new dev.vality.fistful.base.Cash()
@@ -414,11 +424,17 @@ public class TestData {
                 new dev.vality.fistful.cashflow.FinalCashFlowPosting();
         providerPosting.setDestination(
                 new dev.vality.fistful.cashflow.FinalCashFlowAccount()
-                        .setAccountId("3")
+                        .setAccount(new Account()
+                                .setRealm(Realm.test)
+                                .setCurrency(new dev.vality.fistful.base.CurrencyRef("RUB"))
+                                .setAccountId(3))
                         .setAccountType(dev.vality.fistful.cashflow.CashFlowAccount.provider(
                                 dev.vality.fistful.cashflow.ProviderCashFlowAccount.settlement)));
         providerPosting.setSource(new dev.vality.fistful.cashflow.FinalCashFlowAccount()
-                .setAccountId("4")
+                .setAccount(new Account()
+                        .setRealm(Realm.test)
+                        .setCurrency(new dev.vality.fistful.base.CurrencyRef("RUB"))
+                        .setAccountId(4))
                 .setAccountType(dev.vality.fistful.cashflow.CashFlowAccount.system(
                         dev.vality.fistful.cashflow.SystemCashFlowAccount.settlement)));
         providerPosting.setVolume(new dev.vality.fistful.base.Cash()
@@ -428,11 +444,17 @@ public class TestData {
                 new dev.vality.fistful.cashflow.FinalCashFlowPosting();
         merchantSourcePosting.setDestination(
                 new dev.vality.fistful.cashflow.FinalCashFlowAccount()
-                        .setAccountId("5")
+                        .setAccount(new Account()
+                                .setRealm(Realm.test)
+                                .setCurrency(new dev.vality.fistful.base.CurrencyRef("RUB"))
+                                .setAccountId(5))
                         .setAccountType(dev.vality.fistful.cashflow.CashFlowAccount.provider(
                                 dev.vality.fistful.cashflow.ProviderCashFlowAccount.settlement)));
         merchantSourcePosting.setSource(new dev.vality.fistful.cashflow.FinalCashFlowAccount()
-                .setAccountId("6")
+                .setAccount(new Account()
+                        .setRealm(Realm.test)
+                        .setCurrency(new dev.vality.fistful.base.CurrencyRef("RUB"))
+                        .setAccountId(6))
                 .setAccountType(dev.vality.fistful.cashflow.CashFlowAccount.merchant(
                         dev.vality.fistful.cashflow.MerchantCashFlowAccount.settlement)));
         merchantSourcePosting.setVolume(new dev.vality.fistful.base.Cash()
@@ -442,11 +464,17 @@ public class TestData {
                 new dev.vality.fistful.cashflow.FinalCashFlowPosting();
         merchantDestinationPosting.setDestination(
                 new dev.vality.fistful.cashflow.FinalCashFlowAccount()
-                        .setAccountId("7")
+                        .setAccount(new Account()
+                                .setRealm(Realm.test)
+                                .setCurrency(new dev.vality.fistful.base.CurrencyRef("RUB"))
+                                .setAccountId(7))
                         .setAccountType(dev.vality.fistful.cashflow.CashFlowAccount.merchant(
                                 dev.vality.fistful.cashflow.MerchantCashFlowAccount.settlement)));
         merchantDestinationPosting.setSource(new dev.vality.fistful.cashflow.FinalCashFlowAccount()
-                .setAccountId("8")
+                .setAccount(new Account()
+                        .setRealm(Realm.test)
+                        .setCurrency(new dev.vality.fistful.base.CurrencyRef("RUB"))
+                        .setAccountId(8))
                 .setAccountType(dev.vality.fistful.cashflow.CashFlowAccount.merchant(
                         dev.vality.fistful.cashflow.MerchantCashFlowAccount.settlement)));
         merchantDestinationPosting.setVolume(new dev.vality.fistful.base.Cash()
@@ -470,7 +498,7 @@ public class TestData {
         Change change = new Change();
         change.setAdjustment(adjustmentChange);
         TimestampedChange timestampedChange = new TimestampedChange();
-        timestampedChange.setOccuredAt("2023-07-03T10:15:30Z");
+        timestampedChange.setOccuredAt(OCCURED_AT);
         timestampedChange.setChange(change);
         return timestampedChange;
     }
@@ -510,7 +538,6 @@ public class TestData {
         withdrawalAdjustment.setAdjustmentId(id);
         withdrawalAdjustment.setDomainRevision(1L);
         withdrawalAdjustment.setCurrent(true);
-        withdrawalAdjustment.setPartyRevision(2L);
         withdrawalAdjustment.setWithdrawalId("withdrawalId");
         withdrawalAdjustment.setExternalId("id");
         withdrawalAdjustment.setEventOccuredAt(LocalDateTime.now());
@@ -537,7 +564,9 @@ public class TestData {
         Withdrawal withdrawal = new Withdrawal();
         withdrawal.setId(id);
         withdrawal.setDestinationId(randomString());
+        withdrawal.setCreatedAt(OCCURED_AT);
         withdrawal.setWalletId(randomString());
+        withdrawal.setPartyId(randomString());
         withdrawal.setBody(new dev.vality.fistful.base.Cash()
                 .setAmount(100L)
                 .setCurrency(new dev.vality.fistful.base.CurrencyRef()
@@ -547,7 +576,7 @@ public class TestData {
         Change change = new Change();
         change.setCreated(createdChange);
         TimestampedChange timestampedChange = new TimestampedChange();
-        timestampedChange.setOccuredAt("2023-07-03T10:15:30Z");
+        timestampedChange.setOccuredAt(OCCURED_AT);
         timestampedChange.setChange(change);
         return timestampedChange;
     }
@@ -602,7 +631,8 @@ public class TestData {
         return invoicePaymentChangePayload;
     }
 
-    public static InvoicePaymentChangePayload createInvoicePaymentSessionInteractionChange(UserInteraction userInteraction) {
+    public static InvoicePaymentChangePayload createInvoicePaymentSessionInteractionChange(
+            UserInteraction userInteraction) {
         InvoicePaymentChangePayload invoicePaymentChangePayload = new InvoicePaymentChangePayload();
         TargetInvoicePaymentStatus targetInvoicePaymentStatus = new TargetInvoicePaymentStatus();
         targetInvoicePaymentStatus.setCaptured(new InvoicePaymentCaptured());
@@ -625,7 +655,8 @@ public class TestData {
         return userInteraction;
     }
 
-    public static PartyChange createPartyChangeWithPartyAdditionalInfoEffect(String name, String comment, String... emails) {
+    public static PartyChange createPartyChangeWithPartyAdditionalInfoEffect(String name, String comment,
+                                                                             String... emails) {
         AdditionalInfoEffect additionalInfoPartyNameEffect = AdditionalInfoEffect.party_name(name);
         ClaimEffect claimEffectPartyName = createAdditionalInfoEffect(additionalInfoPartyNameEffect);
         AdditionalInfoEffect additionalInfoCommentEffect = AdditionalInfoEffect.party_comment(comment);
@@ -658,7 +689,7 @@ public class TestData {
     public static ClaimStatusChanged createClaimStatusChanged() {
         ClaimStatusChanged claimStatusChanged = new ClaimStatusChanged();
         claimStatusChanged.setId(1);
-        claimStatusChanged.setChangedAt("2023-07-03T10:15:30Z");
+        claimStatusChanged.setChangedAt(OCCURED_AT);
         claimStatusChanged.setRevision(1);
         return claimStatusChanged;
     }

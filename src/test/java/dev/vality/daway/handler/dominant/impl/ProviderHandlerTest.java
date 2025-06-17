@@ -40,9 +40,7 @@ class ProviderHandlerTest {
                 providerHandler.convertToDatabaseObject(providerObject, 1L, true);
         assertNotNull(provider);
         Assertions.assertEquals(provider.getName(), providerObject.getData().getName());
-        Assertions.assertEquals(provider.getIdentity(), providerObject.getData().getIdentity());
         Assertions.assertEquals(provider.getDescription(), providerObject.getData().getDescription());
-        Assertions.assertEquals(provider.getAbsAccount(), providerObject.getData().getAbsAccount());
         Assertions.assertFalse(provider.getPaymentTermsJson().isEmpty());
         Assertions.assertFalse(provider.getRecurrentPaytoolTermsJson().isEmpty());
     }
@@ -57,14 +55,12 @@ class ProviderHandlerTest {
                                 .setRef(new ProxyRef(dev.vality.testcontainers.annotations.util.RandomBeans.random(Integer.class)))
                                 .setAdditional(Map.of(dev.vality.testcontainers.annotations.util.RandomBeans.random(String.class), dev.vality.testcontainers.annotations.util.RandomBeans.random(String.class)))
                         )
-                        .setIdentity(dev.vality.testcontainers.annotations.util.RandomBeans.random(String.class))
                         .setAccounts(
                                 Map.of(new CurrencyRef(dev.vality.testcontainers.annotations.util.RandomBeans.random(String.class)), new ProviderAccount(dev.vality.testcontainers.annotations.util.RandomBeans.random(Long.class))))
                         .setTerms(new ProvisionTermSet()
                                 .setPayments(buildProvisionTermSet())
                                 .setRecurrentPaytools(buildRecurrentPaytools())
                         )
-                        .setAbsAccount(dev.vality.testcontainers.annotations.util.RandomBeans.random(String.class))
                         .setParamsSchema(Collections.singletonList(buildProviderParameter()))
                 );
     }

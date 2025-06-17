@@ -61,8 +61,7 @@ kafka:
     recurrent-payment-tool-concurrency: 7
     rate-concurrency: 7
     deposit-concurrency: 7
-    identity-concurrency: 7
-    wallet-concurrency: 7
+    dominant-concurrency: 7
     withdrawal-concurrency: 7
     source-concurrency: 7
     destination-concurrency: 7
@@ -84,11 +83,8 @@ kafka:
     rate:
       id: mg-events-rates
       enabled: false
-    identity:
-      id: mg-events-ff-identity
-      enabled: false
-    wallet:
-      id: mg-events-ff-wallet
+    dominant:
+      id: mg-events-ff-dominant
       enabled: false
     deposit:
       id: mg-events-ff-deposit

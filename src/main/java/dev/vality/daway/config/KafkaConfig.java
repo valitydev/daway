@@ -1,5 +1,6 @@
 package dev.vality.daway.config;
 
+import dev.vality.damsel.domain_config_v2.HistoricalCommit;
 import dev.vality.daway.config.properties.KafkaConsumerProperties;
 import dev.vality.daway.serde.CurrencyExchangeRateEventDeserializer;
 import dev.vality.daway.serde.SinkEventDeserializer;
@@ -68,6 +69,11 @@ public class KafkaConfig {
     }
 
     @Bean
+    public ConsumerFactory<String, HistoricalCommit> consumerDominantFactory() {
+        return new DefaultKafkaConsumerFactory<>(consumerConfigs());
+    }
+
+    @Bean
     public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, MachineEvent>> kafkaListenerContainerFactory(
             ConsumerFactory<String, MachineEvent> consumerFactory) {
         return createConcurrentFactory(consumerFactory, kafkaConsumerProperties.getInvoicingConcurrency());
@@ -92,15 +98,9 @@ public class KafkaConfig {
     }
 
     @Bean
-    public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, MachineEvent>> identityContainerFactory(
-            ConsumerFactory<String, MachineEvent> consumerFactory) {
-        return createConcurrentFactory(consumerFactory, kafkaConsumerProperties.getIdentityConcurrency());
-    }
-
-    @Bean
-    public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, MachineEvent>> walletContainerFactory(
-            ConsumerFactory<String, MachineEvent> consumerFactory) {
-        return createConcurrentFactory(consumerFactory, kafkaConsumerProperties.getWalletConcurrency());
+    public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, HistoricalCommit>> dominantContainerFactory(
+            ConsumerFactory<String, HistoricalCommit> consumerFactory) {
+        return createConcurrentFactory(consumerFactory, kafkaConsumerProperties.getDominantConcurrency());
     }
 
     @Bean

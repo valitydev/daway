@@ -49,7 +49,6 @@ public class WithdrawalAdjustmentCreatedHandler implements WithdrawalHandler, Wi
                 machineEventCopyFactory.create(event, sequenceId, withdrawalAdjustmentId, timestampedChange.getOccuredAt());
         withdrawalAdjustment.setExternalId(adjustmentDamsel.getExternalId());
         withdrawalAdjustment.setStatus(WithdrawalAdjustmentStatus.pending);
-        withdrawalAdjustment.setPartyRevision(adjustmentDamsel.getPartyRevision());
         withdrawalAdjustment.setWithdrawalId(withdrawalId);
         ChangesPlan changesPlan = adjustmentDamsel.getChangesPlan();
         if (changesPlan.isSetNewStatus()) {

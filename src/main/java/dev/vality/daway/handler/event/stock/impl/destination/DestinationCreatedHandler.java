@@ -52,8 +52,7 @@ public class DestinationCreatedHandler implements DestinationHandler {
         destination.setDestinationStatus(DestinationStatus.unauthorized);
         destination.setExternalId(change.getCreated().getExternalId());
 
-        //TODO почему так было сделано?
-        destination.setIdentityId(destinationId);
+        destination.setPartyId(change.getCreated().getPartyId());
         if (change.getCreated().isSetCreatedAt()) {
             destination.setCreatedAt(TypeUtil.stringToLocalDateTime(change.getCreated().getCreatedAt()));
         }

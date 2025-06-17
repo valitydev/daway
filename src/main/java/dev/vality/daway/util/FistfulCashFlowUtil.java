@@ -23,11 +23,11 @@ public class FistfulCashFlowUtil {
             fcf.setSourceAccountType(
                     TBaseUtil.unionFieldToEnum(cf.getSource().getAccountType(), CashFlowAccount.class));
             fcf.setSourceAccountTypeValue(getCashFlowAccountTypeValue(cf.getSource()));
-            fcf.setSourceAccountId(cf.getSource().getAccountId());
+            fcf.setSourceAccountId(String.valueOf(cf.getSource().getAccount().getAccountId()));
             fcf.setDestinationAccountType(
                     TBaseUtil.unionFieldToEnum(cf.getDestination().getAccountType(), CashFlowAccount.class));
             fcf.setDestinationAccountTypeValue(getCashFlowAccountTypeValue(cf.getDestination()));
-            fcf.setDestinationAccountId(cf.getDestination().getAccountId());
+            fcf.setDestinationAccountId(String.valueOf(cf.getDestination().getAccount().getAccountId()));
             fcf.setAmount(cf.getVolume().getAmount());
             fcf.setCurrencyCode(cf.getVolume().getCurrency().getSymbolicCode());
             fcf.setDetails(cf.getDetails());

@@ -395,8 +395,8 @@ class DaoTests {
         rate.setId(id);
         assertEquals(rate, jdbcTemplate.queryForObject(
                 "SELECT * FROM dw.rate WHERE id = ? ",
-                new Object[]{id},
-                new BeanPropertyRowMapper(Rate.class)
+                new BeanPropertyRowMapper(Rate.class),
+                new Object[]{id}
         ));
 
         List<Long> ids = rateDao.getIds(rate.getSourceId());
@@ -408,8 +408,8 @@ class DaoTests {
         rateDao.updateNotCurrent(Collections.singletonList(id));
         assertThrows(EmptyResultDataAccessException.class, () -> jdbcTemplate.queryForObject(
                 "SELECT * FROM dw.rate AS rate WHERE rate.id = ? AND rate.current",
-                new Object[]{id},
-                new BeanPropertyRowMapper(Rate.class)
+                new BeanPropertyRowMapper(Rate.class),
+                new Object[]{id}
         ));
     }
 
