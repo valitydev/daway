@@ -1,9 +1,9 @@
 package dev.vality.daway.handler.event.stock.impl.destination;
 
 import dev.vality.daway.dao.destination.iface.DestinationDao;
-import dev.vality.daway.dao.identity.iface.IdentityDao;
+import dev.vality.daway.dao.party.iface.PartyDao;
 import dev.vality.daway.domain.tables.pojos.Destination;
-import dev.vality.daway.domain.tables.pojos.Identity;
+import dev.vality.daway.domain.tables.pojos.Party;
 import dev.vality.daway.factory.machine.event.MachineEventCopyFactory;
 import dev.vality.fistful.account.Account;
 import dev.vality.fistful.destination.Change;
@@ -24,7 +24,7 @@ import org.springframework.stereotype.Component;
 public class DestinationAccountCreatedHandler implements DestinationHandler {
 
     private final DestinationDao destinationDao;
-    private final IdentityDao identityDao;
+    private final PartyDao partyDao;
     private final MachineEventCopyFactory<Destination, String> destinationMachineEventCopyFactory;
 
     @Getter
@@ -40,14 +40,12 @@ public class DestinationAccountCreatedHandler implements DestinationHandler {
         log.info("Start destination account created handling, sequenceId={}, destinationId={}", sequenceId,
                 destinationId);
         final Destination destinationOld = destinationDao.get(destinationId);
-        Identity identity = identityDao.get(account.getIdentity());
+        Party party = partyDao.get(account.getPartyId());
         Destination destinationNew = destinationMachineEventCopyFactory
                 .create(event, sequenceId, destinationId, destinationOld, timestampedChange.getOccuredAt());
 
-        destinationNew.setAccountId(account.getId());
-        destinationNew.setIdentityId(account.getIdentity());
-        destinationNew.setPartyId(identity.getPartyId());
-        destinationNew.setAccounterAccountId(account.getAccounterAccountId());
+        destinationNew.setAccountId(String.valueOf(account.getAccountId()));
+        destinationNew.setPartyId(party.getPartyId());
         destinationNew.setCurrencyCode(account.getCurrency().getSymbolicCode());
 
         destinationDao.save(destinationNew).ifPresentOrElse(

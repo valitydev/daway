@@ -17,8 +17,7 @@ public class KafkaConsumerProperties {
     private int partyManagementConcurrency;
     private int rateConcurrency;
     private int depositConcurrency;
-    private int identityConcurrency;
-    private int walletConcurrency;
+    private int dominantConcurrency;
     private int withdrawalConcurrency;
     private int payoutConcurrency;
     private int sourceConcurrency;

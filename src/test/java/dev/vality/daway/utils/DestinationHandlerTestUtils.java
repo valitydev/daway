@@ -12,6 +12,8 @@ import dev.vality.machinegun.msgpack.Value;
 public class DestinationHandlerTestUtils {
 
     public static final String DESTINATION_NAME = "name";
+    public static final String DESTINATION_ID = "1";
+    public static final String PARTY_ID = "1";
 
     public static final String DIGITAL_WALLET_ID = "digital_wallet_id";
     public static final String CRYPTO_WALLET_ID = "crypto_wallet_id";
@@ -21,19 +23,20 @@ public class DestinationHandlerTestUtils {
     public static final String CARD_TOKEN_PROVIDER = "cardToken";
 
     public static final String PHONE_NUMBER = "79111111111";
+    public static final String CREATED_AT = "2021-05-31T06:12:27Z";
 
     public static MachineEvent createCreatedMachineEvent(String id, Destination destination) {
         return new MachineEvent()
                 .setEventId(2L)
                 .setSourceId(id)
                 .setSourceNs("2")
-                .setCreatedAt("2021-05-31T06:12:27Z")
+                .setCreatedAt(CREATED_AT)
                 .setData(Value.bin(new ThriftSerializer<>().serialize("", createCreated(destination))));
     }
 
     public static TimestampedChange createCreated(Destination destination) {
         return new TimestampedChange()
-                .setOccuredAt("2021-05-31T06:12:27Z")
+                .setOccuredAt(CREATED_AT)
                 .setChange(Change.created(destination));
     }
 
@@ -82,6 +85,10 @@ public class DestinationHandlerTestUtils {
                 = new Destination();
         fistfulDestination.setResource(fistfulResource);
         fistfulDestination.setName(DESTINATION_NAME);
+        fistfulDestination.setId(DESTINATION_ID);
+        fistfulDestination.setPartyId(PARTY_ID);
+        fistfulDestination.setRealm(Realm.test);
+        fistfulDestination.setCreatedAt(CREATED_AT);
         return fistfulDestination;
     }
 

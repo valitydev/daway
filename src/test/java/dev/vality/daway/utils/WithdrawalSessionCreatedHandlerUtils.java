@@ -90,6 +90,7 @@ public class WithdrawalSessionCreatedHandlerUtils {
         session.setId(SESSION_ID);
         session.setWithdrawal(withdrawal);
         session.setRoute(createRoute());
+        session.setStatus(SessionStatus.active(new SessionActive()));
         return session;
     }
 
