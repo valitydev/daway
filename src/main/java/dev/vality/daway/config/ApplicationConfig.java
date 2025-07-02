@@ -15,15 +15,6 @@ import java.io.IOException;
 public class ApplicationConfig {
 
     @Bean
-    public RepositorySrv.Iface dominantClient(@Value("${dmt.url}") Resource resource,
-                                              @Value("${dmt.networkTimeout}") int networkTimeout) throws IOException {
-        return new THSpawnClientBuilder()
-                .withNetworkTimeout(networkTimeout)
-                .withAddress(resource.getURI())
-                .build(RepositorySrv.Iface.class);
-    }
-
-    @Bean
     public Schema schema() {
         return Dw.DW;
     }

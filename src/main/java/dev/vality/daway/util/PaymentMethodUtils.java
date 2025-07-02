@@ -7,9 +7,6 @@ import java.util.function.Supplier;
 
 public class PaymentMethodUtils {
 
-    private static final String TOKENIZED_BANK_CARD_SEPARATOR = "_";
-    private static final String EMPTY_CVV = "empty_cvv_";
-
     public static Optional<String> getPaymentMethodRefIdByBankCard(
             Supplier<Optional<PaymentMethod>> paymentMethod) {
         return paymentMethod.get()
