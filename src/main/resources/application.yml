@@ -113,14 +113,6 @@ kafka:
       enabled: false
       consumer.group-id: "daway-withdrawal-adjustment"
 
-dmt:
-  url: http://dominant:8022/v1/domain/repository
-  networkTimeout: 5000
-  polling:
-    delay: 100
-    maxQuerySize: 10
-    enabled: false
-
 cache:
   party-shop:
     size: 10000
