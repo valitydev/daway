@@ -6,7 +6,7 @@
     <parent>
         <groupId>dev.vality</groupId>
         <artifactId>service-parent-pom</artifactId>
-        <version>3.0.9</version>
+        <version>3.1.0</version>
     </parent>
 
     <artifactId>daway</artifactId>
@@ -158,11 +158,6 @@
             <version>0.0.1</version>
         </dependency>
         <dependency>
-            <groupId>dev.vality.woody</groupId>
-            <artifactId>woody-thrift</artifactId>
-            <version>2.0.1</version>
-        </dependency>
-        <dependency>
             <groupId>dev.vality</groupId>
             <artifactId>machinegun-proto</artifactId>
             <version>1.31-b43d6fd</version>
@@ -170,12 +165,11 @@
         <dependency>
             <groupId>dev.vality</groupId>
             <artifactId>damsel</artifactId>
-            <version>1.650-81d1edc</version>
         </dependency>
         <dependency>
             <groupId>dev.vality</groupId>
             <artifactId>fistful-proto</artifactId>
-            <version>1.173-1c28618</version>
+            <version>1.180-8b04c7f</version>
         </dependency>
         <dependency>
             <groupId>dev.vality</groupId>
@@ -191,11 +185,6 @@
             <groupId>dev.vality</groupId>
             <artifactId>exrates-proto</artifactId>
             <version>1.7-ce9563e</version>
-        </dependency>
-        <dependency>
-            <groupId>dev.vality</groupId>
-            <artifactId>shared-resources</artifactId>
-            <version>${shared-resources.version}</version>
         </dependency>
         <dependency>
             <groupId>dev.vality.geck</groupId>
@@ -396,24 +385,6 @@
                         <nonFilteredFileExtension>p12</nonFilteredFileExtension>
                     </nonFilteredFileExtensions>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.cyclonedx</groupId>
-                <artifactId>cyclonedx-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <phase>generate-resources</phase>
-                        <goals>
-                            <goal>makeAggregateBom</goal>
-                        </goals>
-                        <configuration>
-                            <projectType>application</projectType>
-                            <outputDirectory>${project.build.directory}</outputDirectory>
-                            <outputFormat>json</outputFormat>
-                            <outputName>bom</outputName>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>

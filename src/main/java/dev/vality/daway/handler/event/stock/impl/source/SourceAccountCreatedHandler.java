@@ -1,8 +1,8 @@
 package dev.vality.daway.handler.event.stock.impl.source;
 
-import dev.vality.daway.dao.identity.iface.IdentityDao;
+import dev.vality.daway.dao.party.iface.PartyDao;
 import dev.vality.daway.dao.source.iface.SourceDao;
-import dev.vality.daway.domain.tables.pojos.Identity;
+import dev.vality.daway.domain.tables.pojos.Party;
 import dev.vality.daway.domain.tables.pojos.Source;
 import dev.vality.daway.factory.machine.event.MachineEventCopyFactory;
 import dev.vality.fistful.account.Account;
@@ -24,7 +24,7 @@ import org.springframework.stereotype.Component;
 public class SourceAccountCreatedHandler implements SourceHandler {
 
     private final SourceDao sourceDao;
-    private final IdentityDao identityDao;
+    private final PartyDao partyDao;
     private final MachineEventCopyFactory<Source, String> sourceMachineEventCopyFactory;
 
     @Getter
@@ -39,15 +39,13 @@ public class SourceAccountCreatedHandler implements SourceHandler {
         String sourceId = event.getSourceId();
         log.info("Start source account created handling, sequenceId={}, sourceId={}", sequenceId, sourceId);
         final Source sourceOld = sourceDao.get(sourceId);
-        Identity identity = identityDao.get(account.getIdentity());
+        Party party = partyDao.get(account.getPartyId());
 
         Source sourceNew = sourceMachineEventCopyFactory
                 .create(event, sequenceId, sourceId, sourceOld, timestampedChange.getOccuredAt());
 
-        sourceNew.setAccountId(account.getId());
-        sourceNew.setIdentityId(account.getIdentity());
-        sourceNew.setPartyId(identity.getPartyId());
-        sourceNew.setAccounterAccountId(account.getAccounterAccountId());
+        sourceNew.setAccountId(String.valueOf(account.getAccountId()));
+        sourceNew.setPartyId(account.getPartyId());
         sourceNew.setCurrencyCode(account.getCurrency().getSymbolicCode());
 
         sourceDao.save(sourceNew).ifPresentOrElse(

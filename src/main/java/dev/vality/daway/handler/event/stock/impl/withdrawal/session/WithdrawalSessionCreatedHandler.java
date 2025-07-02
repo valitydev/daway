@@ -47,7 +47,6 @@ public class WithdrawalSessionCreatedHandler implements WithdrawalSessionHandler
 
         Session session = change.getCreated();
         withdrawalSession.setProviderId(session.getRoute().getProviderId());
-        withdrawalSession.setProviderIdLegacy(session.getProviderLegacy());
 
         withdrawalSession.setWithdrawalSessionStatus(WithdrawalSessionStatus.active);
 

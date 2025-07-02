@@ -101,22 +101,6 @@ public class SerializationConfig {
     }
 
     @Bean
-    public BinaryDeserializer<dev.vality.fistful.identity.Event> identityEventDataBinaryDeserializer() {
-        return new AbstractThriftBinaryDeserializer<>() {
-            @Override
-            public dev.vality.fistful.identity.Event deserialize(byte[] bytes) {
-                return Geck.msgPackToTBase(bytes, dev.vality.fistful.identity.Event.class);
-            }
-        };
-    }
-
-    @Bean
-    public MachineEventParser<dev.vality.fistful.identity.Event> identityEventDataMachineEventParser(
-            BinaryDeserializer<dev.vality.fistful.identity.Event> identityEventDataBinaryDeserializer) {
-        return new MachineEventParser<>(identityEventDataBinaryDeserializer);
-    }
-
-    @Bean
     public BinaryDeserializer<dev.vality.fistful.source.Event> sourceEventDataBinaryDeserializer() {
         return new AbstractThriftBinaryDeserializer<>() {
             @Override
@@ -130,22 +114,6 @@ public class SerializationConfig {
     public MachineEventParser<dev.vality.fistful.source.Event> sourceEventDataMachineEventParser(
             BinaryDeserializer<dev.vality.fistful.source.Event> sourceEventDataBinaryDeserializer) {
         return new MachineEventParser<>(sourceEventDataBinaryDeserializer);
-    }
-
-    @Bean
-    public BinaryDeserializer<dev.vality.fistful.wallet.Event> walletEventDataBinaryDeserializer() {
-        return new AbstractThriftBinaryDeserializer<>() {
-            @Override
-            public dev.vality.fistful.wallet.Event deserialize(byte[] bytes) {
-                return Geck.msgPackToTBase(bytes, dev.vality.fistful.wallet.Event.class);
-            }
-        };
-    }
-
-    @Bean
-    public MachineEventParser<dev.vality.fistful.wallet.Event> walletEventDataMachineEventParser(
-            BinaryDeserializer<dev.vality.fistful.wallet.Event> walletEventDataBinaryDeserializer) {
-        return new MachineEventParser<>(walletEventDataBinaryDeserializer);
     }
 
     @Bean

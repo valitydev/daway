@@ -49,26 +49,15 @@ public class ProviderHandler extends AbstractDominantHandler<ProviderObject, Pro
         provider.setName(data.getName());
         provider.setDescription(data.getDescription());
         provider.setProxyRefId(data.getProxy().getRef().getId());
-        if (data.isSetAbsAccount()) {
-            provider.setAbsAccount(data.getAbsAccount());
-        }
-
         if (data.isSetTerms() && data.getTerms().isSetPayments()) {
             provider.setPaymentTermsJson(JsonUtil.thriftBaseToJsonString(data.getTerms().getPayments()));
-        } else if (data.isSetPaymentTerms()) {
-            provider.setPaymentTermsJson(JsonUtil.thriftBaseToJsonString(data.getPaymentTerms()));
         }
 
         if (data.isSetTerms() && data.getTerms().isSetRecurrentPaytools()) {
             provider.setRecurrentPaytoolTermsJson(
                     JsonUtil.thriftBaseToJsonString(data.getTerms().getRecurrentPaytools()));
-        } else if (data.isSetRecurrentPaytoolTerms()) {
-            provider.setRecurrentPaytoolTermsJson(JsonUtil.thriftBaseToJsonString(data.getRecurrentPaytoolTerms()));
         }
 
-        if (data.isSetIdentity()) {
-            provider.setIdentity(data.getIdentity());
-        }
         if (data.isSetTerms() && data.getTerms().isSetWallet()) {
             provider.setWalletTermsJson(JsonUtil.thriftBaseToJsonString(data.getTerms().getWallet()));
         }
