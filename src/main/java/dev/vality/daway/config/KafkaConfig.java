@@ -3,6 +3,7 @@ package dev.vality.daway.config;
 import dev.vality.damsel.domain_config_v2.HistoricalCommit;
 import dev.vality.daway.config.properties.KafkaConsumerProperties;
 import dev.vality.daway.serde.CurrencyExchangeRateEventDeserializer;
+import dev.vality.daway.serde.HistoricalCommitDeserializer;
 import dev.vality.daway.serde.SinkEventDeserializer;
 import dev.vality.daway.service.FileService;
 import dev.vality.exrates.events.CurrencyEvent;
@@ -51,10 +52,27 @@ public class KafkaConfig {
         return createConsumerConfig();
     }
 
+    @Bean
+    public Map<String, Object> consumerDominantConfigs() {
+        return createConsumerDominantConfig();
+    }
+
     private Map<String, Object> createConsumerConfig() {
         Map<String, Object> props = kafkaProperties.buildConsumerProperties();
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, SinkEventDeserializer.class);
+        props.put(ConsumerConfig.GROUP_ID_CONFIG, kafkaConsumerProperties.getGroupId());
+        String clientRack = fileService.getClientRack(rackPath);
+        if (Objects.nonNull(clientRack)) {
+            props.put(ConsumerConfig.CLIENT_RACK_CONFIG, clientRack);
+        }
+        return props;
+    }
+
+    private Map<String, Object> createConsumerDominantConfig() {
+        Map<String, Object> props = kafkaProperties.buildConsumerProperties();
+        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, HistoricalCommitDeserializer.class);
         props.put(ConsumerConfig.GROUP_ID_CONFIG, kafkaConsumerProperties.getGroupId());
         String clientRack = fileService.getClientRack(rackPath);
         if (Objects.nonNull(clientRack)) {
@@ -70,7 +88,7 @@ public class KafkaConfig {
 
     @Bean
     public ConsumerFactory<String, HistoricalCommit> consumerDominantFactory() {
-        return new DefaultKafkaConsumerFactory<>(consumerConfigs());
+        return new DefaultKafkaConsumerFactory<>(consumerDominantConfigs());
     }
 
     @Bean
