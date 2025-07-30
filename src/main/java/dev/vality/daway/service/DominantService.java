@@ -25,6 +25,7 @@ public class DominantService {
 
     @Transactional(propagation = Propagation.REQUIRED)
     public void processCommit(List<HistoricalCommit> operations) {
+        log.debug("Process commit with operations: {}", operations);
         operations.forEach(operation -> handlers.forEach(handler -> {
             if (handler.acceptAndSet(operation)) {
                 operation.getOps().forEach(finalOperation ->

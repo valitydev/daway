@@ -10,7 +10,6 @@ import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -24,10 +23,11 @@ public class DominantKafkaListener {
             topics = "${kafka.topics.dominant.id}",
             containerFactory = "dominantContainerFactory")
     public void handle(List<ConsumerRecord<String, HistoricalCommit>> messages, Acknowledgment ack) {
-        log.info("Got machineEvent batch with size: {}", messages.size());
+        log.info("Got historicalCommit batch with size: {}", messages.size());
+        log.debug("HistoricalCommit messages: {}", messages);
         dominantService.processCommit(messages.stream()
                 .map(ConsumerRecord::value)
-                .collect(Collectors.toList()));
+                .toList());
         ack.acknowledge();
         log.info("Batch has been committed, size={}", messages.size());
     }
