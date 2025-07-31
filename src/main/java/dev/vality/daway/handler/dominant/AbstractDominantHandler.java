@@ -1,7 +1,7 @@
 package dev.vality.daway.handler.dominant;
 
 import dev.vality.damsel.domain.DomainObject;
-import dev.vality.damsel.domain_config.Operation;
+import dev.vality.damsel.domain_config_v2.FinalOperation;
 import dev.vality.daway.dao.dominant.iface.DomainObjectDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @param <C> - jooq object class (Category, Currency etc.)
  * @param <I> - object reference id class (Integer, String etc.)
  */
-public abstract class AbstractDominantHandler<T, C, I> implements DominantHandler<Operation> {
+public abstract class AbstractDominantHandler<T, C, I> implements DominantHandler<FinalOperation> {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
@@ -42,7 +42,7 @@ public abstract class AbstractDominantHandler<T, C, I> implements DominantHandle
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public void handle(Operation operation, Long versionId) {
+    public void handle(FinalOperation operation, Long versionId) {
         T object = getTargetObject();
         if (operation.isSetInsert()) {
             insertDomainObject(object, versionId);
@@ -57,13 +57,13 @@ public abstract class AbstractDominantHandler<T, C, I> implements DominantHandle
     }
 
     @Override
-    public boolean acceptAndSet(Operation operation) {
+    public boolean acceptAndSet(FinalOperation operation) {
         if (operation.isSetInsert()) {
             setDomainObject(operation.getInsert().getObject());
         } else if (operation.isSetUpdate()) {
-            setDomainObject(operation.getUpdate().getNewObject());
+            setDomainObject(operation.getUpdate().getObject());
         } else if (operation.isSetRemove()) {
-            setDomainObject(operation.getRemove().getObject());
+//            setDomainObject(operation.getRemove().getRef());
         } else {
             throw new IllegalStateException(
                     UNKNOWN_TYPE_EX + operation);

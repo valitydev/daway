@@ -27,11 +27,13 @@ public class DominantService {
     public void processCommit(List<HistoricalCommit> operations) {
         log.debug("Process commit with operations: {}", operations);
         operations.forEach(operation -> handlers.forEach(handler -> {
-            if (handler.acceptAndSet(operation)) {
-                operation.getOps().forEach(finalOperation ->
-                        processOperation(handler, finalOperation, operation.version));
+            operation.getOps().forEach(finalOperation -> {
+                        if (handler.acceptAndSet(finalOperation)) {
+                            processOperation(handler, finalOperation, operation.version));
+                        }
+                    }
+            );
 
-            }
         }));
     }
 
