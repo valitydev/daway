@@ -36,6 +36,11 @@ public class PaymentInstitutionHandler
     }
 
     @Override
+    protected Integer getTargetRefId() {
+        return getReference().getPaymentInstitution().getId();
+    }
+
+    @Override
     protected boolean acceptDomainObject() {
         return getDomainObject().isSetPaymentInstitution();
     }

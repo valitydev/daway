@@ -32,6 +32,11 @@ public class CurrencyHandler extends AbstractDominantHandler<CurrencyObject, Cur
     }
 
     @Override
+    protected String getTargetRefId() {
+        return getReference().getCurrency().getSymbolicCode();
+    }
+
+    @Override
     protected boolean acceptDomainObject() {
         return getDomainObject().isSetCurrency();
     }

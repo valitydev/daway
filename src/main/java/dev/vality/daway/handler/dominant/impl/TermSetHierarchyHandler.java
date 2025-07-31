@@ -36,6 +36,11 @@ public class TermSetHierarchyHandler
     }
 
     @Override
+    protected Integer getTargetRefId() {
+        return getReference().getTermSetHierarchy().getId();
+    }
+
+    @Override
     protected boolean acceptDomainObject() {
         return getDomainObject().isSetTermSetHierarchy();
     }

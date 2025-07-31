@@ -1,8 +1,11 @@
 package dev.vality.daway.handler.dominant;
 
 import dev.vality.damsel.domain.DomainObject;
+import dev.vality.damsel.domain.Reference;
 import dev.vality.damsel.domain_config_v2.FinalOperation;
 import dev.vality.daway.dao.dominant.iface.DomainObjectDao;
+import lombok.Getter;
+import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Propagation;
@@ -18,23 +21,22 @@ public abstract class AbstractDominantHandler<T, C, I> implements DominantHandle
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     private static final String UNKNOWN_TYPE_EX = "Unknown type of operation. Only insert/update/remove supports. " +
-            "Operation: ";
+                                                  "Operation: ";
 
+    @Getter
+    @Setter
     private DomainObject domainObject;
-
-    public DomainObject getDomainObject() {
-        return domainObject;
-    }
-
-    public void setDomainObject(DomainObject domainObject) {
-        this.domainObject = domainObject;
-    }
+    @Getter
+    @Setter
+    private Reference reference;
 
     protected abstract DomainObjectDao<C, I> getDomainObjectDao();
 
     protected abstract T getTargetObject();
 
     protected abstract I getTargetObjectRefId();
+
+    protected abstract I getTargetRefId();
 
     protected abstract boolean acceptDomainObject();
 
@@ -63,7 +65,7 @@ public abstract class AbstractDominantHandler<T, C, I> implements DominantHandle
         } else if (operation.isSetUpdate()) {
             setDomainObject(operation.getUpdate().getObject());
         } else if (operation.isSetRemove()) {
-//            setDomainObject(operation.getRemove().getRef());
+            setReference(operation.getRemove().getRef());
         } else {
             throw new IllegalStateException(
                     UNKNOWN_TYPE_EX + operation);
@@ -93,10 +95,10 @@ public abstract class AbstractDominantHandler<T, C, I> implements DominantHandle
     @Transactional(propagation = Propagation.REQUIRED)
     public void removeDomainObject(T object, Long versionId) {
         log.info("Start to remove '{}' with id={}, versionId={}", object.getClass().getSimpleName(),
-                getTargetObjectRefId(), versionId);
-        getDomainObjectDao().updateNotCurrent(getTargetObjectRefId());
+                getTargetRefId(), versionId);
+        getDomainObjectDao().updateNotCurrent(getTargetRefId());
         getDomainObjectDao().save(convertToDatabaseObject(object, versionId, false));
         log.info("End to remove '{}' with id={}, versionId={}", object.getClass().getSimpleName(),
-                getTargetObjectRefId(), versionId);
+                getTargetRefId(), versionId);
     }
 }

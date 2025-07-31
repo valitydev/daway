@@ -33,6 +33,11 @@ public class InspectorHandler extends AbstractDominantHandler<InspectorObject, I
     }
 
     @Override
+    protected Integer getTargetRefId() {
+        return getReference().getInspector().getId();
+    }
+
+    @Override
     protected boolean acceptDomainObject() {
         return getDomainObject().isSetInspector();
     }

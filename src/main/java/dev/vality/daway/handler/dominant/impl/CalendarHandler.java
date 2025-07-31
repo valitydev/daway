@@ -38,6 +38,11 @@ public class CalendarHandler extends AbstractDominantHandler<CalendarObject, Cal
     }
 
     @Override
+    protected Integer getTargetRefId() {
+        return getReference().getCalendar().getId();
+    }
+
+    @Override
     protected boolean acceptDomainObject() {
         return getDomainObject().isSetCalendar();
     }

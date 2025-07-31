@@ -36,6 +36,11 @@ public class ProviderHandler extends AbstractDominantHandler<ProviderObject, Pro
     }
 
     @Override
+    protected Integer getTargetRefId() {
+        return getReference().getProvider().getId();
+    }
+
+    @Override
     protected boolean acceptDomainObject() {
         return getDomainObject().isSetProvider();
     }
