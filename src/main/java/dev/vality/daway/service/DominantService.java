@@ -29,7 +29,7 @@ public class DominantService {
         operations.forEach(operation -> handlers.forEach(handler -> {
             operation.getOps().forEach(finalOperation -> {
                         if (handler.acceptAndSet(finalOperation)) {
-                            processOperation(handler, finalOperation, operation.version));
+                            processOperation(handler, finalOperation, operation.version);
                         }
                     }
             );
