@@ -1,5 +1,7 @@
 package dev.vality.daway.kafka;
 
+import dev.vality.damsel.domain_config_v2.Author;
+import dev.vality.damsel.domain_config_v2.HistoricalCommit;
 import dev.vality.machinegun.eventsink.MachineEvent;
 import dev.vality.machinegun.eventsink.SinkEvent;
 import dev.vality.testcontainers.annotations.kafka.config.KafkaProducerConfig;
@@ -12,6 +14,7 @@ import org.springframework.context.annotation.Import;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.Collections;
 
 @TestComponent
 @Import(KafkaProducerConfig.class)
@@ -43,5 +46,17 @@ public class KafkaProducer {
         SinkEvent sinkEvent = new SinkEvent();
         sinkEvent.setEvent(message);
         testThriftKafkaProducer.send(topic, sinkEvent);
+    }
+
+    public void sendDominantMessage(String topic) {
+        HistoricalCommit commit = new HistoricalCommit();
+        commit.setVersion(1L);
+        commit.setCreatedAt(LocalDateTime.now().truncatedTo(ChronoUnit.MICROS).format(DateTimeFormatter.ISO_DATE_TIME));
+        commit.setChangedBy(new Author()
+                .setEmail("email")
+                .setId("id")
+                .setName("name"));
+        commit.setOps(Collections.emptyList());
+        testThriftKafkaProducer.send(topic, commit);
     }
 }

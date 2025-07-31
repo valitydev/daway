@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 import static org.mockito.ArgumentMatchers.anyList;
 
 @KafkaPostgresqlSpringBootITest
-public class DominantKafkaListenerTest {
+class DominantKafkaListenerTest {
 
     @Value("${kafka.topics.dominant.id}")
     public String topic;
@@ -25,8 +25,8 @@ public class DominantKafkaListenerTest {
     private DominantService dominantService;
 
     @Test
-    public void listenEmptyChanges() {
-        kafkaProducer.sendMessage(topic);
+    void listenEmptyChanges() {
+        kafkaProducer.sendDominantMessage(topic);
         Mockito.verify(dominantService, Mockito.timeout(TimeUnit.MINUTES.toMillis(1)).times(1))
                 .processCommit(anyList());
     }
