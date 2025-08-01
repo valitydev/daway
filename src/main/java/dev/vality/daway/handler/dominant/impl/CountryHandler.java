@@ -31,6 +31,11 @@ public class CountryHandler extends AbstractDominantHandler<CountryObject, Count
     }
 
     @Override
+    protected String getTargetRefId() {
+        return getReference().getCountry().getId().name();
+    }
+
+    @Override
     protected boolean acceptDomainObject() {
         return getDomainObject().isSetCountry();
     }

@@ -33,6 +33,11 @@ public class TerminalHandler extends AbstractDominantHandler<TerminalObject, Ter
     }
 
     @Override
+    protected Integer getTargetRefId() {
+        return getReference().getTerminal().getId();
+    }
+
+    @Override
     protected boolean acceptDomainObject() {
         return getDomainObject().isSetTerminal();
     }

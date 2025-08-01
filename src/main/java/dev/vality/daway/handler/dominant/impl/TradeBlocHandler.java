@@ -30,6 +30,11 @@ public class TradeBlocHandler extends AbstractDominantHandler<TradeBlocObject, T
     }
 
     @Override
+    protected String getTargetRefId() {
+        return getReference().getTradeBloc().getId();
+    }
+
+    @Override
     protected boolean acceptDomainObject() {
         return getDomainObject().isSetTradeBloc();
     }

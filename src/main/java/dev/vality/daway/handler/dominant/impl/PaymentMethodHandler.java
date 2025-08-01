@@ -50,6 +50,24 @@ public class PaymentMethodHandler extends AbstractDominantHandler<PaymentMethodO
         return getPaymentType(getTargetObject()) + SEPARATOR + paymentMethodRefId.get();
     }
 
+    @Override
+    protected String getTargetRefId() {
+        var paymentMethod = wrapPaymentMethod(getReference().getPaymentMethod().getId());
+
+        Optional<String> paymentMethodRefId = PaymentMethodUtils.getPaymentMethodRefIdByBankCard(paymentMethod)
+                .or(() -> PaymentMethodUtils.getPaymentMethodRefIdByPaymentTerminal(paymentMethod))
+                .or(() -> PaymentMethodUtils.getPaymentMethodRefIdByDigitalWallet(paymentMethod))
+                .or(() -> PaymentMethodUtils.getPaymentMethodRefIdByCryptoCurrency(paymentMethod))
+                .or(() -> PaymentMethodUtils.getPaymentMethodRefIdByMobile(paymentMethod))
+                .or(() -> PaymentMethodUtils.getPaymentMethodRefIdByGeneric(paymentMethod));
+
+        if (paymentMethodRefId.isEmpty()) {
+            throw new IllegalArgumentException("Unknown payment method: " + paymentMethod.get().get().getSetField());
+        }
+
+        return getPaymentType(getTargetObject()) + SEPARATOR + paymentMethodRefId.get();
+    }
+
     private Supplier<Optional<dev.vality.damsel.domain.PaymentMethod>> wrapPaymentMethod(
             dev.vality.damsel.domain.PaymentMethod paymentMethod) {
         return () -> Optional.of(paymentMethod);

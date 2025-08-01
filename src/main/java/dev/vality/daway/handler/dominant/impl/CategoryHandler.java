@@ -32,6 +32,11 @@ public class CategoryHandler extends AbstractDominantHandler<CategoryObject, Cat
     }
 
     @Override
+    protected Integer getTargetRefId() {
+        return getReference().getCategory().getId();
+    }
+
+    @Override
     protected boolean acceptDomainObject() {
         return getDomainObject().isSetCategory();
     }

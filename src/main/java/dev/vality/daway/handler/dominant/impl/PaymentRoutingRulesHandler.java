@@ -53,4 +53,9 @@ public class PaymentRoutingRulesHandler
         return getTargetObject().getRef().getId();
     }
 
+    @Override
+    protected Integer getTargetRefId() {
+        return getReference().getRoutingRules().getId();
+    }
+
 }

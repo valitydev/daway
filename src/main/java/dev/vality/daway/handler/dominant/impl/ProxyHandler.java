@@ -33,6 +33,11 @@ public class ProxyHandler extends AbstractDominantHandler<ProxyObject, Proxy, In
     }
 
     @Override
+    protected Integer getTargetRefId() {
+        return getReference().getProxy().getId();
+    }
+
+    @Override
     protected boolean acceptDomainObject() {
         return getDomainObject().isSetProxy();
     }
