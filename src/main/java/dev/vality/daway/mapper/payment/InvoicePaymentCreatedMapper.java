@@ -178,8 +178,7 @@ public class InvoicePaymentCreatedMapper implements Mapper<PaymentWrapper> {
                 payerInfo.setIpAddress(paymentResource.getResource().getClientInfo().getIpAddress());
                 payerInfo.setFingerprint(paymentResource.getResource().getClientInfo().getFingerprint());
             }
-        }
-        if (payer.isSetRecurrent()) {
+        } else if (payer.isSetRecurrent()) {
             payerInfo.setRecurrentParentInvoiceId(payer.getRecurrent().getRecurrentParent().getInvoiceId());
             payerInfo.setRecurrentParentPaymentId(payer.getRecurrent().getRecurrentParent().getPaymentId());
             fillPaymentTool(payerInfo, payer.getRecurrent().getPaymentTool());
