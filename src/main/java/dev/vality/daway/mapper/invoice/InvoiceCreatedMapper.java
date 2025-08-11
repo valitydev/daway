@@ -69,7 +69,7 @@ public class InvoiceCreatedMapper implements Mapper<InvoiceWrapper> {
         invoiceRecord.setExternalId(invoice.getExternalId());
         invoiceRecord.setPartyId(invoice.getOwnerId());
         invoiceRecord.setShopId(invoice.getShopId());
-        invoiceRecord.setPartyRevision(invoice.getPartyRevision());
+        invoiceRecord.setPartyRevision(invoice.getDomainRevision());
         invoiceRecord.setCreatedAt(TypeUtil.stringToLocalDateTime(invoice.getCreatedAt()));
         invoiceRecord.setDetailsProduct(invoice.getDetails().getProduct());
         invoiceRecord.setDetailsDescription(invoice.getDetails().getDescription());

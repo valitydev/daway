@@ -3,7 +3,6 @@ package dev.vality.daway;
 import dev.vality.damsel.domain.*;
 import dev.vality.damsel.domain.CashFlowAccount;
 import dev.vality.damsel.domain.InvoicePaymentChargeback;
-import dev.vality.damsel.domain.LegalEntity;
 import dev.vality.damsel.payment_processing.*;
 import dev.vality.damsel.payment_processing.SessionChangePayload;
 import dev.vality.damsel.payment_processing.SessionFinished;
@@ -231,20 +230,6 @@ public class TestData {
         return invoicePaymentChargebackStage;
     }
 
-    public static Contractor buildContractor() {
-        Contractor contractor = new Contractor();
-        LegalEntity legalEntity = new LegalEntity();
-        contractor.setLegalEntity(legalEntity);
-        InternationalLegalEntity internationalLegalEntity = new InternationalLegalEntity();
-        legalEntity.setInternationalLegalEntity(internationalLegalEntity);
-        internationalLegalEntity
-                .setCountry(new CountryRef().setId(CountryCode.findByValue(CountryCode.AUT.getValue())));
-        internationalLegalEntity.setLegalName(randomString());
-        internationalLegalEntity.setActualAddress(randomString());
-        internationalLegalEntity.setRegisteredAddress(randomString());
-        return contractor;
-    }
-
     public static String randomString() {
         return UUID.randomUUID().toString();
     }
@@ -282,7 +267,7 @@ public class TestData {
         adjustment.setReason("Test");
         adjustment.setNewCashFlow(newCashFlow);
         adjustment.setOldCashFlowInverse(oldCashFlow);
-        adjustment.setPartyRevision(1L);
+        adjustment.setDomainRevision(1L);
         adjustment.setStatus(InvoicePaymentAdjustmentStatus.captured(new InvoicePaymentAdjustmentCaptured()));
         return adjustment;
     }
@@ -512,15 +497,6 @@ public class TestData {
                 .setData(Value.bin(new ThriftSerializer<>().serialize("", timestampedChange)));
     }
 
-    public static MachineEvent createPartyEventDataMachineEvent(PartyEventData partyEventData, String id) {
-        return new MachineEvent()
-                .setEventId(2L)
-                .setSourceId(id)
-                .setSourceNs("2")
-                .setCreatedAt("2021-05-31T06:12:27Z")
-                .setData(Value.bin(new ThriftSerializer<>().serialize("", partyEventData)));
-    }
-
     public static MachineEvent createMachineEvent(EventPayload eventPayload, String id) {
         return new MachineEvent()
                 .setEventId(2L)
@@ -653,45 +629,6 @@ public class TestData {
                 .setUri("test.com"));
         userInteraction.setRedirect(browserHTTPRequest);
         return userInteraction;
-    }
-
-    public static PartyChange createPartyChangeWithPartyAdditionalInfoEffect(String name, String comment,
-                                                                             String... emails) {
-        AdditionalInfoEffect additionalInfoPartyNameEffect = AdditionalInfoEffect.party_name(name);
-        ClaimEffect claimEffectPartyName = createAdditionalInfoEffect(additionalInfoPartyNameEffect);
-        AdditionalInfoEffect additionalInfoCommentEffect = AdditionalInfoEffect.party_comment(comment);
-        ClaimEffect claimEffectComment = createAdditionalInfoEffect(additionalInfoCommentEffect);
-        AdditionalInfoEffect additionalInfoContactInfoEffect = AdditionalInfoEffect.contact_info(
-                new PartyContactInfo()
-                        .setManagerContactEmails(Arrays.stream(emails).toList())
-                        .setRegistrationEmail("test@test.com")
-        );
-        ClaimEffect claimEffectContactInfo = createAdditionalInfoEffect(additionalInfoContactInfoEffect);
-        ClaimAccepted claimAccepted = new ClaimAccepted();
-        claimAccepted.setEffects(List.of(claimEffectPartyName, claimEffectComment, claimEffectContactInfo));
-        ClaimStatusChanged claimStatusChanged = createClaimStatusChanged();
-        claimStatusChanged.setStatus(ClaimStatus.accepted(claimAccepted));
-        PartyChange partyChange = new PartyChange();
-        partyChange.setClaimStatusChanged(claimStatusChanged);
-        return partyChange;
-    }
-
-    @NotNull
-    private static ClaimEffect createAdditionalInfoEffect(AdditionalInfoEffect additionalInfoPartyNameEffect) {
-        AdditionalInfoEffectUnit additionalInfoEffectPartyNameUnit = new AdditionalInfoEffectUnit();
-        additionalInfoEffectPartyNameUnit.setEffect(additionalInfoPartyNameEffect);
-        ClaimEffect claimEffectPartyName = new ClaimEffect();
-        claimEffectPartyName.setAdditionalInfoEffect(additionalInfoEffectPartyNameUnit);
-        return claimEffectPartyName;
-    }
-
-
-    public static ClaimStatusChanged createClaimStatusChanged() {
-        ClaimStatusChanged claimStatusChanged = new ClaimStatusChanged();
-        claimStatusChanged.setId(1);
-        claimStatusChanged.setChangedAt(OCCURED_AT);
-        claimStatusChanged.setRevision(1);
-        return claimStatusChanged;
     }
 
     public static ValidationResult testValidationResult() {

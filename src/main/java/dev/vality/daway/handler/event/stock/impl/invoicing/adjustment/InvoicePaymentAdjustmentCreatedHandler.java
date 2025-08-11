@@ -85,8 +85,8 @@ public class InvoicePaymentAdjustmentCreatedHandler implements InvoicingHandler 
                     TypeUtil.stringToLocalDateTime(invoicePaymentAdjustment.getStatus().getCancelled().getAt()));
         }
         adjustment.setReason(invoicePaymentAdjustment.getReason());
-        if (invoicePaymentAdjustment.isSetPartyRevision()) {
-            adjustment.setPartyRevision(invoicePaymentAdjustment.getPartyRevision());
+        if (invoicePaymentAdjustment.isSetDomainRevision()) {
+            adjustment.setPartyRevision(invoicePaymentAdjustment.getDomainRevision());
         }
         if (invoicePaymentAdjustment.isSetState()) {
             InvoicePaymentAdjustmentState invoicePaymentAdjustmentState = invoicePaymentAdjustment.getState();

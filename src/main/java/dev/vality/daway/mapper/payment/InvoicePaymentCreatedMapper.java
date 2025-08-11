@@ -138,8 +138,8 @@ public class InvoicePaymentCreatedMapper implements Mapper<PaymentWrapper> {
         payment.setPartyId(partyShop.getPartyId());
         payment.setShopId(partyShop.getShopId());
         payment.setDomainRevision(invoicePayment.getDomainRevision());
-        if (invoicePayment.isSetPartyRevision()) {
-            payment.setPartyRevision(invoicePayment.getPartyRevision());
+        if (invoicePayment.isSetDomainRevision()) {
+            payment.setPartyRevision(invoicePayment.getDomainRevision());
         }
         payment.setAmount(invoicePayment.getCost().getAmount());
         payment.setCurrencyCode(invoicePayment.getCost().getCurrency().getSymbolicCode());
@@ -178,13 +178,6 @@ public class InvoicePaymentCreatedMapper implements Mapper<PaymentWrapper> {
                 payerInfo.setIpAddress(paymentResource.getResource().getClientInfo().getIpAddress());
                 payerInfo.setFingerprint(paymentResource.getResource().getClientInfo().getFingerprint());
             }
-        } else if (payer.isSetCustomer()) {
-            CustomerPayer customer = payer.getCustomer();
-            payerInfo.setCustomerId(customer.getCustomerId());
-            payerInfo.setCustomerBindingId(customer.getCustomerBindingId());
-            payerInfo.setCustomerRecPaymentToolId(customer.getRecPaymentToolId());
-            fillPaymentTool(payerInfo, customer.getPaymentTool());
-            fillContactInfo(payerInfo, customer.getContactInfo());
         } else if (payer.isSetRecurrent()) {
             payerInfo.setRecurrentParentInvoiceId(payer.getRecurrent().getRecurrentParent().getInvoiceId());
             payerInfo.setRecurrentParentPaymentId(payer.getRecurrent().getRecurrentParent().getPaymentId());

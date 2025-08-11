@@ -1,7 +1,6 @@
 package dev.vality.daway.dao;
 
 import dev.vality.daway.config.PostgresqlJooqSpringBootITest;
-import dev.vality.daway.dao.party.iface.PartyDao;
 import dev.vality.daway.dao.party.impl.PartyDaoImpl;
 import dev.vality.daway.domain.tables.pojos.Party;
 import dev.vality.daway.domain.tables.records.PartyRecord;
@@ -21,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 class PartyDaoTest {
 
     @Autowired
-    PartyDao partyDao;
+    PartyDaoImpl partyDao;
 
     @Autowired
     DSLContext dslContext;

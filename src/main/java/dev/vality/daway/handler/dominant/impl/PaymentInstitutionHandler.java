@@ -58,11 +58,6 @@ public class PaymentInstitutionHandler
             paymentInstitution.setCalendarRefId(data.getCalendar().getId());
         }
         paymentInstitution.setSystemAccountSetJson(JsonUtil.thriftBaseToJsonString(data.getSystemAccountSet()));
-        paymentInstitution
-                .setDefaultContractTemplateJson(JsonUtil.thriftBaseToJsonString(data.getDefaultContractTemplate()));
-        if (data.isSetProviders()) {
-            paymentInstitution.setProvidersJson(JsonUtil.thriftBaseToJsonString(data.getProviders()));
-        }
         paymentInstitution.setInspectorJson(JsonUtil.thriftBaseToJsonString(data.getInspector()));
         paymentInstitution.setRealm(data.getRealm().name());
         paymentInstitution.setResidencesJson(

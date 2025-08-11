@@ -1,6 +1,6 @@
 package dev.vality.daway.handler.event.stock.impl.source;
 
-import dev.vality.daway.dao.party.iface.PartyDao;
+import dev.vality.daway.dao.party.impl.PartyDaoImpl;
 import dev.vality.daway.dao.source.iface.SourceDao;
 import dev.vality.daway.domain.tables.pojos.Party;
 import dev.vality.daway.domain.tables.pojos.Source;
@@ -24,7 +24,7 @@ import org.springframework.stereotype.Component;
 public class SourceAccountCreatedHandler implements SourceHandler {
 
     private final SourceDao sourceDao;
-    private final PartyDao partyDao;
+    private final PartyDaoImpl partyDao;
     private final MachineEventCopyFactory<Source, String> sourceMachineEventCopyFactory;
 
     @Getter
