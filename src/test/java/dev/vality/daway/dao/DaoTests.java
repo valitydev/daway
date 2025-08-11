@@ -7,9 +7,9 @@ import dev.vality.daway.dao.invoicing.iface.*;
 import dev.vality.daway.dao.invoicing.impl.CashFlowLinkIdsGeneratorDaoImpl;
 import dev.vality.daway.dao.invoicing.impl.InvoiceDaoImpl;
 import dev.vality.daway.dao.invoicing.impl.PaymentDaoImpl;
-import dev.vality.daway.dao.party.iface.*;
+import dev.vality.daway.dao.party.impl.PartyDaoImpl;
+import dev.vality.daway.dao.party.impl.ShopDaoImpl;
 import dev.vality.daway.dao.rate.iface.RateDao;
-import dev.vality.daway.dao.recurrent.payment.tool.iface.RecurrentPaymentToolDao;
 import dev.vality.daway.domain.enums.CashFlowAccount;
 import dev.vality.daway.domain.enums.PaymentChangeType;
 import dev.vality.daway.domain.tables.pojos.*;
@@ -92,21 +92,13 @@ class DaoTests {
     @Autowired
     private RefundDao refundDao;
     @Autowired
-    private ContractAdjustmentDao contractAdjustmentDao;
+    private PartyDaoImpl partyDao;
     @Autowired
-    private ContractDao contractDao;
-    @Autowired
-    private ContractorDao contractorDao;
-    @Autowired
-    private PartyDao partyDao;
-    @Autowired
-    private ShopDao shopDao;
+    private ShopDaoImpl shopDao;
     @Autowired
     private RateDao rateDao;
     @Autowired
     private CashFlowLinkIdsGeneratorDaoImpl idsGeneratorDao;
-    @Autowired
-    private RecurrentPaymentToolDao recurrentPaymentToolDao;
 
 
     @Test
@@ -309,46 +301,6 @@ class DaoTests {
     }
 
     @Test
-    void contractAdjustmentDaoTest() {
-        jdbcTemplate.execute("truncate table dw.contract_adjustment cascade");
-        jdbcTemplate.execute("truncate table dw.contract cascade");
-        Contract contract = RandomBeans.random(Contract.class);
-        contract.setCurrent(true);
-        Long cntrctId = contractDao.save(contract).get();
-        List<ContractAdjustment> contractAdjustments = RandomBeans.randomListOf(10, ContractAdjustment.class);
-        contractAdjustments.forEach(ca -> ca.setCntrctId(cntrctId));
-        contractAdjustmentDao.save(contractAdjustments);
-        List<ContractAdjustment> byCntrctId = contractAdjustmentDao.getByCntrctId(cntrctId);
-        assertEquals(new HashSet(contractAdjustments), new HashSet(byCntrctId));
-    }
-
-    @Test
-    void contractDaoTest() {
-        jdbcTemplate.execute("truncate table dw.contract cascade");
-        Contract contract = RandomBeans.random(Contract.class);
-        contract.setCurrent(true);
-        contractDao.save(contract);
-        Contract contractGet = contractDao.get(contract.getPartyId(), contract.getContractId());
-        assertEquals(contract, contractGet);
-    }
-
-    @Test
-    void contractorDaoTest() {
-        jdbcTemplate.execute("truncate table dw.contractor cascade");
-        Contractor contractor = RandomBeans.random(Contractor.class);
-        contractor.setCurrent(true);
-        contractorDao.save(contractor);
-        Contractor contractorGet = contractorDao.get(contractor.getPartyId(), contractor.getContractorId());
-        assertEquals(contractor, contractorGet);
-        Integer changeId = contractor.getChangeId() + 1;
-        contractor.setChangeId(changeId);
-        Long oldId = contractor.getId();
-        contractor.setId(contractor.getId() + 1);
-        contractorDao.save(contractor);
-        contractorDao.updateNotCurrent(oldId);
-    }
-
-    @Test
     void partyDaoTest() {
         jdbcTemplate.execute("truncate table dw.party cascade");
         Party party = RandomBeans.random(Party.class);
@@ -448,19 +400,5 @@ class DaoTests {
         List<Long> list = idsGeneratorDao.get(100);
         assertEquals(100, list.size());
         assertEquals(99, list.get(99) - list.get(0));
-    }
-
-    @Test
-    void recurrentPaymentToolDaoTest() {
-        jdbcTemplate.execute("truncate table dw.recurrent_payment_tool cascade");
-        RecurrentPaymentTool recurrentPaymentTool = RandomBeans.random(RecurrentPaymentTool.class);
-        recurrentPaymentTool.setCurrent(true);
-        Optional<Long> id = recurrentPaymentToolDao.save(recurrentPaymentTool);
-        Assertions.assertTrue(id.isPresent());
-        recurrentPaymentTool.setId(id.get());
-        assertEquals(recurrentPaymentTool, recurrentPaymentToolDao.get(recurrentPaymentTool.getRecurrentPaymentToolId()));
-        recurrentPaymentToolDao.updateNotCurrent(recurrentPaymentTool.getId());
-
-        assertThrows(NotFoundException.class, () -> recurrentPaymentToolDao.get(recurrentPaymentTool.getRecurrentPaymentToolId()));
     }
 }

@@ -1,7 +1,7 @@
 package dev.vality.daway.dao.party.impl;
 
 import dev.vality.dao.impl.AbstractGenericDao;
-import dev.vality.daway.dao.party.iface.PartyDao;
+import dev.vality.daway.dao.dominant.iface.DomainObjectDao;
 import dev.vality.daway.domain.tables.pojos.Party;
 import dev.vality.daway.domain.tables.records.PartyRecord;
 import dev.vality.daway.exception.DaoException;
@@ -20,17 +20,17 @@ import static dev.vality.daway.domain.Tables.PARTY;
 
 @Slf4j
 @Component
-public class PartyDaoImpl extends AbstractGenericDao implements PartyDao {
+public class PartyDaoImpl extends AbstractGenericDao implements DomainObjectDao<Party, Long> {
 
-    private final RowMapper<Party> partyRowMapper;
+    private final RowMapper<Party> rowMapper;
 
     public PartyDaoImpl(DataSource dataSource) {
         super(dataSource);
-        partyRowMapper = new RecordRowMapper<>(PARTY, Party.class);
+        rowMapper = new RecordRowMapper<>(PARTY, Party.class);
     }
 
     @Override
-    public Optional<Long> save(Party party) throws DaoException {
+    public Long save(Party party) throws DaoException {
         PartyRecord record = getDslContext().newRecord(PARTY, party);
         Query query = getDslContext().insertInto(PARTY).set(record)
                 .onConflict(PARTY.PARTY_ID, PARTY.SEQUENCE_ID, PARTY.CHANGE_ID)
@@ -38,16 +38,7 @@ public class PartyDaoImpl extends AbstractGenericDao implements PartyDao {
                 .returning(PARTY.ID);
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
         execute(query, keyHolder);
-        return Optional.ofNullable(keyHolder.getKey()).map(Number::longValue);
-    }
-
-    @Override
-    public Party get(String partyId) throws DaoException {
-        Query query = getDslContext().selectFrom(PARTY)
-                .where(PARTY.PARTY_ID.eq(partyId).and(PARTY.CURRENT));
-
-        return Optional.ofNullable(fetchOne(query, partyRowMapper))
-                .orElseThrow(() -> new NotFoundException(String.format("Party not found, partyId='%s'", partyId)));
+        return Optional.ofNullable(keyHolder.getKey()).get().longValue();
     }
 
     @Override
@@ -57,17 +48,15 @@ public class PartyDaoImpl extends AbstractGenericDao implements PartyDao {
         executeOne(query);
     }
 
-    @Override
-    public void saveWithUpdateCurrent(Party partySource, Long oldId, String eventName) {
-        save(partySource)
-                .ifPresentOrElse(
-                        saveResult -> {
-                            updateNotCurrent(oldId);
-                            log.info("Party {} has been saved, sequenceId={}, partyId={}, changeId={}", eventName,
-                                    partySource.getSequenceId(), partySource.getPartyId(), partySource.getChangeId());
-                        },
-                        () -> log.info("Party {} duplicated, sequenceId={}, partyId={}, changeId={}", eventName,
-                                partySource.getSequenceId(), partySource.getPartyId(), partySource.getChangeId())
-                );
+    public Party get(String partyId) throws DaoException {
+        Query query = getDslContext().selectFrom(PARTY)
+                .where(PARTY.PARTY_ID.eq(partyId).and(PARTY.CURRENT));
+
+        Party party = fetchOne(query, rowMapper);
+
+        if (party == null) {
+            throw new NotFoundException(String.format("Party not found, partyId='%s'", partyId));
+        }
+        return party;
     }
 }

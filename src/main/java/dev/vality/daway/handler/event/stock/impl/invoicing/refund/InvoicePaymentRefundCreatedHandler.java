@@ -93,8 +93,8 @@ public class InvoicePaymentRefundCreatedHandler implements InvoicingHandler {
             refund.setCurrencyCode(payment.getCurrencyCode());
         }
         refund.setReason(invoicePaymentRefund.getReason());
-        if (invoicePaymentRefund.isSetPartyRevision()) {
-            refund.setPartyRevision(invoicePaymentRefund.getPartyRevision());
+        if (invoicePaymentRefund.isSetDomainRevision()) {
+            refund.setPartyRevision(invoicePaymentRefund.getDomainRevision());
         }
 
         refundDao.save(refund).ifPresentOrElse(

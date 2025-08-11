@@ -1,0 +1,1 @@
+DROP TABLE IF EXISTS dw.recurrent_payment_tool CASCADE;

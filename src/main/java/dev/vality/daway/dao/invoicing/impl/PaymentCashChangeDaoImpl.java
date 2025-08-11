@@ -4,7 +4,6 @@ import dev.vality.dao.impl.AbstractGenericDao;
 import dev.vality.daway.dao.invoicing.iface.PaymentCashChangeDao;
 import dev.vality.daway.domain.tables.pojos.PaymentCashChange;
 import dev.vality.daway.domain.tables.records.PaymentCashChangeRecord;
-import dev.vality.daway.domain.tables.records.PaymentFeeRecord;
 import dev.vality.daway.exception.DaoException;
 import dev.vality.daway.model.InvoicingKey;
 import dev.vality.mapper.RecordRowMapper;
@@ -19,7 +18,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static dev.vality.daway.domain.Tables.PAYMENT_CASH_CHANGE;
-import static dev.vality.daway.domain.tables.PaymentFee.PAYMENT_FEE;
 
 @Component
 public class PaymentCashChangeDaoImpl extends AbstractGenericDao implements PaymentCashChangeDao {

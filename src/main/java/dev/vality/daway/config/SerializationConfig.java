@@ -1,15 +1,11 @@
 package dev.vality.daway.config;
 
 import dev.vality.damsel.payment_processing.EventPayload;
-import dev.vality.damsel.payment_processing.PartyEventData;
-import dev.vality.damsel.payment_processing.RecurrentPaymentToolEventData;
 import dev.vality.geck.serializer.Geck;
 import dev.vality.sink.common.parser.impl.MachineEventParser;
-import dev.vality.sink.common.parser.impl.PartyEventDataMachineEventParser;
 import dev.vality.sink.common.parser.impl.PaymentEventPayloadMachineEventParser;
 import dev.vality.sink.common.serialization.BinaryDeserializer;
 import dev.vality.sink.common.serialization.impl.AbstractThriftBinaryDeserializer;
-import dev.vality.sink.common.serialization.impl.PartyEventDataDeserializer;
 import dev.vality.sink.common.serialization.impl.PaymentEventPayloadDeserializer;
 import dev.vality.xrates.rate.Change;
 import org.springframework.context.annotation.Bean;
@@ -31,27 +27,6 @@ public class SerializationConfig {
     }
 
     @Bean
-    public BinaryDeserializer<PartyEventData> partyEventDataBinaryDeserializer() {
-        return new PartyEventDataDeserializer();
-    }
-
-    @Bean
-    public MachineEventParser<PartyEventData> partyEventDataMachineEventParser(
-            BinaryDeserializer<PartyEventData> partyEventDataBinaryDeserializer) {
-        return new PartyEventDataMachineEventParser(partyEventDataBinaryDeserializer);
-    }
-
-    @Bean
-    public BinaryDeserializer<RecurrentPaymentToolEventData> recurrentPaymentToolEventDataBinaryDeserializer() {
-        return new AbstractThriftBinaryDeserializer<>() {
-            @Override
-            public RecurrentPaymentToolEventData deserialize(byte[] bytes) {
-                return deserialize(bytes, new RecurrentPaymentToolEventData());
-            }
-        };
-    }
-
-    @Bean
     public BinaryDeserializer<Change> rateEventDataBinaryDeserializer() {
         return new AbstractThriftBinaryDeserializer<>() {
             @Override
@@ -59,13 +34,6 @@ public class SerializationConfig {
                 return Geck.msgPackToTBase(bytes, Change.class);
             }
         };
-    }
-
-    @Bean
-    public MachineEventParser<RecurrentPaymentToolEventData> recurrentPaymentToolEventDataMachineEventParser(
-            BinaryDeserializer<RecurrentPaymentToolEventData> recurrentPaymentToolEventDataBinaryDeserializer
-    ) {
-        return new MachineEventParser<>(recurrentPaymentToolEventDataBinaryDeserializer);
     }
 
     @Bean

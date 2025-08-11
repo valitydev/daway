@@ -68,7 +68,6 @@ public class InvoicingListenerTest {
         MachineEvent message = new MachineEvent();
         Event event = new Event();
         EventPayload payload = new EventPayload();
-        payload.setCustomerChanges(List.of());
         event.setPayload(payload);
         Mockito.when(eventParser.parse(message)).thenReturn(payload);
 

@@ -61,7 +61,7 @@ public class InvoicePaymentChargebackCreatedHandler implements InvoicingHandler 
         Chargeback chargeback = machineEventCopyFactory.create(event, sequenceId, changeId, null);
 
         chargeback.setDomainRevision(invoicePaymentChargeback.getDomainRevision());
-        chargeback.setPartyRevision(invoicePaymentChargeback.getPartyRevision());
+        chargeback.setPartyRevision(invoicePaymentChargeback.getDomainRevision());
         chargeback.setChargebackId(chargebackId);
         chargeback.setPaymentId(paymentId);
         chargeback.setInvoiceId(invoiceId);
