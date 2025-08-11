@@ -55,7 +55,7 @@ public class PartyHandler extends AbstractDominantHandler<PartyConfigObject, Par
         party.setId(null);
         party.setWtime(null);
         PartyConfig data = categoryObject.getData();
-//        party.setPartyId(data.getId());
+        party.setPartyId(categoryObject.getRef().id);
         party.setName(data.getName());
         party.setContactInfoEmail(data.getContactInfo().getRegistrationEmail());
         List<String> managerContactEmails = data.getContactInfo().getManagerContactEmails();

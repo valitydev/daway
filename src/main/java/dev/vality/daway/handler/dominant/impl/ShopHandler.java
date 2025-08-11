@@ -50,7 +50,7 @@ public class ShopHandler extends AbstractDominantHandler<ShopConfigObject, Shop,
     public Shop convertToDatabaseObject(ShopConfigObject shopConfigObject, Long versionId, boolean current) {
         dev.vality.daway.domain.tables.pojos.Shop shop = new dev.vality.daway.domain.tables.pojos.Shop();
         ShopConfig data = shopConfigObject.getData();
-//        shop.setShopId(data.getId());
+        shop.setShopId(shopConfigObject.getRef().id);
         shop.setPartyId(data.getPartyId());
         shop.setBlocking(
                 TBaseUtil.unionFieldToEnum(data.getBlock(), Blocking.class));
