@@ -46,16 +46,16 @@ public class PartyHandler extends AbstractDominantHandler<PartyConfigObject, Par
 
     @Override
     protected boolean acceptDomainObject() {
-        return getDomainObject().isSetCategory();
+        return getDomainObject().isSetPartyConfig();
     }
 
     @Override
-    public Party convertToDatabaseObject(PartyConfigObject categoryObject, Long versionId, boolean current) {
+    public Party convertToDatabaseObject(PartyConfigObject partyConfigObject, Long versionId, boolean current) {
         Party party = new Party();
         party.setId(null);
         party.setWtime(null);
-        PartyConfig data = categoryObject.getData();
-        party.setPartyId(categoryObject.getRef().id);
+        PartyConfig data = partyConfigObject.getData();
+        party.setPartyId(partyConfigObject.getRef().id);
         party.setName(data.getName());
         party.setContactInfoEmail(data.getContactInfo().getRegistrationEmail());
         List<String> managerContactEmails = data.getContactInfo().getManagerContactEmails();

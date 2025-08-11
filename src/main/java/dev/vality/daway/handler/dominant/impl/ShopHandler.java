@@ -43,7 +43,7 @@ public class ShopHandler extends AbstractDominantHandler<ShopConfigObject, Shop,
 
     @Override
     protected boolean acceptDomainObject() {
-        return getDomainObject().isSetCategory();
+        return getDomainObject().isSetShopConfig();
     }
 
     @Override
