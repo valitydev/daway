@@ -57,8 +57,7 @@ public class TermSetHierarchyHandler
         if (data.isSetParentTerms()) {
             termSetHierarchy.setParentTermsRefId(data.getParentTerms().getId());
         }
-        termSetHierarchy.setTermSetsJson(JsonUtil.objectToJsonString(
-                data.getTermSets().stream().map(JsonUtil::thriftBaseToJsonNode).collect(Collectors.toList())));
+        termSetHierarchy.setTermSetsJson(JsonUtil.objectToJsonString(data.getTermSet()));
         termSetHierarchy.setCurrent(current);
         return termSetHierarchy;
     }
