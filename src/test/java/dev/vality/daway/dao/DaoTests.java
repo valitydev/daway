@@ -308,7 +308,7 @@ class DaoTests {
         partyDao.save(party);
         Party partyGet = partyDao.get(party.getPartyId());
         assertEquals(party, partyGet);
-        Long oldId = party.getId();
+        String oldId = party.getPartyId();
 
         Integer changeId = party.getChangeId() + 1;
         party.setChangeId(changeId);
