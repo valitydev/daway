@@ -20,7 +20,7 @@ import static dev.vality.daway.domain.Tables.PARTY;
 
 @Slf4j
 @Component
-public class PartyDaoImpl extends AbstractGenericDao implements DomainObjectDao<Party, Long> {
+public class PartyDaoImpl extends AbstractGenericDao implements DomainObjectDao<Party, String> {
 
     private final RowMapper<Party> rowMapper;
 
@@ -42,9 +42,9 @@ public class PartyDaoImpl extends AbstractGenericDao implements DomainObjectDao<
     }
 
     @Override
-    public void updateNotCurrent(Long id) throws DaoException {
+    public void updateNotCurrent(String id) throws DaoException {
         Query query = getDslContext().update(PARTY).set(PARTY.CURRENT, false)
-                .where(PARTY.ID.eq(id));
+                .where(PARTY.PARTY_ID.eq(id));
         executeOne(query);
     }
 
