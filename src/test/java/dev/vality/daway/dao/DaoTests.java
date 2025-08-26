@@ -316,7 +316,7 @@ class DaoTests {
         partyDao.save(party);
         partyDao.updateNotCurrent(oldId);
 
-        partyGet = partyDao.get(party.getPartyId());
+        partyGet = partyDao.get(oldId);
         assertEquals(changeId, partyGet.getChangeId());
     }
 
