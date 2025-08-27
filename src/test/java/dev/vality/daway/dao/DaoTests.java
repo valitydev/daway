@@ -312,15 +312,12 @@ class DaoTests {
         assertEquals(party, partyGet);
         String oldId = party.getPartyId();
 
-        log.info("oldId: {}", oldId);
         Integer changeId = party.getChangeId() + 1;
         party.setChangeId(changeId);
         party.setId(party.getId() + 1);
-        partyDao.save(party);
-        log.info("oldId party: {}", party);
         partyDao.updateNotCurrent(oldId);
+        partyDao.save(party);
 
-        log.info("oldId: {}", oldId);
         partyGet = partyDao.get(oldId);
         assertEquals(changeId, partyGet.getChangeId());
     }
