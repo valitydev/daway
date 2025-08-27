@@ -19,6 +19,7 @@ import dev.vality.daway.exception.NotFoundException;
 import dev.vality.daway.model.InvoicingKey;
 import dev.vality.daway.utils.HashUtil;
 import dev.vality.testcontainers.annotations.util.RandomBeans;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,7 @@ import java.util.stream.LongStream;
 import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@Slf4j
 @PostgresqlSpringBootITest
 class DaoTests {
 
@@ -308,15 +310,15 @@ class DaoTests {
         partyDao.save(party);
         Party partyGet = partyDao.get(party.getPartyId());
         assertEquals(party, partyGet);
-        Long oldId = party.getId();
+        String oldId = party.getPartyId();
 
         Integer changeId = party.getChangeId() + 1;
         party.setChangeId(changeId);
         party.setId(party.getId() + 1);
-        partyDao.save(party);
         partyDao.updateNotCurrent(oldId);
+        partyDao.save(party);
 
-        partyGet = partyDao.get(party.getPartyId());
+        partyGet = partyDao.get(oldId);
         assertEquals(changeId, partyGet.getChangeId());
     }
 

@@ -12,11 +12,10 @@ import dev.vality.geck.common.util.TypeUtil;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Component
-public class PartyHandler extends AbstractDominantHandler<PartyConfigObject, Party, Long> {
+public class PartyHandler extends AbstractDominantHandler<PartyConfigObject, Party, String> {
 
     private final PartyDaoImpl partyDao;
 
@@ -25,7 +24,7 @@ public class PartyHandler extends AbstractDominantHandler<PartyConfigObject, Par
     }
 
     @Override
-    protected DomainObjectDao<Party, Long> getDomainObjectDao() {
+    protected DomainObjectDao<Party, String> getDomainObjectDao() {
         return partyDao;
     }
 
@@ -35,13 +34,13 @@ public class PartyHandler extends AbstractDominantHandler<PartyConfigObject, Par
     }
 
     @Override
-    protected Long getTargetObjectRefId() {
-        return Long.valueOf(getTargetObject().getRef().getId());
+    protected String getTargetObjectRefId() {
+        return getTargetObject().getRef().getId();
     }
 
     @Override
-    protected Long getTargetRefId() {
-        return Long.valueOf(getReference().getPartyConfig().getId());
+    protected String getTargetRefId() {
+        return getReference().getPartyConfig().getId();
     }
 
     @Override
