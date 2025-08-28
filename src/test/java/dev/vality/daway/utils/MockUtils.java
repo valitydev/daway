@@ -20,8 +20,8 @@ public class MockUtils {
     public static Invoice buildInvoice(String invoiceId) {
         return new Invoice()
                 .setId(invoiceId)
-                .setOwnerId("party_1")
-                .setShopId("shop_id")
+                .setPartyRef(new PartyConfigRef("party_1"))
+                .setShopRef(new ShopConfigRef("shop_id"))
                 .setCreatedAt(TypeUtil.temporalToString(LocalDateTime.now().truncatedTo(ChronoUnit.MICROS)))
                 .setStatus(InvoiceStatus.unpaid(new InvoiceUnpaid()))
                 .setDetails(new InvoiceDetails()
