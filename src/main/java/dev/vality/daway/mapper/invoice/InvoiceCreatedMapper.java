@@ -43,7 +43,7 @@ public class InvoiceCreatedMapper implements Mapper<InvoiceWrapper> {
         String invoiceId = event.getSourceId();
 
         log.info("Start invoice created mapping, sequenceId={}, changeId={}, invoiceId={}, partyId={}, shopId={}",
-                sequenceId, changeId, invoiceId, invoice.getOwnerId(), invoice.getShopId());
+                sequenceId, changeId, invoiceId, invoice.getPartyRef().id, invoice.getShopRef().id);
 
         InvoiceWrapper invoiceWrapper = new InvoiceWrapper();
         LocalDateTime eventCreatedAt = TypeUtil.stringToLocalDateTime(event.getCreatedAt());
@@ -53,7 +53,7 @@ public class InvoiceCreatedMapper implements Mapper<InvoiceWrapper> {
             invoiceWrapper.setCarts(getInvoiceCarts(invoice, sequenceId, changeId, eventCreatedAt));
         }
         log.info("Invoice has been mapped, sequenceId={}, changeId={}, invoiceId={}, partyId={}, shopId={}",
-                sequenceId, changeId, invoiceId, invoice.getOwnerId(), invoice.getShopId());
+                sequenceId, changeId, invoiceId, invoice.getPartyRef().id, invoice.getShopRef().id);
         return invoiceWrapper;
     }
 
@@ -67,8 +67,8 @@ public class InvoiceCreatedMapper implements Mapper<InvoiceWrapper> {
         invoiceRecord.setEventCreatedAt(eventCreatedAt);
         invoiceRecord.setInvoiceId(invoice.getId());
         invoiceRecord.setExternalId(invoice.getExternalId());
-        invoiceRecord.setPartyId(invoice.getOwnerId());
-        invoiceRecord.setShopId(invoice.getShopId());
+        invoiceRecord.setPartyId(invoice.getPartyRef().id);
+        invoiceRecord.setShopId(invoice.getShopRef().id);
         invoiceRecord.setPartyRevision(invoice.getDomainRevision());
         invoiceRecord.setCreatedAt(TypeUtil.stringToLocalDateTime(invoice.getCreatedAt()));
         invoiceRecord.setDetailsProduct(invoice.getDetails().getProduct());
