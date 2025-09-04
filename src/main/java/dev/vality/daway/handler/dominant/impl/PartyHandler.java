@@ -81,9 +81,9 @@ public class PartyHandler extends AbstractDominantHandler<PartyConfigObject, Par
 
     private static LocalDateTime getTime(PartyConfig data) {
         if (data.getBlock().isSetUnblocked()) {
-            return TypeUtil.stringToLocalDateTime(data.getBlock().getBlocked().getSince());
-        } else if (data.getBlock().isSetBlocked()) {
             return TypeUtil.stringToLocalDateTime(data.getBlock().getUnblocked().getSince());
+        } else if (data.getBlock().isSetBlocked()) {
+            return TypeUtil.stringToLocalDateTime(data.getBlock().getBlocked().getSince());
         } else {
             return null;
         }
