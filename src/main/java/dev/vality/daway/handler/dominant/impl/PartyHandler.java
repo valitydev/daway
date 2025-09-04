@@ -60,13 +60,22 @@ public class PartyHandler extends AbstractDominantHandler<PartyConfigObject, Par
         List<String> managerContactEmails = data.getContactInfo().getManagerContactEmails();
         party.setManagerContactEmails(StringUtils.collectionToDelimitedString(managerContactEmails, ","));
         party.setBlocking(Blocking.unblocked);
-        party.setBlockingUnblockedReason(
-                data.getBlock().getBlocked() != null ? data.getBlock().getBlocked().getReason() : "");
+        party.setBlockingUnblockedReason(getReason(data));
         TypeUtil.stringToLocalDateTime(data.getBlock().getBlocked().getSince());
         party.setBlockingBlockedSince(TypeUtil.stringToLocalDateTime(data.getBlock().getBlocked().getSince()));
         party.setSuspension(Suspension.active);
         party.setRevision(0L);
         party.setCurrent(current);
         return party;
+    }
+
+    private static String getReason(PartyConfig data) {
+        if (data.getBlock().isSetUnblocked()) {
+            return data.getBlock().getUnblocked().getReason();
+        } else if (data.getBlock().isSetBlocked()) {
+            return data.getBlock().getBlocked().getReason();
+        } else {
+            return "";
+        }
     }
 }
