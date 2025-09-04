@@ -12,6 +12,7 @@ import dev.vality.geck.common.util.TypeUtil;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Component
@@ -61,8 +62,7 @@ public class PartyHandler extends AbstractDominantHandler<PartyConfigObject, Par
         party.setManagerContactEmails(StringUtils.collectionToDelimitedString(managerContactEmails, ","));
         party.setBlocking(Blocking.unblocked);
         party.setBlockingUnblockedReason(getReason(data));
-        TypeUtil.stringToLocalDateTime(data.getBlock().getBlocked().getSince());
-        party.setBlockingBlockedSince(TypeUtil.stringToLocalDateTime(data.getBlock().getBlocked().getSince()));
+        party.setBlockingBlockedSince(getTime(data));
         party.setSuspension(Suspension.active);
         party.setRevision(0L);
         party.setCurrent(current);
@@ -76,6 +76,16 @@ public class PartyHandler extends AbstractDominantHandler<PartyConfigObject, Par
             return data.getBlock().getBlocked().getReason();
         } else {
             return "";
+        }
+    }
+
+    private static LocalDateTime getTime(PartyConfig data) {
+        if (data.getBlock().isSetUnblocked()) {
+            return TypeUtil.stringToLocalDateTime(data.getBlock().getUnblocked().getSince());
+        } else if (data.getBlock().isSetBlocked()) {
+            return TypeUtil.stringToLocalDateTime(data.getBlock().getBlocked().getSince());
+        } else {
+            return null;
         }
     }
 }
