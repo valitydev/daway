@@ -20,7 +20,7 @@ import static dev.vality.daway.domain.Tables.SHOP;
 
 @Slf4j
 @Component
-public class ShopDaoImpl extends AbstractGenericDao implements DomainObjectDao<Shop, Long> {
+public class ShopDaoImpl extends AbstractGenericDao implements DomainObjectDao<Shop, String> {
 
     private final RowMapper<Shop> rowMapper;
 
@@ -42,10 +42,10 @@ public class ShopDaoImpl extends AbstractGenericDao implements DomainObjectDao<S
     }
 
     @Override
-    public void updateNotCurrent(Long id) throws DaoException {
+    public void updateNotCurrent(String id) throws DaoException {
         Query query = getDslContext()
                 .update(SHOP).set(SHOP.CURRENT, false)
-                .where(SHOP.ID.eq(id));
+                .where(SHOP.SHOP_ID.eq(id));
         executeOne(query);
     }
 
