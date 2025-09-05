@@ -6,7 +6,10 @@ import dev.vality.daway.dao.dominant.impl.TerminalDaoImpl;
 import dev.vality.daway.domain.tables.pojos.Terminal;
 import dev.vality.daway.handler.dominant.AbstractDominantHandler;
 import dev.vality.daway.util.JsonUtil;
+import dev.vality.geck.common.util.TypeUtil;
 import org.springframework.stereotype.Component;
+
+import java.time.LocalDateTime;
 
 @Component
 public class TerminalHandler extends AbstractDominantHandler<TerminalObject, Terminal, Integer> {
@@ -43,9 +46,12 @@ public class TerminalHandler extends AbstractDominantHandler<TerminalObject, Ter
     }
 
     @Override
-    public Terminal convertToDatabaseObject(TerminalObject terminalObject, Long versionId, boolean current) {
+    public Terminal convertToDatabaseObject(TerminalObject terminalObject, Long versionId, boolean current,
+                                            String createdAt) {
         Terminal terminal = new Terminal();
         terminal.setVersionId(versionId);
+        LocalDateTime createAt = TypeUtil.stringToLocalDateTime(createdAt);
+        terminal.setWtime(createAt);
         terminal.setTerminalRefId(getTargetObjectRefId());
         dev.vality.damsel.domain.Terminal data = terminalObject.getData();
         terminal.setName(data.getName());

@@ -9,8 +9,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import static dev.vality.geck.common.util.TypeUtil.temporalToString;
 
 @ExtendWith(MockitoExtension.class)
 class PaymentRoutingRulesHandlerTest {
@@ -25,12 +28,15 @@ class PaymentRoutingRulesHandlerTest {
         handler.setDomainObject(DomainObject.routing_rules(paymentRoutingRulesObject));
 
         PaymentRoutingRule paymentRoutingRule =
-                handler.convertToDatabaseObject(paymentRoutingRulesObject, 1L, true);
+                handler.convertToDatabaseObject(paymentRoutingRulesObject, 1L, true,
+                        temporalToString(LocalDateTime.now()));
 
         Assertions.assertNotNull(paymentRoutingRule);
-        Assertions.assertEquals(paymentRoutingRule.getRuleRefId().intValue(), paymentRoutingRulesObject.getRef().getId());
+        Assertions.assertEquals(paymentRoutingRule.getRuleRefId().intValue(),
+                paymentRoutingRulesObject.getRef().getId());
         Assertions.assertEquals(paymentRoutingRule.getName(), paymentRoutingRulesObject.getData().getName());
-        Assertions.assertEquals(paymentRoutingRule.getDescription(), paymentRoutingRulesObject.getData().getDescription());
+        Assertions.assertEquals(paymentRoutingRule.getDescription(),
+                paymentRoutingRulesObject.getData().getDescription());
         Assertions.assertNotNull(paymentRoutingRule.getRoutingDecisionsJson());
     }
 

@@ -12,6 +12,8 @@ import dev.vality.geck.common.util.TBaseUtil;
 import dev.vality.geck.common.util.TypeUtil;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
+
 @Component
 public class ShopHandler extends AbstractDominantHandler<ShopConfigObject, Shop, Long> {
 
@@ -47,9 +49,12 @@ public class ShopHandler extends AbstractDominantHandler<ShopConfigObject, Shop,
     }
 
     @Override
-    public Shop convertToDatabaseObject(ShopConfigObject shopConfigObject, Long versionId, boolean current) {
+    public Shop convertToDatabaseObject(ShopConfigObject shopConfigObject, Long versionId, boolean current,
+                                        String createdAt) {
         dev.vality.daway.domain.tables.pojos.Shop shop = new dev.vality.daway.domain.tables.pojos.Shop();
         ShopConfig data = shopConfigObject.getData();
+        LocalDateTime createAt = TypeUtil.stringToLocalDateTime(createdAt);
+        shop.setWtime(createAt);
         shop.setShopId(shopConfigObject.getRef().id);
         shop.setPartyId(data.getPartyRef().id);
         shop.setBlocking(TBaseUtil.unionFieldToEnum(data.getBlock(), Blocking.class));

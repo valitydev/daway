@@ -40,18 +40,18 @@ public abstract class AbstractDominantHandler<T, C, I> implements DominantHandle
 
     protected abstract boolean acceptDomainObject();
 
-    public abstract C convertToDatabaseObject(T object, Long versionId, boolean current);
+    public abstract C convertToDatabaseObject(T object, Long versionId, boolean current, String createdAt);
 
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
-    public void handle(FinalOperation operation, Long versionId) {
+    public void handle(FinalOperation operation, Long versionId, String createdAt) {
         T object = getTargetObject();
         if (operation.isSetInsert()) {
-            insertDomainObject(object, versionId);
+            insertDomainObject(object, versionId, createdAt);
         } else if (operation.isSetUpdate()) {
-            updateDomainObject(object, versionId);
+            updateDomainObject(object, versionId, createdAt);
         } else if (operation.isSetRemove()) {
-            removeDomainObject(object, versionId);
+            removeDomainObject(object, versionId, createdAt);
         } else {
             throw new IllegalStateException(
                     UNKNOWN_TYPE_EX + operation);
@@ -74,30 +74,30 @@ public abstract class AbstractDominantHandler<T, C, I> implements DominantHandle
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
-    public void insertDomainObject(T object, Long versionId) {
+    public void insertDomainObject(T object, Long versionId, String createdAt) {
         log.info("Start to insert '{}' with id={}, versionId={}", object.getClass().getSimpleName(),
                 getTargetObjectRefId(), versionId);
-        getDomainObjectDao().save(convertToDatabaseObject(object, versionId, true));
+        getDomainObjectDao().save(convertToDatabaseObject(object, versionId, true, createdAt));
         log.info("End to insert '{}' with id={}, versionId={}", object.getClass().getSimpleName(),
                 getTargetObjectRefId(), versionId);
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
-    public void updateDomainObject(T object, Long versionId) {
+    public void updateDomainObject(T object, Long versionId, String createdAt) {
         log.info("Start to update '{}' with id={}, versionId={}", object.getClass().getSimpleName(),
                 getTargetObjectRefId(), versionId);
         getDomainObjectDao().updateNotCurrent(getTargetObjectRefId());
-        getDomainObjectDao().save(convertToDatabaseObject(object, versionId, true));
+        getDomainObjectDao().save(convertToDatabaseObject(object, versionId, true, createdAt));
         log.info("End to update '{}' with id={}, versionId={}", object.getClass().getSimpleName(),
                 getTargetObjectRefId(), versionId);
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
-    public void removeDomainObject(T object, Long versionId) {
+    public void removeDomainObject(T object, Long versionId, String createdAt) {
         log.info("Start to remove '{}' with id={}, versionId={}", object.getClass().getSimpleName(),
                 getTargetRefId(), versionId);
         getDomainObjectDao().updateNotCurrent(getTargetRefId());
-        getDomainObjectDao().save(convertToDatabaseObject(object, versionId, false));
+        getDomainObjectDao().save(convertToDatabaseObject(object, versionId, false, createdAt));
         log.info("End to remove '{}' with id={}, versionId={}", object.getClass().getSimpleName(),
                 getTargetRefId(), versionId);
     }

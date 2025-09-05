@@ -5,7 +5,10 @@ import dev.vality.daway.dao.dominant.iface.DomainObjectDao;
 import dev.vality.daway.dao.dominant.impl.CategoryDaoImpl;
 import dev.vality.daway.domain.tables.pojos.Category;
 import dev.vality.daway.handler.dominant.AbstractDominantHandler;
+import dev.vality.geck.common.util.TypeUtil;
 import org.springframework.stereotype.Component;
+
+import java.time.LocalDateTime;
 
 @Component
 public class CategoryHandler extends AbstractDominantHandler<CategoryObject, Category, Integer> {
@@ -42,9 +45,11 @@ public class CategoryHandler extends AbstractDominantHandler<CategoryObject, Cat
     }
 
     @Override
-    public Category convertToDatabaseObject(CategoryObject categoryObject, Long versionId, boolean current) {
+    public Category convertToDatabaseObject(CategoryObject categoryObject, Long versionId, boolean current, String createdAt) {
         Category category = new Category();
         category.setVersionId(versionId);
+        LocalDateTime createAt = TypeUtil.stringToLocalDateTime(createdAt);
+        category.setWtime(createAt);
         category.setCategoryRefId(getTargetObjectRefId());
         dev.vality.damsel.domain.Category data = categoryObject.getData();
         category.setName(data.getName());

@@ -6,13 +6,16 @@ import dev.vality.daway.dao.dominant.impl.PaymentMethodDaoImpl;
 import dev.vality.daway.domain.enums.PaymentMethodType;
 import dev.vality.daway.handler.dominant.AbstractDominantHandler;
 import dev.vality.daway.util.PaymentMethodUtils;
+import dev.vality.geck.common.util.TypeUtil;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.function.Supplier;
 
 @Component
-public class PaymentMethodHandler extends AbstractDominantHandler<PaymentMethodObject, dev.vality.daway.domain.tables.pojos.PaymentMethod, String> {
+public class PaymentMethodHandler extends
+        AbstractDominantHandler<PaymentMethodObject, dev.vality.daway.domain.tables.pojos.PaymentMethod, String> {
 
     private static final String SEPARATOR = ".";
     private static final String DEPRECATED = "_deprecated";
@@ -86,9 +89,13 @@ public class PaymentMethodHandler extends AbstractDominantHandler<PaymentMethodO
     public dev.vality.daway.domain.tables.pojos.PaymentMethod convertToDatabaseObject(
             PaymentMethodObject paymentMethodObject,
             Long versionId,
-            boolean current) {
-        dev.vality.daway.domain.tables.pojos.PaymentMethod paymentMethod = new dev.vality.daway.domain.tables.pojos.PaymentMethod();
+            boolean current,
+            String createdAt) {
+        dev.vality.daway.domain.tables.pojos.PaymentMethod paymentMethod =
+                new dev.vality.daway.domain.tables.pojos.PaymentMethod();
         paymentMethod.setVersionId(versionId);
+        LocalDateTime createAt = TypeUtil.stringToLocalDateTime(createdAt);
+        paymentMethod.setWtime(createAt);
         paymentMethod.setPaymentMethodRefId(getTargetObjectRefId());
         var data = paymentMethodObject.getData();
         paymentMethod.setName(data.getName());

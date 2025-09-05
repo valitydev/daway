@@ -6,8 +6,10 @@ import dev.vality.daway.dao.dominant.impl.PaymentInstitutionDaoImpl;
 import dev.vality.daway.domain.tables.pojos.PaymentInstitution;
 import dev.vality.daway.handler.dominant.AbstractDominantHandler;
 import dev.vality.daway.util.JsonUtil;
+import dev.vality.geck.common.util.TypeUtil;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
 @Component
@@ -47,9 +49,11 @@ public class PaymentInstitutionHandler
 
     @Override
     public PaymentInstitution convertToDatabaseObject(PaymentInstitutionObject paymentInstitutionObject, Long versionId,
-                                                      boolean current) {
+                                                      boolean current, String createdAt) {
         PaymentInstitution paymentInstitution = new PaymentInstitution();
         paymentInstitution.setVersionId(versionId);
+        LocalDateTime createAt = TypeUtil.stringToLocalDateTime(createdAt);
+        paymentInstitution.setWtime(createAt);
         paymentInstitution.setPaymentInstitutionRefId(getTargetObjectRefId());
         dev.vality.damsel.domain.PaymentInstitution data = paymentInstitutionObject.getData();
         paymentInstitution.setName(data.getName());

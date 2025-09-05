@@ -5,8 +5,11 @@ import dev.vality.daway.dao.dominant.iface.DomainObjectDao;
 import dev.vality.daway.dao.dominant.impl.TradeBlocDaoImpl;
 import dev.vality.daway.domain.tables.pojos.TradeBloc;
 import dev.vality.daway.handler.dominant.AbstractDominantHandler;
+import dev.vality.geck.common.util.TypeUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+
+import java.time.LocalDateTime;
 
 @Component
 @RequiredArgsConstructor
@@ -40,9 +43,12 @@ public class TradeBlocHandler extends AbstractDominantHandler<TradeBlocObject, T
     }
 
     @Override
-    public TradeBloc convertToDatabaseObject(TradeBlocObject object, Long versionId, boolean current) {
+    public TradeBloc convertToDatabaseObject(TradeBlocObject object, Long versionId, boolean current,
+                                             String createdAt) {
         TradeBloc tradeBloc = new TradeBloc();
         tradeBloc.setVersionId(versionId);
+        LocalDateTime createAt = TypeUtil.stringToLocalDateTime(createdAt);
+        tradeBloc.setWtime(createAt);
         tradeBloc.setTradeBlocRefId(getTargetObjectRefId());
         dev.vality.damsel.domain.TradeBloc data = object.getData();
         tradeBloc.setName(data.getName());

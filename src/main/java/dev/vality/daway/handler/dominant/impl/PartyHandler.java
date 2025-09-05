@@ -50,10 +50,12 @@ public class PartyHandler extends AbstractDominantHandler<PartyConfigObject, Par
     }
 
     @Override
-    public Party convertToDatabaseObject(PartyConfigObject partyConfigObject, Long versionId, boolean current) {
+    public Party convertToDatabaseObject(PartyConfigObject partyConfigObject, Long versionId, boolean current,
+                                         String createdAt) {
         Party party = new Party();
         party.setId(null);
-        party.setWtime(null);
+        LocalDateTime createAt = TypeUtil.stringToLocalDateTime(createdAt);
+        party.setWtime(createAt);
         PartyConfig data = partyConfigObject.getData();
         party.setPartyId(partyConfigObject.getRef().id);
         party.setName(data.getName());
@@ -66,6 +68,7 @@ public class PartyHandler extends AbstractDominantHandler<PartyConfigObject, Par
         party.setSuspension(Suspension.active);
         party.setRevision(0L);
         party.setCurrent(current);
+        party.setEventCreatedAt(createAt);
         return party;
     }
 

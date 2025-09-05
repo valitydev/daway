@@ -7,8 +7,10 @@ import dev.vality.daway.dao.dominant.impl.CalendarDaoImpl;
 import dev.vality.daway.domain.tables.pojos.Calendar;
 import dev.vality.daway.handler.dominant.AbstractDominantHandler;
 import dev.vality.daway.util.JsonUtil;
+import dev.vality.geck.common.util.TypeUtil;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -48,9 +50,11 @@ public class CalendarHandler extends AbstractDominantHandler<CalendarObject, Cal
     }
 
     @Override
-    public Calendar convertToDatabaseObject(CalendarObject calendarObject, Long versionId, boolean current) {
+    public Calendar convertToDatabaseObject(CalendarObject calendarObject, Long versionId, boolean current, String createdAt) {
         Calendar calendar = new Calendar();
         calendar.setVersionId(versionId);
+        LocalDateTime createAt = TypeUtil.stringToLocalDateTime(createdAt);
+        calendar.setWtime(createAt);
         calendar.setCalendarRefId(getTargetObjectRefId());
         dev.vality.damsel.domain.Calendar data = calendarObject.getData();
         calendar.setName(data.getName());

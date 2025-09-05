@@ -10,6 +10,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
+import java.time.LocalDateTime;
+
+import static dev.vality.geck.common.util.TypeUtil.temporalToString;
 import static org.junit.jupiter.api.Assertions.*;
 
 class TradeBlocHandlerTest {
@@ -55,7 +58,8 @@ class TradeBlocHandlerTest {
     void shouldConvertToDatabaseObject() {
         long versionId = 1L;
         boolean current = false;
-        TradeBloc tradeBloc = tradeBlocHandler.convertToDatabaseObject(tradeBlocObject, versionId, current);
+        TradeBloc tradeBloc = tradeBlocHandler.convertToDatabaseObject(tradeBlocObject, versionId, current,
+                temporalToString(LocalDateTime.now()));
         assertNotNull(tradeBloc);
         assertEquals(tradeBlocObject.getData().getName(), tradeBloc.getName());
         assertEquals(tradeBlocObject.getData().getDescription(), tradeBloc.getDescription());

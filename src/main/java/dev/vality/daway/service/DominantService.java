@@ -29,7 +29,7 @@ public class DominantService {
         operations.forEach(operation -> handlers.forEach(handler -> {
             operation.getOps().forEach(finalOperation -> {
                         if (handler.acceptAndSet(finalOperation)) {
-                            processOperation(handler, finalOperation, operation.version);
+                            processOperation(handler, finalOperation, operation.version, operation.created_at);
                         }
                     }
             );
@@ -37,11 +37,11 @@ public class DominantService {
         }));
     }
 
-    private void processOperation(DominantHandler handler, FinalOperation operation, Long versionId) {
+    private void processOperation(DominantHandler handler, FinalOperation operation, Long versionId, String createdAt) {
         try {
             log.info("Start to process commit with versionId={} operation={} ",
                     versionId, JsonUtil.thriftBaseToJsonString(operation));
-            handler.handle(operation, versionId);
+            handler.handle(operation, versionId, createdAt);
             log.info("End to process commit with versionId={}", versionId);
         } catch (Exception ex) {
             log.error("The error was received when the service processed operation", ex);

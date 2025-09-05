@@ -6,9 +6,10 @@ import dev.vality.daway.dao.dominant.impl.TermSetHierarchyDaoImpl;
 import dev.vality.daway.domain.tables.pojos.TermSetHierarchy;
 import dev.vality.daway.handler.dominant.AbstractDominantHandler;
 import dev.vality.daway.util.JsonUtil;
+import dev.vality.geck.common.util.TypeUtil;
 import org.springframework.stereotype.Component;
 
-import java.util.stream.Collectors;
+import java.time.LocalDateTime;
 
 @Component
 public class TermSetHierarchyHandler
@@ -47,9 +48,11 @@ public class TermSetHierarchyHandler
 
     @Override
     public TermSetHierarchy convertToDatabaseObject(TermSetHierarchyObject termSetHierarchyObject, Long versionId,
-                                                    boolean current) {
+                                                    boolean current, String createdAt) {
         TermSetHierarchy termSetHierarchy = new TermSetHierarchy();
         termSetHierarchy.setVersionId(versionId);
+        LocalDateTime createAt = TypeUtil.stringToLocalDateTime(createdAt);
+        termSetHierarchy.setWtime(createAt);
         termSetHierarchy.setTermSetHierarchyRefId(getTargetObjectRefId());
         dev.vality.damsel.domain.TermSetHierarchy data = termSetHierarchyObject.getData();
         termSetHierarchy.setName(data.getName());

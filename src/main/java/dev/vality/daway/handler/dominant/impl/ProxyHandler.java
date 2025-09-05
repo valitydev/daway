@@ -6,7 +6,10 @@ import dev.vality.daway.dao.dominant.iface.DomainObjectDao;
 import dev.vality.daway.dao.dominant.impl.ProxyDaoImpl;
 import dev.vality.daway.domain.tables.pojos.Proxy;
 import dev.vality.daway.handler.dominant.AbstractDominantHandler;
+import dev.vality.geck.common.util.TypeUtil;
 import org.springframework.stereotype.Component;
+
+import java.time.LocalDateTime;
 
 @Component
 public class ProxyHandler extends AbstractDominantHandler<ProxyObject, Proxy, Integer> {
@@ -43,9 +46,11 @@ public class ProxyHandler extends AbstractDominantHandler<ProxyObject, Proxy, In
     }
 
     @Override
-    public Proxy convertToDatabaseObject(ProxyObject proxyObject, Long versionId, boolean current) {
+    public Proxy convertToDatabaseObject(ProxyObject proxyObject, Long versionId, boolean current, String createdAt) {
         Proxy proxy = new Proxy();
         proxy.setVersionId(versionId);
+        LocalDateTime createAt = TypeUtil.stringToLocalDateTime(createdAt);
+        proxy.setWtime(createAt);
         proxy.setProxyRefId(getTargetObjectRefId());
         ProxyDefinition data = proxyObject.getData();
         proxy.setName(data.getName());

@@ -6,8 +6,10 @@ import dev.vality.daway.dao.dominant.impl.ProviderDaoImpl;
 import dev.vality.daway.domain.tables.pojos.Provider;
 import dev.vality.daway.handler.dominant.AbstractDominantHandler;
 import dev.vality.daway.util.JsonUtil;
+import dev.vality.geck.common.util.TypeUtil;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -46,9 +48,12 @@ public class ProviderHandler extends AbstractDominantHandler<ProviderObject, Pro
     }
 
     @Override
-    public Provider convertToDatabaseObject(ProviderObject providerObject, Long versionId, boolean current) {
+    public Provider convertToDatabaseObject(ProviderObject providerObject, Long versionId, boolean current,
+                                            String createdAt) {
         Provider provider = new Provider();
         provider.setVersionId(versionId);
+        LocalDateTime createAt = TypeUtil.stringToLocalDateTime(createdAt);
+        provider.setWtime(createAt);
         provider.setProviderRefId(getTargetObjectRefId());
         dev.vality.damsel.domain.Provider data = providerObject.getData();
         provider.setName(data.getName());
