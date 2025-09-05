@@ -333,7 +333,7 @@ class DaoTests {
 
         Integer changeId = shop.getChangeId() + 1;
         shop.setChangeId(changeId);
-        String id = shop.getPartyId();
+        String id = shop.getShopId();
         shop.setId(shop.getId() + 1);
         shopDao.updateNotCurrent(id);
         shopDao.save(shop);
