@@ -13,6 +13,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static dev.vality.geck.common.util.TypeUtil.temporalToString;
+
 @ExtendWith(MockitoExtension.class)
 class PaymentRoutingRulesHandlerTest {
 
@@ -26,7 +28,8 @@ class PaymentRoutingRulesHandlerTest {
         handler.setDomainObject(DomainObject.routing_rules(paymentRoutingRulesObject));
 
         PaymentRoutingRule paymentRoutingRule =
-                handler.convertToDatabaseObject(paymentRoutingRulesObject, 1L, true, LocalDateTime.now().toString());
+                handler.convertToDatabaseObject(paymentRoutingRulesObject, 1L, true,
+                        temporalToString(LocalDateTime.now()));
 
         Assertions.assertNotNull(paymentRoutingRule);
         Assertions.assertEquals(paymentRoutingRule.getRuleRefId().intValue(),

@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static dev.vality.geck.common.util.TypeUtil.temporalToString;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @ExtendWith(MockitoExtension.class)
@@ -38,7 +39,8 @@ class ProviderHandlerTest {
         ProviderHandler providerHandler = new ProviderHandler(providerDao);
         providerHandler.setDomainObject(DomainObject.provider(providerObject));
         dev.vality.daway.domain.tables.pojos.Provider provider =
-                providerHandler.convertToDatabaseObject(providerObject, 1L, true, LocalDateTime.now().toString());
+                providerHandler.convertToDatabaseObject(providerObject, 1L, true,
+                        temporalToString(LocalDateTime.now()));
         assertNotNull(provider);
         Assertions.assertEquals(provider.getName(), providerObject.getData().getName());
         Assertions.assertEquals(provider.getDescription(), providerObject.getData().getDescription());
