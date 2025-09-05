@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 
 @Component
-public class ShopHandler extends AbstractDominantHandler<ShopConfigObject, Shop, Long> {
+public class ShopHandler extends AbstractDominantHandler<ShopConfigObject, Shop, String> {
 
     private final ShopDaoImpl shopDao;
 
@@ -24,7 +24,7 @@ public class ShopHandler extends AbstractDominantHandler<ShopConfigObject, Shop,
     }
 
     @Override
-    protected DomainObjectDao<Shop, Long> getDomainObjectDao() {
+    protected DomainObjectDao<Shop, String> getDomainObjectDao() {
         return shopDao;
     }
 
@@ -34,13 +34,13 @@ public class ShopHandler extends AbstractDominantHandler<ShopConfigObject, Shop,
     }
 
     @Override
-    protected Long getTargetObjectRefId() {
-        return Long.valueOf(getTargetObject().getRef().getId());
+    protected String getTargetObjectRefId() {
+        return getTargetObject().getRef().getId();
     }
 
     @Override
-    protected Long getTargetRefId() {
-        return Long.valueOf(getReference().getShopConfig().getId());
+    protected String getTargetRefId() {
+        return getReference().getShopConfig().getId();
     }
 
     @Override
