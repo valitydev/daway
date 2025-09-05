@@ -69,6 +69,7 @@ public class PartyHandler extends AbstractDominantHandler<PartyConfigObject, Par
         party.setRevision(0L);
         party.setCurrent(current);
         party.setEventCreatedAt(createAt);
+        party.setCreatedAt(createAt);
         return party;
     }
 
