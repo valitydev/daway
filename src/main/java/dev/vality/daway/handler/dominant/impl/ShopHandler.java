@@ -55,6 +55,8 @@ public class ShopHandler extends AbstractDominantHandler<ShopConfigObject, Shop,
         ShopConfig data = shopConfigObject.getData();
         LocalDateTime createAt = TypeUtil.stringToLocalDateTime(createdAt);
         shop.setWtime(createAt);
+        shop.setCreatedAt(createAt);
+        shop.setEventCreatedAt(createAt);
         shop.setShopId(shopConfigObject.getRef().id);
         shop.setPartyId(data.getPartyRef().id);
         shop.setBlocking(TBaseUtil.unionFieldToEnum(data.getBlock(), Blocking.class));
