@@ -10,6 +10,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -37,7 +38,7 @@ class ProviderHandlerTest {
         ProviderHandler providerHandler = new ProviderHandler(providerDao);
         providerHandler.setDomainObject(DomainObject.provider(providerObject));
         dev.vality.daway.domain.tables.pojos.Provider provider =
-                providerHandler.convertToDatabaseObject(providerObject, 1L, true);
+                providerHandler.convertToDatabaseObject(providerObject, 1L, true, LocalDateTime.now().toString());
         assertNotNull(provider);
         Assertions.assertEquals(provider.getName(), providerObject.getData().getName());
         Assertions.assertEquals(provider.getDescription(), providerObject.getData().getDescription());
@@ -52,11 +53,18 @@ class ProviderHandlerTest {
                         .setName(dev.vality.testcontainers.annotations.util.RandomBeans.random(String.class))
                         .setDescription(dev.vality.testcontainers.annotations.util.RandomBeans.random(String.class))
                         .setProxy(new Proxy()
-                                .setRef(new ProxyRef(dev.vality.testcontainers.annotations.util.RandomBeans.random(Integer.class)))
-                                .setAdditional(Map.of(dev.vality.testcontainers.annotations.util.RandomBeans.random(String.class), dev.vality.testcontainers.annotations.util.RandomBeans.random(String.class)))
+                                .setRef(new ProxyRef(
+                                        dev.vality.testcontainers.annotations.util.RandomBeans.random(Integer.class)))
+                                .setAdditional(Map.of(dev.vality.testcontainers.annotations.util.RandomBeans.random(
+                                                String.class),
+                                        dev.vality.testcontainers.annotations.util.RandomBeans.random(String.class)))
                         )
                         .setAccounts(
-                                Map.of(new CurrencyRef(dev.vality.testcontainers.annotations.util.RandomBeans.random(String.class)), new ProviderAccount(dev.vality.testcontainers.annotations.util.RandomBeans.random(Long.class))))
+                                Map.of(new CurrencyRef(
+                                                dev.vality.testcontainers.annotations.util.RandomBeans.random(String.class)),
+                                        new ProviderAccount(
+                                                dev.vality.testcontainers.annotations.util.RandomBeans.random(
+                                                        Long.class))))
                         .setTerms(new ProvisionTermSet()
                                 .setPayments(buildProvisionTermSet())
                                 .setRecurrentPaytools(buildRecurrentPaytools())
@@ -84,7 +92,7 @@ class ProviderHandlerTest {
         PaymentMethodSelector paymentMethodSelector = new PaymentMethodSelector();
         paymentMethodSelector.setValue(Set.of(new PaymentMethodRef(
                 PaymentMethod.bank_card(new BankCardPaymentMethod()
-                                .setPaymentSystem(new PaymentSystemRef("visa"))))));
+                        .setPaymentSystem(new PaymentSystemRef("visa"))))));
         recurrentPaytoolsProvisionTerms.setPaymentMethods(paymentMethodSelector);
         CashValueSelector cashValueSelector = new CashValueSelector();
         cashValueSelector.setValue(buildCash());
