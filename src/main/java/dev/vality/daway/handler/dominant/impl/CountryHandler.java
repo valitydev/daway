@@ -6,8 +6,11 @@ import dev.vality.daway.dao.dominant.iface.DomainObjectDao;
 import dev.vality.daway.dao.dominant.impl.CountryDaoImpl;
 import dev.vality.daway.domain.tables.pojos.Country;
 import dev.vality.daway.handler.dominant.AbstractDominantHandler;
+import dev.vality.geck.common.util.TypeUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+
+import java.time.LocalDateTime;
 
 @Component
 @RequiredArgsConstructor
@@ -41,8 +44,10 @@ public class CountryHandler extends AbstractDominantHandler<CountryObject, Count
     }
 
     @Override
-    public Country convertToDatabaseObject(CountryObject object, Long versionId, boolean current) {
+    public Country convertToDatabaseObject(CountryObject object, Long versionId, boolean current, String createdAt) {
         Country country = new Country();
+        LocalDateTime createAt = TypeUtil.stringToLocalDateTime(createdAt);
+        country.setWtime(createAt);
         country.setVersionId(versionId);
         country.setCountryRefId(getTargetObjectRefId());
         dev.vality.damsel.domain.Country data = object.getData();

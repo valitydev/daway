@@ -4,5 +4,5 @@ public interface DominantHandler<T> {
 
     boolean acceptAndSet(T change);
 
-    void handle(T change, Long versionId);
+    void handle(T change, Long versionId, String createdAt);
 }

@@ -6,8 +6,11 @@ import dev.vality.daway.dao.dominant.iface.DomainObjectDao;
 import dev.vality.daway.domain.tables.pojos.PaymentRoutingRule;
 import dev.vality.daway.handler.dominant.AbstractDominantHandler;
 import dev.vality.daway.util.JsonUtil;
+import dev.vality.geck.common.util.TypeUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+
+import java.time.LocalDateTime;
 
 @Component
 @RequiredArgsConstructor
@@ -24,12 +27,13 @@ public class PaymentRoutingRulesHandler
     @Override
     public PaymentRoutingRule convertToDatabaseObject(RoutingRulesObject rulesObject,
                                                       Long versionId,
-                                                      boolean current) {
-
+                                                      boolean current,
+                                                      String createdAt) {
         PaymentRoutingRule paymentRoutingRule = new PaymentRoutingRule();
         paymentRoutingRule.setRuleRefId(rulesObject.getRef().getId());
         paymentRoutingRule.setVersionId(versionId);
-
+        LocalDateTime createAt = TypeUtil.stringToLocalDateTime(createdAt);
+        paymentRoutingRule.setWtime(createAt);
         RoutingRuleset ruleset = rulesObject.getData();
         paymentRoutingRule.setName(ruleset.getName());
         paymentRoutingRule.setDescription(ruleset.getDescription());

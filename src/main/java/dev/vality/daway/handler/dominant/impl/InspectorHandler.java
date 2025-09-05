@@ -6,7 +6,10 @@ import dev.vality.daway.dao.dominant.impl.InspectorDaoImpl;
 import dev.vality.daway.domain.tables.pojos.Inspector;
 import dev.vality.daway.handler.dominant.AbstractDominantHandler;
 import dev.vality.daway.util.JsonUtil;
+import dev.vality.geck.common.util.TypeUtil;
 import org.springframework.stereotype.Component;
+
+import java.time.LocalDateTime;
 
 @Component
 public class InspectorHandler extends AbstractDominantHandler<InspectorObject, Inspector, Integer> {
@@ -43,9 +46,11 @@ public class InspectorHandler extends AbstractDominantHandler<InspectorObject, I
     }
 
     @Override
-    public Inspector convertToDatabaseObject(InspectorObject inspectorObject, Long versionId, boolean current) {
+    public Inspector convertToDatabaseObject(InspectorObject inspectorObject, Long versionId, boolean current, String createdAt) {
         Inspector inspector = new Inspector();
         inspector.setVersionId(versionId);
+        LocalDateTime createAt = TypeUtil.stringToLocalDateTime(createdAt);
+        inspector.setWtime(createAt);
         inspector.setInspectorRefId(getTargetObjectRefId());
         dev.vality.damsel.domain.Inspector data = inspectorObject.getData();
         inspector.setName(data.getName());
