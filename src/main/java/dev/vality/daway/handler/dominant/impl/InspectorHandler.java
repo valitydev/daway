@@ -49,8 +49,7 @@ public class InspectorHandler extends AbstractDominantHandler<InspectorObject, I
     public Inspector convertToDatabaseObject(InspectorObject inspectorObject, Long versionId, boolean current, String createdAt) {
         Inspector inspector = new Inspector();
         inspector.setVersionId(versionId);
-        LocalDateTime createAt = TypeUtil.stringToLocalDateTime(createdAt);
-        inspector.setWtime(createAt);
+        inspector.setWtime(null);
         inspector.setInspectorRefId(getTargetObjectRefId());
         dev.vality.damsel.domain.Inspector data = inspectorObject.getData();
         inspector.setName(data.getName());

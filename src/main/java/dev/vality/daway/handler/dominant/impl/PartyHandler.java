@@ -54,8 +54,7 @@ public class PartyHandler extends AbstractDominantHandler<PartyConfigObject, Par
                                          String createdAt) {
         Party party = new Party();
         party.setId(null);
-        LocalDateTime createAt = TypeUtil.stringToLocalDateTime(createdAt);
-        party.setWtime(createAt);
+        party.setWtime(null);
         PartyConfig data = partyConfigObject.getData();
         party.setPartyId(partyConfigObject.getRef().id);
         party.setName(data.getName());
@@ -68,6 +67,7 @@ public class PartyHandler extends AbstractDominantHandler<PartyConfigObject, Par
         party.setSuspension(Suspension.active);
         party.setRevision(0L);
         party.setCurrent(current);
+        LocalDateTime createAt = TypeUtil.stringToLocalDateTime(createdAt);
         party.setEventCreatedAt(createAt);
         party.setCreatedAt(createAt);
         return party;

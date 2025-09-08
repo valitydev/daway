@@ -50,8 +50,7 @@ public class TerminalHandler extends AbstractDominantHandler<TerminalObject, Ter
                                             String createdAt) {
         Terminal terminal = new Terminal();
         terminal.setVersionId(versionId);
-        LocalDateTime createAt = TypeUtil.stringToLocalDateTime(createdAt);
-        terminal.setWtime(createAt);
+        terminal.setWtime(null);
         terminal.setTerminalRefId(getTargetObjectRefId());
         dev.vality.damsel.domain.Terminal data = terminalObject.getData();
         terminal.setName(data.getName());

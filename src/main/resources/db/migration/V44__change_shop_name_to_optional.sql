@@ -1,0 +1,2 @@
+ALTER TABLE dw.shop
+ALTER COLUMN details_name DROP NOT NULL;
