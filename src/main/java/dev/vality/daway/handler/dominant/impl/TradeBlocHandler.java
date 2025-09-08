@@ -47,8 +47,7 @@ public class TradeBlocHandler extends AbstractDominantHandler<TradeBlocObject, T
                                              String createdAt) {
         TradeBloc tradeBloc = new TradeBloc();
         tradeBloc.setVersionId(versionId);
-        LocalDateTime createAt = TypeUtil.stringToLocalDateTime(createdAt);
-        tradeBloc.setWtime(createAt);
+        tradeBloc.setWtime(null);
         tradeBloc.setTradeBlocRefId(getTargetObjectRefId());
         dev.vality.damsel.domain.TradeBloc data = object.getData();
         tradeBloc.setName(data.getName());
