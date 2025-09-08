@@ -52,8 +52,7 @@ public class ProviderHandler extends AbstractDominantHandler<ProviderObject, Pro
                                             String createdAt) {
         Provider provider = new Provider();
         provider.setVersionId(versionId);
-        LocalDateTime createAt = TypeUtil.stringToLocalDateTime(createdAt);
-        provider.setWtime(createAt);
+        provider.setWtime(null);
         provider.setProviderRefId(getTargetObjectRefId());
         dev.vality.damsel.domain.Provider data = providerObject.getData();
         provider.setName(data.getName());

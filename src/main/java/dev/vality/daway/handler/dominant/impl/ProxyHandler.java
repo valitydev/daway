@@ -49,8 +49,7 @@ public class ProxyHandler extends AbstractDominantHandler<ProxyObject, Proxy, In
     public Proxy convertToDatabaseObject(ProxyObject proxyObject, Long versionId, boolean current, String createdAt) {
         Proxy proxy = new Proxy();
         proxy.setVersionId(versionId);
-        LocalDateTime createAt = TypeUtil.stringToLocalDateTime(createdAt);
-        proxy.setWtime(createAt);
+        proxy.setWtime(null);
         proxy.setProxyRefId(getTargetObjectRefId());
         ProxyDefinition data = proxyObject.getData();
         proxy.setName(data.getName());

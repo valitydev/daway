@@ -53,8 +53,8 @@ public class ShopHandler extends AbstractDominantHandler<ShopConfigObject, Shop,
                                         String createdAt) {
         dev.vality.daway.domain.tables.pojos.Shop shop = new dev.vality.daway.domain.tables.pojos.Shop();
         ShopConfig data = shopConfigObject.getData();
+        shop.setWtime(null);
         LocalDateTime createAt = TypeUtil.stringToLocalDateTime(createdAt);
-        shop.setWtime(createAt);
         shop.setCreatedAt(createAt);
         shop.setEventCreatedAt(createAt);
         shop.setShopId(shopConfigObject.getRef().id);
