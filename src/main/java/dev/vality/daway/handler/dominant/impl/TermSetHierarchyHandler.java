@@ -10,6 +10,7 @@ import dev.vality.geck.common.util.TypeUtil;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.stream.Collectors;
 
 @Component
 public class TermSetHierarchyHandler
@@ -51,8 +52,7 @@ public class TermSetHierarchyHandler
                                                     boolean current, String createdAt) {
         TermSetHierarchy termSetHierarchy = new TermSetHierarchy();
         termSetHierarchy.setVersionId(versionId);
-        LocalDateTime createAt = TypeUtil.stringToLocalDateTime(createdAt);
-        termSetHierarchy.setWtime(createAt);
+        termSetHierarchy.setWtime(null);
         termSetHierarchy.setTermSetHierarchyRefId(getTargetObjectRefId());
         dev.vality.damsel.domain.TermSetHierarchy data = termSetHierarchyObject.getData();
         termSetHierarchy.setName(data.getName());
@@ -60,7 +60,7 @@ public class TermSetHierarchyHandler
         if (data.isSetParentTerms()) {
             termSetHierarchy.setParentTermsRefId(data.getParentTerms().getId());
         }
-        termSetHierarchy.setTermSetsJson(JsonUtil.objectToJsonString(data.getTermSet()));
+        termSetHierarchy.setTermSetsJson(JsonUtil.objectToJsonString(JsonUtil.thriftBaseToJsonNode(data.getTermSet())));
         termSetHierarchy.setCurrent(current);
         return termSetHierarchy;
     }
