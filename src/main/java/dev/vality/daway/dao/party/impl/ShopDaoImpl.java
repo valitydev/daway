@@ -46,7 +46,7 @@ public class ShopDaoImpl extends AbstractGenericDao implements DomainObjectDao<S
         Query query = getDslContext()
                 .update(SHOP).set(SHOP.CURRENT, false)
                 .where(SHOP.SHOP_ID.eq(id));
-        executeOne(query);
+        execute(query);
     }
 
     public Shop get(String partyId, String shopId) throws DaoException {
