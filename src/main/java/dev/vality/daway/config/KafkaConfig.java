@@ -1,15 +1,8 @@
 package dev.vality.daway.config;
 
-import dev.vality.damsel.domain_config_v2.HistoricalCommit;
-import dev.vality.daway.config.properties.KafkaConsumerProperties;
-import dev.vality.daway.serde.CurrencyExchangeRateEventDeserializer;
-import dev.vality.daway.serde.HistoricalCommitDeserializer;
-import dev.vality.daway.serde.SinkEventDeserializer;
-import dev.vality.daway.service.FileService;
-import dev.vality.exrates.events.CurrencyEvent;
-import dev.vality.kafka.common.util.ExponentialBackOffDefaultErrorHandlerFactory;
-import dev.vality.machinegun.eventsink.MachineEvent;
-import lombok.RequiredArgsConstructor;
+import java.util.Map;
+import java.util.Objects;
+
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,12 +15,25 @@ import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.listener.ConcurrentMessageListenerContainer;
 import org.springframework.kafka.listener.ContainerProperties;
+import org.springframework.kafka.listener.DefaultErrorHandler;
+import org.springframework.util.backoff.FixedBackOff;
 
-import java.util.Map;
-import java.util.Objects;
+import dev.vality.damsel.domain_config_v2.HistoricalCommit;
+import dev.vality.daway.config.properties.KafkaConsumerProperties;
+import dev.vality.daway.serde.CurrencyExchangeRateEventDeserializer;
+import dev.vality.daway.serde.HistoricalCommitDeserializer;
+import dev.vality.daway.serde.SinkEventDeserializer;
+import dev.vality.daway.service.FileService;
+import dev.vality.daway.util.JsonUtil;
+import dev.vality.exrates.events.CurrencyEvent;
+import dev.vality.kafka.common.util.ExponentialBackOffDefaultErrorHandlerFactory;
+import dev.vality.machinegun.eventsink.MachineEvent;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Configuration
 @RequiredArgsConstructor
+@Slf4j
 @SuppressWarnings("LineLength")
 public class KafkaConfig {
 
@@ -117,8 +123,35 @@ public class KafkaConfig {
 
     @Bean
     public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, HistoricalCommit>> dominantContainerFactory(
-            ConsumerFactory<String, HistoricalCommit> consumerFactory) {
-        return createConcurrentFactory(consumerFactory, kafkaConsumerProperties.getDominantConcurrency());
+            ConsumerFactory<String, HistoricalCommit> consumerFactory,
+            DefaultErrorHandler dominantErrorHandler) {
+        ConcurrentKafkaListenerContainerFactory<String, HistoricalCommit> factory =
+                createConcurrentFactory(consumerFactory, kafkaConsumerProperties.getDominantConcurrency());
+        factory.setCommonErrorHandler(dominantErrorHandler);
+        return factory;
+    }
+
+    @Bean
+    public DefaultErrorHandler dominantErrorHandler() {
+        long interval = kafkaConsumerProperties.getDominantErrorBackoffIntervalMs();
+        long maxAttempts = kafkaConsumerProperties.getDominantErrorMaxAttempts();
+        FixedBackOff backOff = new FixedBackOff(interval, resolveDominantMaxAttempts(maxAttempts));
+        DefaultErrorHandler errorHandler = new DefaultErrorHandler(backOff);
+        errorHandler.setRetryListeners((record, ex, deliveryAttempt) -> {
+            if (record != null) {
+                log.error("Failed to process HistoricalCommit, attempt={}, topic={}, partition={}, offset={}, key={}, payload={}",
+                        deliveryAttempt,
+                        record.topic(),
+                        record.partition(),
+                        record.offset(),
+                        record.key(),
+                        JsonUtil.thriftBaseToJsonString((HistoricalCommit) record.value()),
+                        ex);
+            } else {
+                log.error("Failed to process HistoricalCommit, attempt={}", deliveryAttempt, ex);
+            }
+        });
+        return errorHandler;
     }
 
     @Bean
@@ -182,6 +215,10 @@ public class KafkaConfig {
         ConsumerFactory<String, CurrencyEvent> consumerFactory = new DefaultKafkaConsumerFactory<>(props);
 
         return createConcurrentFactory(consumerFactory, kafkaConsumerProperties.getExrateConcurrency());
+    }
+
+    private long resolveDominantMaxAttempts(long configuredMaxAttempts) {
+        return configuredMaxAttempts < 0 ? FixedBackOff.UNLIMITED_ATTEMPTS : configuredMaxAttempts;
     }
 
     private <T> KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, T>> createConcurrentFactory(

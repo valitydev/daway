@@ -26,5 +26,7 @@ public class KafkaConsumerProperties {
     private int limitConfigConcurrency;
     private int exrateConcurrency;
     private int withdrawalAdjustmentConcurrency;
+    private long dominantErrorBackoffIntervalMs = 5000L;
+    private long dominantErrorMaxAttempts = -1L;
 
 }
