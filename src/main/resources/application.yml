@@ -69,6 +69,7 @@ kafka:
     limit-config-concurrency: 7
     exrate-concurrency: 7
     withdrawal-adjustment-concurrency: 7
+    dominant-error-backoff-interval-ms: 30000
   topics:
     invoice:
       id: mg-invoice-100-2
