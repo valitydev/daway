@@ -221,7 +221,7 @@ public class KafkaConfig {
         return configuredMaxAttempts < 0 ? FixedBackOff.UNLIMITED_ATTEMPTS : configuredMaxAttempts;
     }
 
-    private <T> KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, T>> createConcurrentFactory(
+    private <T> ConcurrentKafkaListenerContainerFactory<String, T> createConcurrentFactory(
             ConsumerFactory<String, T> consumerFactory, int threadsNumber) {
         ConcurrentKafkaListenerContainerFactory<String, T> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
