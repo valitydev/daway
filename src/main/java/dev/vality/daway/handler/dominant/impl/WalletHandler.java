@@ -37,12 +37,12 @@ public class WalletHandler extends AbstractDominantHandler<WalletConfigObject, W
 
     @Override
     protected String getTargetRefId() {
-        return getReference().getShopConfig().getId();
+        return getReference().getWalletConfig().getId();
     }
 
     @Override
     protected boolean acceptDomainObject() {
-        return getDomainObject().isSetShopConfig();
+        return getDomainObject().isSetWalletConfig();
     }
 
     @Override
