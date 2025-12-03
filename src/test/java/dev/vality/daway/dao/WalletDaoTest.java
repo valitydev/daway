@@ -31,6 +31,9 @@ public class WalletDaoTest {
         Assertions.assertEquals(wallet, actual);
         walletDao.updateNotCurrent(actual.getWalletId());
 
+        //check duplicate not error
+        walletDao.save(wallet);
+
         assertThrows(NotFoundException.class, () -> walletDao.get(wallet.getWalletId()));
     }
 
