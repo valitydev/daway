@@ -10,6 +10,7 @@ import dev.vality.mapper.RecordRowMapper;
 import org.jooq.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
@@ -39,23 +40,15 @@ public class WalletDaoImpl extends AbstractGenericDao implements DomainObjectDao
     @Override
     public Long save(Wallet wallet) throws DaoException {
         WalletRecord record = getDslContext().newRecord(WALLET, wallet);
-        Optional<WalletRecord> walletRecord = getDslContext()
+        Query query = getDslContext()
                 .insertInto(WALLET)
                 .set(record)
                 .onConflict(WALLET.WALLET_ID, WALLET.DOMINANT_VERSION_ID)
                 .doNothing()
-                .returning(WALLET.ID)
-                .fetchOptional();
-
-        if (walletRecord.isPresent()) {
-            return walletRecord.get().getId();
-        }
-
-        return getDslContext().select(WALLET.ID)
-                .from(WALLET)
-                .where(WALLET.WALLET_ID.eq(wallet.getWalletId()))
-                .and(WALLET.DOMINANT_VERSION_ID.eq(wallet.getDominantVersionId()))
-                .fetchOne(WALLET.ID);
+                .returning(WALLET.ID);
+        GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
+        execute(query, keyHolder);
+        return Optional.ofNullable(keyHolder.getKey()).map(Number::longValue).orElse(null);
     }
 
     public Wallet get(String walletId) throws DaoException {
