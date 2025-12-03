@@ -22,7 +22,11 @@ public class CurrencyDaoImpl extends AbstractGenericDao implements DomainObjectD
     @Override
     public Long save(Currency currency) throws DaoException {
         CurrencyRecord currencyRecord = getDslContext().newRecord(Tables.CURRENCY, currency);
-        Query query = getDslContext().insertInto(Tables.CURRENCY).set(currencyRecord).returning(Tables.CURRENCY.ID);
+        Query query = getDslContext().insertInto(Tables.CURRENCY)
+                .set(currencyRecord)
+                .onConflict(Tables.CURRENCY.CURRENCY_REF_ID, Tables.CURRENCY.VERSION_ID)
+                .doNothing()
+                .returning(Tables.CURRENCY.ID);
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
         executeOne(query, keyHolder);
         return keyHolder.getKey().longValue();
