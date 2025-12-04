@@ -1,7 +1,6 @@
 package dev.vality.daway.dao;
 
 import dev.vality.daway.config.PostgresqlSpringBootITest;
-import dev.vality.daway.dao.dominant.iface.DominantDao;
 import dev.vality.daway.dao.dominant.impl.*;
 import dev.vality.daway.dao.invoicing.iface.*;
 import dev.vality.daway.dao.invoicing.impl.CashFlowLinkIdsGeneratorDaoImpl;
@@ -25,7 +24,6 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.util.*;
-import java.util.stream.LongStream;
 
 import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -41,11 +39,7 @@ class DaoTests {
     @Autowired
     private CurrencyDaoImpl currencyDao;
     @Autowired
-    private InspectorDaoImpl inspectorDao;
-    @Autowired
     private PaymentInstitutionDaoImpl paymentInstitutionDao;
-    @Autowired
-    private PaymentMethodDaoImpl paymentMethodDao;
     @Autowired
     private ProviderDaoImpl providerDao;
     @Autowired
@@ -54,8 +48,6 @@ class DaoTests {
     private TerminalDaoImpl terminalDao;
     @Autowired
     private TermSetHierarchyDaoImpl termSetHierarchyDao;
-    @Autowired
-    private DominantDao dominantDao;
     @Autowired
     private CashFlowLinkDao cashFlowLinkDao;
     @Autowired
@@ -100,9 +92,7 @@ class DaoTests {
     void dominantDaoTest() {
         jdbcTemplate.execute("truncate table dw.category cascade");
         jdbcTemplate.execute("truncate table dw.currency cascade");
-        jdbcTemplate.execute("truncate table dw.inspector cascade");
         jdbcTemplate.execute("truncate table dw.payment_institution cascade");
-        jdbcTemplate.execute("truncate table dw.payment_method cascade");
         jdbcTemplate.execute("truncate table dw.provider cascade");
         jdbcTemplate.execute("truncate table dw.proxy cascade");
         jdbcTemplate.execute("truncate table dw.terminal cascade");
@@ -118,20 +108,10 @@ class DaoTests {
         currencyDao.save(currency);
         currencyDao.updateNotCurrent(currency.getCurrencyRefId());
 
-        Inspector inspector = RandomBeans.random(Inspector.class);
-        inspector.setCurrent(true);
-        inspectorDao.save(inspector);
-        inspectorDao.updateNotCurrent(inspector.getInspectorRefId());
-
         PaymentInstitution paymentInstitution = RandomBeans.random(PaymentInstitution.class);
         paymentInstitution.setCurrent(true);
         paymentInstitutionDao.save(paymentInstitution);
         paymentInstitutionDao.updateNotCurrent(paymentInstitution.getPaymentInstitutionRefId());
-
-        PaymentMethod paymentMethod = RandomBeans.random(PaymentMethod.class);
-        paymentMethod.setCurrent(true);
-        paymentMethodDao.save(paymentMethod);
-        paymentMethodDao.updateNotCurrent(paymentMethod.getPaymentMethodRefId());
 
         Provider provider = RandomBeans.random(Provider.class);
         provider.setCurrent(true);
@@ -152,22 +132,6 @@ class DaoTests {
         termSetHierarchy.setCurrent(true);
         termSetHierarchyDao.save(termSetHierarchy);
         termSetHierarchyDao.updateNotCurrent(termSetHierarchy.getTermSetHierarchyRefId());
-
-        OptionalLong maxVersionId = LongStream.of(
-                category.getVersionId(),
-                currency.getVersionId(),
-                inspector.getVersionId(),
-                paymentInstitution.getVersionId(),
-                paymentMethod.getVersionId(),
-                provider.getVersionId(),
-                proxy.getVersionId(),
-                terminal.getVersionId(),
-                termSetHierarchy.getVersionId()).max();
-
-        dominantDao.updateLastVersionId(maxVersionId.getAsLong());
-        Long lastVersionId = dominantDao.getLastVersionId();
-
-        assertEquals(maxVersionId.getAsLong(), lastVersionId.longValue());
     }
 
     @Test
@@ -226,11 +190,14 @@ class DaoTests {
         Adjustment adjustment = RandomBeans.random(Adjustment.class);
         adjustment.setCurrent(true);
         adjustmentDao.save(adjustment);
-        assertEquals(adjustment.getPartyId(), adjustmentDao.get(adjustment.getInvoiceId(), adjustment.getPaymentId(), adjustment.getAdjustmentId())
-                .getPartyId());
+        assertEquals(adjustment.getPartyId(),
+                adjustmentDao.get(adjustment.getInvoiceId(), adjustment.getPaymentId(), adjustment.getAdjustmentId())
+                        .getPartyId());
         adjustmentDao.updateNotCurrent(adjustment.getId());
 
-        assertThrows(NotFoundException.class, () -> adjustmentDao.get(adjustment.getInvoiceId(), adjustment.getPaymentId(), adjustment.getAdjustmentId()));
+        assertThrows(NotFoundException.class,
+                () -> adjustmentDao.get(adjustment.getInvoiceId(), adjustment.getPaymentId(),
+                        adjustment.getAdjustmentId()));
     }
 
     @Test
@@ -261,7 +228,8 @@ class DaoTests {
         third.setPaymentId(first.getPaymentId());
         paymentRecurrentInfoDao.saveBatch(List.of(third));
         assertEquals(first, paymentRecurrentInfoDao.get(third.getInvoiceId(), third.getPaymentId()));
-        paymentRecurrentInfoDao.switchCurrent(Set.of(InvoicingKey.buildKey(third.getInvoiceId(), third.getPaymentId())));
+        paymentRecurrentInfoDao.switchCurrent(
+                Set.of(InvoicingKey.buildKey(third.getInvoiceId(), third.getPaymentId())));
         third.setCurrent(true);
         assertEquals(third, paymentRecurrentInfoDao.get(third.getInvoiceId(), third.getPaymentId()));
     }
@@ -278,7 +246,8 @@ class DaoTests {
 
         refundDao.updateCommissions(refund.getId());
 
-        assertThrows(NotFoundException.class, () -> refundDao.get(refund.getInvoiceId(), refund.getPaymentId(), refund.getRefundId()));
+        assertThrows(NotFoundException.class,
+                () -> refundDao.get(refund.getInvoiceId(), refund.getPaymentId(), refund.getRefundId()));
     }
 
     @Test
@@ -329,7 +298,7 @@ class DaoTests {
         assertEquals(rate, jdbcTemplate.queryForObject(
                 "SELECT * FROM dw.rate WHERE id = ? ",
                 new BeanPropertyRowMapper(Rate.class),
-                new Object[]{id}
+                new Object[] {id}
         ));
 
         List<Long> ids = rateDao.getIds(rate.getSourceId());
@@ -342,7 +311,7 @@ class DaoTests {
         assertThrows(EmptyResultDataAccessException.class, () -> jdbcTemplate.queryForObject(
                 "SELECT * FROM dw.rate AS rate WHERE rate.id = ? AND rate.current",
                 new BeanPropertyRowMapper(Rate.class),
-                new Object[]{id}
+                new Object[] {id}
         ));
     }
 
@@ -365,15 +334,17 @@ class DaoTests {
         adjustment.setCurrent(true);
         adjustmentDao.save(adjustment);
 
-        assertEquals("1", adjustmentDao.get(adjustment.getInvoiceId(), adjustment.getPaymentId(), adjustment.getAdjustmentId())
-                .getPartyId());
+        assertEquals("1",
+                adjustmentDao.get(adjustment.getInvoiceId(), adjustment.getPaymentId(), adjustment.getAdjustmentId())
+                        .getPartyId());
 
         adjustment.setPartyId("2");
 
         adjustmentDao.save(adjustment);
 
-        assertEquals("1", adjustmentDao.get(adjustment.getInvoiceId(), adjustment.getPaymentId(), adjustment.getAdjustmentId())
-                .getPartyId());
+        assertEquals("1",
+                adjustmentDao.get(adjustment.getInvoiceId(), adjustment.getPaymentId(), adjustment.getAdjustmentId())
+                        .getPartyId());
     }
 
     @Test

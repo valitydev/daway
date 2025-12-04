@@ -2,7 +2,6 @@ package dev.vality.daway.service;
 
 import dev.vality.damsel.domain_config_v2.FinalOperation;
 import dev.vality.damsel.domain_config_v2.HistoricalCommit;
-import dev.vality.daway.dao.dominant.iface.DominantDao;
 import dev.vality.daway.handler.dominant.DominantHandler;
 import dev.vality.daway.util.JsonUtil;
 import lombok.RequiredArgsConstructor;
@@ -12,14 +11,11 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class DominantService {
-
-    private final DominantDao dominantDao;
 
     private final List<DominantHandler> handlers;
 
@@ -47,16 +43,5 @@ public class DominantService {
             log.error("The error was received when the service processed operation", ex);
             throw ex;
         }
-    }
-
-    public Optional<Long> getLastVersionId() {
-        Optional<Long> lastVersionId = Optional.ofNullable(dominantDao.getLastVersionId());
-        log.info("Last dominant versionId={}", lastVersionId);
-        return lastVersionId;
-    }
-
-    public void updateLastVersionId(Long lastVersionId) {
-        dominantDao.updateLastVersionId(lastVersionId);
-        log.info("Last dominant versionId={} is updated", lastVersionId);
     }
 }

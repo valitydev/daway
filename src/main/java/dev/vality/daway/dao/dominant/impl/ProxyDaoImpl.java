@@ -11,6 +11,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
+import java.util.Optional;
 
 @Component
 public class ProxyDaoImpl extends AbstractGenericDao implements DomainObjectDao<Proxy, Integer> {
@@ -22,10 +23,14 @@ public class ProxyDaoImpl extends AbstractGenericDao implements DomainObjectDao<
     @Override
     public Long save(Proxy proxy) throws DaoException {
         ProxyRecord proxyRecord = getDslContext().newRecord(Tables.PROXY, proxy);
-        Query query = getDslContext().insertInto(Tables.PROXY).set(proxyRecord).returning(Tables.PROXY.ID);
+        Query query = getDslContext().insertInto(Tables.PROXY)
+                .set(proxyRecord)
+                .onConflict(Tables.PROXY.PROXY_REF_ID, Tables.PROXY.VERSION_ID)
+                .doNothing()
+                .returning(Tables.PROXY.ID);
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
-        executeOne(query, keyHolder);
-        return keyHolder.getKey().longValue();
+        execute(query, keyHolder);
+        return Optional.ofNullable(keyHolder.getKey()).map(Number::longValue).orElse(null);
     }
 
     @Override
