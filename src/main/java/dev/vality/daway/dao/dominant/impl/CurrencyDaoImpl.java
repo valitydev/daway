@@ -11,6 +11,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
+import java.util.Optional;
 
 @Component
 public class CurrencyDaoImpl extends AbstractGenericDao implements DomainObjectDao<Currency, String> {
@@ -29,8 +30,8 @@ public class CurrencyDaoImpl extends AbstractGenericDao implements DomainObjectD
                 .doNothing()
                 .returning(Tables.CURRENCY.ID);
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
-        executeOne(query, keyHolder);
-        return keyHolder.getKey().longValue();
+        execute(query, keyHolder);
+        return Optional.ofNullable(keyHolder.getKey()).map(Number::longValue).orElse(null);
     }
 
     @Override

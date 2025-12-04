@@ -3,7 +3,7 @@ package dev.vality.daway.handler.dominant.impl;
 import dev.vality.damsel.domain.ShopConfig;
 import dev.vality.damsel.domain.ShopConfigObject;
 import dev.vality.daway.dao.dominant.iface.DomainObjectDao;
-import dev.vality.daway.dao.party.impl.ShopDaoImpl;
+import dev.vality.daway.dao.dominant.impl.ShopDaoImpl;
 import dev.vality.daway.domain.enums.Blocking;
 import dev.vality.daway.domain.enums.Suspension;
 import dev.vality.daway.domain.tables.pojos.Shop;
@@ -55,6 +55,8 @@ public class ShopHandler extends AbstractDominantHandler<ShopConfigObject, Shop,
         ShopConfig data = shopConfigObject.getData();
         shop.setWtime(null);
         LocalDateTime createAt = TypeUtil.stringToLocalDateTime(createdAt);
+        shop.setDominantVersionId(versionId);
+        shop.setCurrent(current);
         shop.setCreatedAt(createAt);
         shop.setEventCreatedAt(createAt);
         shop.setShopId(shopConfigObject.getRef().id);
@@ -84,6 +86,12 @@ public class ShopHandler extends AbstractDominantHandler<ShopConfigObject, Shop,
         } else {
             throw new IllegalArgumentException("Illegal shop location " + data.getLocation());
         }
+        shop.setAccountCurrencyCode(data.getAccount().getCurrency().getSymbolicCode());
+        shop.setDetailsName(data.getName());
+        shop.setDetailsDescription(data.getDescription());
+        shop.setLocationUrl(data.getLocation().getUrl());
+        shop.setAccountGuarantee(data.getAccount().getGuarantee());
+        shop.setAccountSettlement(data.getAccount().getSettlement());
         shop.setCategoryId(data.getCategory().getId());
         return shop;
     }

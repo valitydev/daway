@@ -3,7 +3,7 @@ package dev.vality.daway.handler.dominant.impl;
 import dev.vality.damsel.domain.PartyConfig;
 import dev.vality.damsel.domain.PartyConfigObject;
 import dev.vality.daway.dao.dominant.iface.DomainObjectDao;
-import dev.vality.daway.dao.party.impl.PartyDaoImpl;
+import dev.vality.daway.dao.dominant.impl.PartyDaoImpl;
 import dev.vality.daway.domain.enums.Blocking;
 import dev.vality.daway.domain.enums.Suspension;
 import dev.vality.daway.domain.tables.pojos.Party;
@@ -55,6 +55,7 @@ public class PartyHandler extends AbstractDominantHandler<PartyConfigObject, Par
         Party party = new Party();
         party.setId(null);
         party.setWtime(null);
+        party.setDominantVersionId(versionId);
         PartyConfig data = partyConfigObject.getData();
         party.setPartyId(partyConfigObject.getRef().id);
         party.setName(data.getName());
@@ -65,7 +66,6 @@ public class PartyHandler extends AbstractDominantHandler<PartyConfigObject, Par
         party.setBlockingUnblockedReason(getReason(data));
         party.setBlockingBlockedSince(getTime(data));
         party.setSuspension(Suspension.active);
-        party.setRevision(0L);
         party.setCurrent(current);
         LocalDateTime createAt = TypeUtil.stringToLocalDateTime(createdAt);
         party.setEventCreatedAt(createAt);

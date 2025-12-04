@@ -7,13 +7,10 @@ import dev.vality.daway.dao.invoicing.iface.*;
 import dev.vality.daway.dao.invoicing.impl.CashFlowLinkIdsGeneratorDaoImpl;
 import dev.vality.daway.dao.invoicing.impl.InvoiceDaoImpl;
 import dev.vality.daway.dao.invoicing.impl.PaymentDaoImpl;
-import dev.vality.daway.dao.party.impl.PartyDaoImpl;
-import dev.vality.daway.dao.party.impl.ShopDaoImpl;
 import dev.vality.daway.dao.rate.iface.RateDao;
 import dev.vality.daway.domain.enums.CashFlowAccount;
 import dev.vality.daway.domain.enums.PaymentChangeType;
 import dev.vality.daway.domain.tables.pojos.*;
-import dev.vality.daway.domain.tables.pojos.Calendar;
 import dev.vality.daway.domain.tables.pojos.Currency;
 import dev.vality.daway.exception.NotFoundException;
 import dev.vality.daway.model.InvoicingKey;
@@ -40,8 +37,6 @@ class DaoTests {
     @Autowired
     private JdbcTemplate jdbcTemplate;
     @Autowired
-    private CalendarDaoImpl calendarDao;
-    @Autowired
     private CategoryDaoImpl categoryDao;
     @Autowired
     private CurrencyDaoImpl currencyDao;
@@ -53,8 +48,6 @@ class DaoTests {
     private PaymentMethodDaoImpl paymentMethodDao;
     @Autowired
     private ProviderDaoImpl providerDao;
-    @Autowired
-    private WithdrawalProviderDaoImpl withdrawalProviderDao;
     @Autowired
     private ProxyDaoImpl proxyDao;
     @Autowired
@@ -105,22 +98,15 @@ class DaoTests {
 
     @Test
     void dominantDaoTest() {
-        jdbcTemplate.execute("truncate table dw.calendar cascade");
         jdbcTemplate.execute("truncate table dw.category cascade");
         jdbcTemplate.execute("truncate table dw.currency cascade");
         jdbcTemplate.execute("truncate table dw.inspector cascade");
         jdbcTemplate.execute("truncate table dw.payment_institution cascade");
         jdbcTemplate.execute("truncate table dw.payment_method cascade");
         jdbcTemplate.execute("truncate table dw.provider cascade");
-        jdbcTemplate.execute("truncate table dw.withdrawal_provider cascade");
         jdbcTemplate.execute("truncate table dw.proxy cascade");
         jdbcTemplate.execute("truncate table dw.terminal cascade");
         jdbcTemplate.execute("truncate table dw.term_set_hierarchy cascade");
-
-        var calendar = RandomBeans.random(Calendar.class);
-        calendar.setCurrent(true);
-        calendarDao.save(calendar);
-        calendarDao.updateNotCurrent(calendar.getCalendarRefId());
 
         Category category = RandomBeans.random(Category.class);
         category.setCurrent(true);
@@ -152,11 +138,6 @@ class DaoTests {
         providerDao.save(provider);
         providerDao.updateNotCurrent(provider.getProviderRefId());
 
-        WithdrawalProvider withdrawalProvider = RandomBeans.random(WithdrawalProvider.class);
-        withdrawalProvider.setCurrent(true);
-        withdrawalProviderDao.save(withdrawalProvider);
-        withdrawalProviderDao.updateNotCurrent(withdrawalProvider.getWithdrawalProviderRefId());
-
         Proxy proxy = RandomBeans.random(Proxy.class);
         proxy.setCurrent(true);
         proxyDao.save(proxy);
@@ -173,14 +154,12 @@ class DaoTests {
         termSetHierarchyDao.updateNotCurrent(termSetHierarchy.getTermSetHierarchyRefId());
 
         OptionalLong maxVersionId = LongStream.of(
-                calendar.getVersionId(),
                 category.getVersionId(),
                 currency.getVersionId(),
                 inspector.getVersionId(),
                 paymentInstitution.getVersionId(),
                 paymentMethod.getVersionId(),
                 provider.getVersionId(),
-                withdrawalProvider.getVersionId(),
                 proxy.getVersionId(),
                 terminal.getVersionId(),
                 termSetHierarchy.getVersionId()).max();
@@ -312,14 +291,14 @@ class DaoTests {
         assertEquals(party, partyGet);
         String oldId = party.getPartyId();
 
-        Integer changeId = party.getChangeId() + 1;
-        party.setChangeId(changeId);
+        Long versionId = party.getDominantVersionId() + 1;
+        party.setDominantVersionId(versionId);
         party.setId(party.getId() + 1);
         partyDao.updateNotCurrent(oldId);
         partyDao.save(party);
 
         partyGet = partyDao.get(oldId);
-        assertEquals(changeId, partyGet.getChangeId());
+        assertEquals(versionId, partyGet.getDominantVersionId());
     }
 
     @Test
@@ -331,8 +310,8 @@ class DaoTests {
         Shop shopGet = shopDao.get(shop.getPartyId(), shop.getShopId());
         assertEquals(shop, shopGet);
 
-        Integer changeId = shop.getChangeId() + 1;
-        shop.setChangeId(changeId);
+        Long versionId = shop.getDominantVersionId() + 1;
+        shop.setDominantVersionId(versionId);
         String id = shop.getShopId();
         shop.setId(shop.getId() + 1);
         shopDao.updateNotCurrent(id);
