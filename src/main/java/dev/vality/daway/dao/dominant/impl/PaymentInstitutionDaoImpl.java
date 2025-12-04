@@ -11,6 +11,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
+import java.util.Optional;
 
 @Component
 public class PaymentInstitutionDaoImpl extends AbstractGenericDao
@@ -24,11 +25,15 @@ public class PaymentInstitutionDaoImpl extends AbstractGenericDao
     public Long save(PaymentInstitution paymentInstitution) throws DaoException {
         PaymentInstitutionRecord paymentInstitutionRecord =
                 getDslContext().newRecord(Tables.PAYMENT_INSTITUTION, paymentInstitution);
-        Query query = getDslContext().insertInto(Tables.PAYMENT_INSTITUTION).set(paymentInstitutionRecord)
+        Query query = getDslContext().insertInto(Tables.PAYMENT_INSTITUTION)
+                .set(paymentInstitutionRecord)
+                .onConflict(Tables.PAYMENT_INSTITUTION.PAYMENT_INSTITUTION_REF_ID,
+                        Tables.PAYMENT_INSTITUTION.VERSION_ID)
+                .doNothing()
                 .returning(Tables.PAYMENT_INSTITUTION.ID);
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
-        executeOne(query, keyHolder);
-        return keyHolder.getKey().longValue();
+        execute(query, keyHolder);
+        return Optional.ofNullable(keyHolder.getKey()).map(Number::longValue).orElse(null);
     }
 
     @Override

@@ -11,6 +11,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
+import java.util.Optional;
 
 @Component
 public class CategoryDaoImpl extends AbstractGenericDao implements DomainObjectDao<Category, Integer> {
@@ -22,10 +23,14 @@ public class CategoryDaoImpl extends AbstractGenericDao implements DomainObjectD
     @Override
     public Long save(Category category) throws DaoException {
         CategoryRecord categoryRecord = getDslContext().newRecord(Tables.CATEGORY, category);
-        Query query = getDslContext().insertInto(Tables.CATEGORY).set(categoryRecord).returning(Tables.CATEGORY.ID);
+        Query query = getDslContext().insertInto(Tables.CATEGORY)
+                .set(categoryRecord)
+                .onConflict(Tables.CATEGORY.CATEGORY_REF_ID, Tables.CATEGORY.VERSION_ID)
+                .doNothing()
+                .returning(Tables.CATEGORY.ID);
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
-        executeOne(query, keyHolder);
-        return keyHolder.getKey().longValue();
+        execute(query, keyHolder);
+        return Optional.ofNullable(keyHolder.getKey()).map(Number::longValue).orElse(null);
     }
 
     @Override

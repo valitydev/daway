@@ -11,6 +11,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
+import java.util.Optional;
 
 @Component
 public class TermSetHierarchyDaoImpl extends AbstractGenericDao implements DomainObjectDao<TermSetHierarchy, Integer> {
@@ -21,12 +22,16 @@ public class TermSetHierarchyDaoImpl extends AbstractGenericDao implements Domai
 
     @Override
     public Long save(TermSetHierarchy termSetHierarchy) throws DaoException {
-        TermSetHierarchyRecord termSetHierarchyRecord = getDslContext().newRecord(Tables.TERM_SET_HIERARCHY, termSetHierarchy);
-        Query query = getDslContext().insertInto(Tables.TERM_SET_HIERARCHY).set(termSetHierarchyRecord)
+        TermSetHierarchyRecord termSetHierarchyRecord =
+                getDslContext().newRecord(Tables.TERM_SET_HIERARCHY, termSetHierarchy);
+        Query query = getDslContext().insertInto(Tables.TERM_SET_HIERARCHY)
+                .set(termSetHierarchyRecord)
+                .onConflict(Tables.TERM_SET_HIERARCHY.TERM_SET_HIERARCHY_REF_ID, Tables.TERM_SET_HIERARCHY.VERSION_ID)
+                .doNothing()
                 .returning(Tables.TERM_SET_HIERARCHY.ID);
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
-        executeOne(query, keyHolder);
-        return keyHolder.getKey().longValue();
+        execute(query, keyHolder);
+        return Optional.ofNullable(keyHolder.getKey()).map(Number::longValue).orElse(null);
     }
 
     @Override

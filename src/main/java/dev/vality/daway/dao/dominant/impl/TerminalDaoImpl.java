@@ -11,6 +11,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
+import java.util.Optional;
 
 @Component
 public class TerminalDaoImpl extends AbstractGenericDao implements DomainObjectDao<Terminal, Integer> {
@@ -22,10 +23,14 @@ public class TerminalDaoImpl extends AbstractGenericDao implements DomainObjectD
     @Override
     public Long save(Terminal terminal) throws DaoException {
         TerminalRecord terminalRecord = getDslContext().newRecord(Tables.TERMINAL, terminal);
-        Query query = getDslContext().insertInto(Tables.TERMINAL).set(terminalRecord).returning(Tables.TERMINAL.ID);
+        Query query = getDslContext().insertInto(Tables.TERMINAL)
+                .set(terminalRecord)
+                .onConflict(Tables.TERMINAL.TERMINAL_REF_ID, Tables.TERMINAL.VERSION_ID)
+                .doNothing()
+                .returning(Tables.TERMINAL.ID);
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
-        executeOne(query, keyHolder);
-        return keyHolder.getKey().longValue();
+        execute(query, keyHolder);
+        return Optional.ofNullable(keyHolder.getKey()).map(Number::longValue).orElse(null);
     }
 
     @Override
