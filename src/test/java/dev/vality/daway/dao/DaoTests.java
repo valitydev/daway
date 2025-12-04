@@ -40,8 +40,6 @@ class DaoTests {
     @Autowired
     private JdbcTemplate jdbcTemplate;
     @Autowired
-    private CalendarDaoImpl calendarDao;
-    @Autowired
     private CategoryDaoImpl categoryDao;
     @Autowired
     private CurrencyDaoImpl currencyDao;
@@ -103,7 +101,6 @@ class DaoTests {
 
     @Test
     void dominantDaoTest() {
-        jdbcTemplate.execute("truncate table dw.calendar cascade");
         jdbcTemplate.execute("truncate table dw.category cascade");
         jdbcTemplate.execute("truncate table dw.currency cascade");
         jdbcTemplate.execute("truncate table dw.inspector cascade");
@@ -113,11 +110,6 @@ class DaoTests {
         jdbcTemplate.execute("truncate table dw.proxy cascade");
         jdbcTemplate.execute("truncate table dw.terminal cascade");
         jdbcTemplate.execute("truncate table dw.term_set_hierarchy cascade");
-
-        var calendar = RandomBeans.random(Calendar.class);
-        calendar.setCurrent(true);
-        calendarDao.save(calendar);
-        calendarDao.updateNotCurrent(calendar.getCalendarRefId());
 
         Category category = RandomBeans.random(Category.class);
         category.setCurrent(true);
@@ -165,7 +157,6 @@ class DaoTests {
         termSetHierarchyDao.updateNotCurrent(termSetHierarchy.getTermSetHierarchyRefId());
 
         OptionalLong maxVersionId = LongStream.of(
-                calendar.getVersionId(),
                 category.getVersionId(),
                 currency.getVersionId(),
                 inspector.getVersionId(),

@@ -24,5 +24,6 @@ ALTER TABLE dw.party
 DROP TABLE IF EXISTS dw.shop_revision CASCADE;
 DROP TABLE IF EXISTS dw.contractor_revision CASCADE;
 DROP TABLE IF EXISTS dw.withdrawal_provider CASCADE;
+DROP TABLE IF EXISTS dw.calendar CASCADE;
 
 ALTER TABLE dw.provider DROP COLUMN IF EXISTS identity;
