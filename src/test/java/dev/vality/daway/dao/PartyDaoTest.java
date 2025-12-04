@@ -40,7 +40,7 @@ class PartyDaoTest {
 
         assertNotNull(partyRecord);
         assertEquals(party.getPartyId(), partyRecord.getPartyId());
-        assertEquals(party.getChangeId(), partyRecord.getChangeId());
+        assertEquals(party.getDominantVersionId(), partyRecord.getDominantVersionId());
         assertEquals(party.getName(), partyRecord.getName());
 
     }

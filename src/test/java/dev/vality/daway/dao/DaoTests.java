@@ -54,8 +54,6 @@ class DaoTests {
     @Autowired
     private ProviderDaoImpl providerDao;
     @Autowired
-    private WithdrawalProviderDaoImpl withdrawalProviderDao;
-    @Autowired
     private ProxyDaoImpl proxyDao;
     @Autowired
     private TerminalDaoImpl terminalDao;
@@ -112,7 +110,6 @@ class DaoTests {
         jdbcTemplate.execute("truncate table dw.payment_institution cascade");
         jdbcTemplate.execute("truncate table dw.payment_method cascade");
         jdbcTemplate.execute("truncate table dw.provider cascade");
-        jdbcTemplate.execute("truncate table dw.withdrawal_provider cascade");
         jdbcTemplate.execute("truncate table dw.proxy cascade");
         jdbcTemplate.execute("truncate table dw.terminal cascade");
         jdbcTemplate.execute("truncate table dw.term_set_hierarchy cascade");
@@ -152,11 +149,6 @@ class DaoTests {
         providerDao.save(provider);
         providerDao.updateNotCurrent(provider.getProviderRefId());
 
-        WithdrawalProvider withdrawalProvider = RandomBeans.random(WithdrawalProvider.class);
-        withdrawalProvider.setCurrent(true);
-        withdrawalProviderDao.save(withdrawalProvider);
-        withdrawalProviderDao.updateNotCurrent(withdrawalProvider.getWithdrawalProviderRefId());
-
         Proxy proxy = RandomBeans.random(Proxy.class);
         proxy.setCurrent(true);
         proxyDao.save(proxy);
@@ -180,7 +172,6 @@ class DaoTests {
                 paymentInstitution.getVersionId(),
                 paymentMethod.getVersionId(),
                 provider.getVersionId(),
-                withdrawalProvider.getVersionId(),
                 proxy.getVersionId(),
                 terminal.getVersionId(),
                 termSetHierarchy.getVersionId()).max();
@@ -312,14 +303,14 @@ class DaoTests {
         assertEquals(party, partyGet);
         String oldId = party.getPartyId();
 
-        Integer changeId = party.getChangeId() + 1;
-        party.setChangeId(changeId);
+        Long versionId = party.getDominantVersionId() + 1;
+        party.setDominantVersionId(versionId);
         party.setId(party.getId() + 1);
         partyDao.updateNotCurrent(oldId);
         partyDao.save(party);
 
         partyGet = partyDao.get(oldId);
-        assertEquals(changeId, partyGet.getChangeId());
+        assertEquals(versionId, partyGet.getDominantVersionId());
     }
 
     @Test
@@ -331,8 +322,8 @@ class DaoTests {
         Shop shopGet = shopDao.get(shop.getPartyId(), shop.getShopId());
         assertEquals(shop, shopGet);
 
-        Integer changeId = shop.getChangeId() + 1;
-        shop.setChangeId(changeId);
+        Long versionId = shop.getDominantVersionId() + 1;
+        shop.setDominantVersionId(versionId);
         String id = shop.getShopId();
         shop.setId(shop.getId() + 1);
         shopDao.updateNotCurrent(id);
