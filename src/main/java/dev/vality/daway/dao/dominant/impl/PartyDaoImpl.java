@@ -1,4 +1,4 @@
-package dev.vality.daway.dao.party.impl;
+package dev.vality.daway.dao.dominant.impl;
 
 import dev.vality.dao.impl.AbstractGenericDao;
 import dev.vality.daway.dao.dominant.iface.DomainObjectDao;
@@ -33,12 +33,12 @@ public class PartyDaoImpl extends AbstractGenericDao implements DomainObjectDao<
     public Long save(Party party) throws DaoException {
         PartyRecord record = getDslContext().newRecord(PARTY, party);
         Query query = getDslContext().insertInto(PARTY).set(record)
-                .onConflict(PARTY.PARTY_ID, PARTY.SEQUENCE_ID, PARTY.CHANGE_ID)
+                .onConflict(PARTY.PARTY_ID, PARTY.DOMINANT_VERSION_ID)
                 .doNothing()
                 .returning(PARTY.ID);
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
         execute(query, keyHolder);
-        return Optional.ofNullable(keyHolder.getKey()).get().longValue();
+        return Optional.ofNullable(keyHolder.getKey()).map(Number::longValue).orElse(null);
     }
 
     @Override

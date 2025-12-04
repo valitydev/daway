@@ -1,7 +1,7 @@
 package dev.vality.daway.handler.event.stock.impl.destination;
 
 import dev.vality.daway.dao.destination.iface.DestinationDao;
-import dev.vality.daway.dao.party.impl.PartyDaoImpl;
+import dev.vality.daway.dao.dominant.impl.PartyDaoImpl;
 import dev.vality.daway.domain.tables.pojos.Destination;
 import dev.vality.daway.domain.tables.pojos.Party;
 import dev.vality.daway.factory.machine.event.MachineEventCopyFactory;

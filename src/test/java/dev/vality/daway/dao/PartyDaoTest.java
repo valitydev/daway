@@ -1,7 +1,7 @@
 package dev.vality.daway.dao;
 
 import dev.vality.daway.config.PostgresqlJooqSpringBootITest;
-import dev.vality.daway.dao.party.impl.PartyDaoImpl;
+import dev.vality.daway.dao.dominant.impl.PartyDaoImpl;
 import dev.vality.daway.domain.tables.pojos.Party;
 import dev.vality.daway.domain.tables.records.PartyRecord;
 import dev.vality.testcontainers.annotations.util.RandomBeans;

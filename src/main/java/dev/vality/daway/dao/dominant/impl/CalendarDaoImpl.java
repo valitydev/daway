@@ -22,7 +22,9 @@ public class CalendarDaoImpl extends AbstractGenericDao implements DomainObjectD
     @Override
     public Long save(Calendar calendar) throws DaoException {
         CalendarRecord calendarRecord = getDslContext().newRecord(Tables.CALENDAR, calendar);
-        Query query = getDslContext().insertInto(Tables.CALENDAR).set(calendarRecord).returning(Tables.CALENDAR.ID);
+        Query query = getDslContext().insertInto(Tables.CALENDAR)
+                .set(calendarRecord)
+                .returning(Tables.CALENDAR.ID);
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
         executeOne(query, keyHolder);
         return keyHolder.getKey().longValue();

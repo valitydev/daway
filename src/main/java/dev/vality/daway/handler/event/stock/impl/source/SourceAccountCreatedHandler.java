@@ -1,6 +1,6 @@
 package dev.vality.daway.handler.event.stock.impl.source;
 
-import dev.vality.daway.dao.party.impl.PartyDaoImpl;
+import dev.vality.daway.dao.dominant.impl.PartyDaoImpl;
 import dev.vality.daway.dao.source.iface.SourceDao;
 import dev.vality.daway.domain.tables.pojos.Party;
 import dev.vality.daway.domain.tables.pojos.Source;

@@ -1,4 +1,4 @@
-package dev.vality.daway.dao.party.impl;
+package dev.vality.daway.dao.dominant.impl;
 
 import dev.vality.dao.impl.AbstractGenericDao;
 import dev.vality.daway.dao.dominant.iface.DomainObjectDao;
@@ -33,12 +33,12 @@ public class ShopDaoImpl extends AbstractGenericDao implements DomainObjectDao<S
     public Long save(Shop shop) throws DaoException {
         ShopRecord record = getDslContext().newRecord(SHOP, shop);
         Query query = getDslContext().insertInto(SHOP).set(record)
-                .onConflict(SHOP.PARTY_ID, SHOP.SHOP_ID, SHOP.SEQUENCE_ID, SHOP.CHANGE_ID, SHOP.CLAIM_EFFECT_ID)
+                .onConflict(SHOP.PARTY_ID, SHOP.SHOP_ID, SHOP.DOMINANT_VERSION_ID)
                 .doNothing()
                 .returning(SHOP.ID);
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
         execute(query, keyHolder);
-        return Optional.ofNullable(keyHolder.getKey()).map(Number::longValue).get();
+        return Optional.ofNullable(keyHolder.getKey()).map(Number::longValue).orElse(null);
     }
 
     @Override
