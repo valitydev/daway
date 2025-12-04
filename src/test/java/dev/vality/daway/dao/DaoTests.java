@@ -92,9 +92,7 @@ class DaoTests {
     void dominantDaoTest() {
         jdbcTemplate.execute("truncate table dw.category cascade");
         jdbcTemplate.execute("truncate table dw.currency cascade");
-        jdbcTemplate.execute("truncate table dw.inspector cascade");
         jdbcTemplate.execute("truncate table dw.payment_institution cascade");
-        jdbcTemplate.execute("truncate table dw.payment_method cascade");
         jdbcTemplate.execute("truncate table dw.provider cascade");
         jdbcTemplate.execute("truncate table dw.proxy cascade");
         jdbcTemplate.execute("truncate table dw.terminal cascade");
