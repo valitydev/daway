@@ -1,0 +1,1 @@
+ALTER TABLE dw.wallet ADD COLUMN IF NOT EXISTS account_id bigint;

@@ -46,10 +46,9 @@ public class WalletDaoImpl extends AbstractGenericDao implements DomainObjectDao
                 .onConflict(WALLET.WALLET_ID, WALLET.DOMINANT_VERSION_ID)
                 .doNothing()
                 .returning(WALLET.ID);
-
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
         execute(query, keyHolder);
-        return Optional.ofNullable(keyHolder.getKey()).map(Number::longValue).get();
+        return Optional.ofNullable(keyHolder.getKey()).map(Number::longValue).orElse(null);
     }
 
     public Wallet get(String walletId) throws DaoException {

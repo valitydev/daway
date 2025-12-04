@@ -65,6 +65,7 @@ public class WalletHandler extends AbstractDominantHandler<WalletConfigObject, W
         wallet.setPaymentInstitutionId(data.getPaymentInstitution().getId());
         wallet.setBlocked(data.getBlock().isSetBlocked());
         wallet.setActive(data.getSuspension().isSetActive());
+        wallet.setAccountId(data.getAccount().getSettlement());
         return wallet;
     }
 }
