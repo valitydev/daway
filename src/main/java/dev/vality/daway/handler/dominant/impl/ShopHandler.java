@@ -93,6 +93,7 @@ public class ShopHandler extends AbstractDominantHandler<ShopConfigObject, Shop,
         shop.setAccountGuarantee(data.getAccount().getGuarantee());
         shop.setAccountSettlement(data.getAccount().getSettlement());
         shop.setCategoryId(data.getCategory().getId());
+        shop.setTermSetHierarchyId(data.getTerms().getId());
         return shop;
     }
 }

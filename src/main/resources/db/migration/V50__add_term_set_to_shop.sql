@@ -1,0 +1,1 @@
+ALTER TABLE dw.shop ADD COLUMN IF NOT EXISTS term_set_hierarchy_id integer;
