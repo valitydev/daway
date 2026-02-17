@@ -8,4 +8,5 @@
     </root>
     <logger name="com.empayre" level="INFO"/>
     <logger name="dev.vality" level="INFO"/>
+    <logger name="org.apache" level="ERROR"/>
 </configuration>
