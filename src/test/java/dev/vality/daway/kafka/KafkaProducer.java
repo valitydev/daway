@@ -4,7 +4,8 @@ import dev.vality.damsel.domain_config_v2.Author;
 import dev.vality.damsel.domain_config_v2.HistoricalCommit;
 import dev.vality.machinegun.eventsink.MachineEvent;
 import dev.vality.machinegun.eventsink.SinkEvent;
-import dev.vality.testcontainers.annotations.kafka.config.KafkaProducerConfig;
+import dev.vality.testcontainers.annotations.KafkaTestConfig;
+import dev.vality.testcontainers.annotations.kafka.config.KafkaProducerTestConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.thrift.TBase;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 
 @TestComponent
-@Import(KafkaProducerConfig.class)
+@Import(KafkaProducerTestConfig.class)
 @Slf4j
 public class KafkaProducer {
 
