@@ -6,6 +6,6 @@
     <root level="warn">
         <appender-ref ref="CONSOLE"/>
     </root>
-    <logger name="com.empayre" level="ALL"/>
-    <logger name="dev.vality" level="ALL"/>
+    <logger name="com.empayre" level="INFO"/>
+    <logger name="dev.vality" level="INFO"/>
 </configuration>
