@@ -13,6 +13,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @PostgresqlTestcontainerSingleton
 @JooqTest
-@SpringBootTest
 public @interface PostgresqlJooqSpringBootITest {
 }
