@@ -1,9 +1,10 @@
 package dev.vality.daway.config;
 
 import dev.vality.daway.kafka.KafkaProducer;
-import dev.vality.testcontainers.annotations.DefaultSpringBootTest;
+import dev.vality.testcontainers.annotations.KafkaTestConfig;
 import dev.vality.testcontainers.annotations.kafka.KafkaTestcontainerSingleton;
 import dev.vality.testcontainers.annotations.postgresql.PostgresqlTestcontainerSingleton;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.ElementType;
@@ -42,7 +43,8 @@ import java.lang.annotation.Target;
                 "kafka.topics.limit-config.id",
                 "kafka.topics.exrate.id"}
 )
-@DefaultSpringBootTest
+@SpringBootTest
+@KafkaTestConfig
 @Import(KafkaProducer.class)
 public @interface KafkaPostgresqlSpringBootITest {
 }

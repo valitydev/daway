@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 
 import static dev.vality.daway.domain.tables.Invoice.INVOICE;
@@ -110,10 +111,11 @@ class DaoTests {
 
     @Test
     void paymentDaoTest() {
-        Payment first = RandomBeans.random(Payment.class);
+        Random random = new Random();
+        Payment first = RandomBeans.random(random.nextLong(100), Payment.class);
         first.setId(1L);
         first.setEventCreatedAt(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS));
-        Payment second = RandomBeans.random(Payment.class);
+        Payment second = RandomBeans.random(random.nextLong(100),Payment.class);
         second.setId(2L);
         second.setEventCreatedAt(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS));
         paymentDao.saveBatch(Arrays.asList(first, second));
@@ -145,9 +147,10 @@ class DaoTests {
 
     @Test
     void paymentPayerInfoDaoTest() {
-        PaymentPayerInfo first = RandomBeans.random(PaymentPayerInfo.class);
+        Random random = new Random();
+        PaymentPayerInfo first = RandomBeans.random(random.nextLong(100), PaymentPayerInfo.class);
         first.setId(1L);
-        PaymentPayerInfo second = RandomBeans.random(PaymentPayerInfo.class);
+        PaymentPayerInfo second = RandomBeans.random(random.nextLong(100), PaymentPayerInfo.class);
         second.setId(2L);
         paymentPayerInfoDao.saveBatch(Arrays.asList(first, second));
         assertEquals(first, paymentPayerInfoDao.get(first.getInvoiceId(), first.getPaymentId()));

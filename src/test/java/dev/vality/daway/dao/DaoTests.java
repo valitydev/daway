@@ -212,8 +212,9 @@ class DaoTests {
 
     @Test
     void paymentRecurrentInfoDaoTest() {
+        Random random = new Random();
         jdbcTemplate.execute("truncate table dw.payment_recurrent_info cascade");
-        List<PaymentRecurrentInfo> list = RandomBeans.randomListOf(2, PaymentRecurrentInfo.class);
+        List<PaymentRecurrentInfo> list = RandomBeans.randomListOf(random.nextLong(), 2, PaymentRecurrentInfo.class);
         list.forEach(statusInfo -> statusInfo.setCurrent(true));
         paymentRecurrentInfoDao.saveBatch(list);
         PaymentRecurrentInfo first = list.get(0);
@@ -221,7 +222,7 @@ class DaoTests {
         PaymentRecurrentInfo second = list.get(1);
         assertEquals(second, paymentRecurrentInfoDao.get(second.getInvoiceId(), second.getPaymentId()));
 
-        PaymentRecurrentInfo third = RandomBeans.random(PaymentRecurrentInfo.class);
+        PaymentRecurrentInfo third = RandomBeans.random(random.nextLong(), PaymentRecurrentInfo.class);
         third.setId(first.getId() + 1);
         third.setCurrent(false);
         third.setInvoiceId(first.getInvoiceId());
