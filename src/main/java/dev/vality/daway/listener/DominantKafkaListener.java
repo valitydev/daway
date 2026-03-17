@@ -23,12 +23,17 @@ public class DominantKafkaListener {
             topics = "${kafka.topics.dominant.id}",
             containerFactory = "dominantContainerFactory")
     public void handle(List<ConsumerRecord<String, HistoricalCommit>> messages, Acknowledgment ack) {
-        log.info("Got historicalCommit batch with size: {}", messages.size());
-        log.debug("HistoricalCommit messages: {}", messages);
-        dominantService.processCommit(messages.stream()
-                .map(ConsumerRecord::value)
-                .toList());
-        ack.acknowledge();
-        log.info("Batch has been committed, size={}", messages.size());
+        try {
+            log.info("Got historicalCommit batch with size: {}", messages.size());
+            log.debug("HistoricalCommit messages: {}", messages);
+            dominantService.processCommit(messages.stream()
+                    .map(ConsumerRecord::value)
+                    .toList());
+            ack.acknowledge();
+            log.info("Batch has been committed, size={}", messages.size());
+        } catch (Exception e) {
+            log.error("Kafka batch processing failed. cause={}", e.getMessage(), e);
+            throw e;
+        }
     }
 }
