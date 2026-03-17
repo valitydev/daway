@@ -172,12 +172,12 @@
         <dependency>
             <groupId>dev.vality</groupId>
             <artifactId>machinegun-proto</artifactId>
-            <version>1.31-b43d6fd</version>
+            <version>1.43-3decc8f</version>
         </dependency>
         <dependency>
             <groupId>dev.vality</groupId>
             <artifactId>damsel</artifactId>
-            <version>1.682-dfd6648</version>
+            <version>1.685-5c25c2e</version>
         </dependency>
         <dependency>
             <groupId>dev.vality</groupId>
@@ -187,17 +187,17 @@
         <dependency>
             <groupId>dev.vality</groupId>
             <artifactId>xrates-proto</artifactId>
-            <version>1.23-bf0d62d</version>
+            <version>1.25-99d0c5c</version>
         </dependency>
         <dependency>
             <groupId>dev.vality</groupId>
             <artifactId>limiter-proto</artifactId>
-            <version>1.41-2483f60</version>
+            <version>1.44-d4cdf0f</version>
         </dependency>
         <dependency>
             <groupId>dev.vality</groupId>
             <artifactId>exrates-proto</artifactId>
-            <version>1.7-ce9563e</version>
+            <version>1.9-5d53aec</version>
         </dependency>
         <dependency>
             <groupId>dev.vality.geck</groupId>
