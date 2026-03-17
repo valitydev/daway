@@ -45,7 +45,7 @@ public class LimitConfigGenerator {
         return randomThriftOnlyRequiredFields(LimitConfig.class)
                 .setId(limitConfigId)
                 .setType(LimitType.turnover(new LimitTypeTurnover().setMetric(LimitTurnoverMetric.amount(new LimitTurnoverAmount("RUB")))))
-                .setScope(LimitScope.multi(Set.of(LimitScopeType.identity(new LimitScopeEmptyDetails()),
+                .setScope(LimitScope.multi(Set.of(LimitScopeType.provider(new LimitScopeEmptyDetails()),
                         LimitScopeType.party(new LimitScopeEmptyDetails()),
                         LimitScopeType.shop(new LimitScopeEmptyDetails()))))
                 .setDescription("asd")
