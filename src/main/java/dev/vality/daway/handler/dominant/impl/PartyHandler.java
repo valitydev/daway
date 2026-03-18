@@ -46,7 +46,7 @@ public class PartyHandler extends AbstractDominantHandler<PartyConfigObject, Par
 
     @Override
     protected boolean acceptDomainObject() {
-        return getDomainObject().isSetPartyConfig();
+        return getDomainObject() != null && getDomainObject().isSetPartyConfig();
     }
 
     @Override

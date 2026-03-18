@@ -21,7 +21,7 @@ public class PaymentRoutingRulesHandler
 
     @Override
     protected boolean acceptDomainObject() {
-        return getDomainObject().isSetRoutingRules();
+        return getDomainObject() != null && getDomainObject().isSetRoutingRules();
     }
 
     @Override

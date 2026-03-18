@@ -41,7 +41,7 @@ public class CategoryHandler extends AbstractDominantHandler<CategoryObject, Cat
 
     @Override
     protected boolean acceptDomainObject() {
-        return getDomainObject().isSetCategory();
+        return getDomainObject() != null && getDomainObject().isSetCategory();
     }
 
     @Override

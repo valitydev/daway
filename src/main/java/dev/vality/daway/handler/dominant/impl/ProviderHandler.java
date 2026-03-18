@@ -44,7 +44,7 @@ public class ProviderHandler extends AbstractDominantHandler<ProviderObject, Pro
 
     @Override
     protected boolean acceptDomainObject() {
-        return getDomainObject().isSetProvider();
+        return getDomainObject() != null && getDomainObject().isSetProvider();
     }
 
     @Override
