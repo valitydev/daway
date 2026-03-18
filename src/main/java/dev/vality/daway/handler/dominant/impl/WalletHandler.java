@@ -42,7 +42,7 @@ public class WalletHandler extends AbstractDominantHandler<WalletConfigObject, W
 
     @Override
     protected boolean acceptDomainObject() {
-        return getDomainObject().isSetWalletConfig();
+        return getDomainObject() != null && getDomainObject().isSetWalletConfig();
     }
 
     @Override

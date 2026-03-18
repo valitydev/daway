@@ -44,7 +44,7 @@ public class TermSetHierarchyHandler
 
     @Override
     protected boolean acceptDomainObject() {
-        return getDomainObject().isSetTermSetHierarchy();
+        return getDomainObject() != null && getDomainObject().isSetTermSetHierarchy();
     }
 
     @Override

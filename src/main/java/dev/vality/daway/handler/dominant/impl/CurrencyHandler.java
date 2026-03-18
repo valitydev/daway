@@ -41,7 +41,7 @@ public class CurrencyHandler extends AbstractDominantHandler<CurrencyObject, Cur
 
     @Override
     protected boolean acceptDomainObject() {
-        return getDomainObject().isSetCurrency();
+        return getDomainObject() != null && getDomainObject().isSetCurrency();
     }
 
     @Override

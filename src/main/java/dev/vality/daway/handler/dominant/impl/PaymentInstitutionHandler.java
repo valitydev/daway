@@ -44,7 +44,7 @@ public class PaymentInstitutionHandler
 
     @Override
     protected boolean acceptDomainObject() {
-        return getDomainObject().isSetPaymentInstitution();
+        return getDomainObject() != null && getDomainObject().isSetPaymentInstitution();
     }
 
     @Override

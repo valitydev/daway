@@ -42,7 +42,7 @@ public class TerminalHandler extends AbstractDominantHandler<TerminalObject, Ter
 
     @Override
     protected boolean acceptDomainObject() {
-        return getDomainObject().isSetTerminal();
+        return getDomainObject() != null && getDomainObject().isSetTerminal();
     }
 
     @Override

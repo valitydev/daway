@@ -42,7 +42,7 @@ public class ProxyHandler extends AbstractDominantHandler<ProxyObject, Proxy, In
 
     @Override
     protected boolean acceptDomainObject() {
-        return getDomainObject().isSetProxy();
+        return getDomainObject() != null && getDomainObject().isSetProxy();
     }
 
     @Override
