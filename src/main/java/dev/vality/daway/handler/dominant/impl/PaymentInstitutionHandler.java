@@ -48,6 +48,11 @@ public class PaymentInstitutionHandler
     }
 
     @Override
+    protected boolean acceptReference() {
+        return getReference() != null && getReference().isSetPaymentInstitution();
+    }
+
+    @Override
     public PaymentInstitution convertToDatabaseObject(PaymentInstitutionObject paymentInstitutionObject, Long versionId,
                                                       boolean current, String createdAt) {
         PaymentInstitution paymentInstitution = new PaymentInstitution();

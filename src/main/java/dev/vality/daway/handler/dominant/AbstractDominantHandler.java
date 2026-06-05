@@ -40,6 +40,8 @@ public abstract class AbstractDominantHandler<T, C, I> implements DominantHandle
 
     protected abstract boolean acceptDomainObject();
 
+    protected abstract boolean acceptReference();
+
     public abstract C convertToDatabaseObject(T object, Long versionId, boolean current, String createdAt);
 
     @Override
@@ -66,6 +68,7 @@ public abstract class AbstractDominantHandler<T, C, I> implements DominantHandle
             setDomainObject(operation.getUpdate().getObject());
         } else if (operation.isSetRemove()) {
             setReference(operation.getRemove().getRef());
+            return acceptReference();
         } else {
             throw new IllegalStateException(
                     UNKNOWN_TYPE_EX + operation);

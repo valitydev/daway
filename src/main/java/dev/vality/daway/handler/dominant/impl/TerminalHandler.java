@@ -46,6 +46,11 @@ public class TerminalHandler extends AbstractDominantHandler<TerminalObject, Ter
     }
 
     @Override
+    protected boolean acceptReference() {
+        return getReference() != null && getReference().isSetTerminal();
+    }
+
+    @Override
     public Terminal convertToDatabaseObject(TerminalObject terminalObject, Long versionId, boolean current,
                                             String createdAt) {
         Terminal terminal = new Terminal();

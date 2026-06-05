@@ -25,6 +25,11 @@ public class PaymentRoutingRulesHandler
     }
 
     @Override
+    protected boolean acceptReference() {
+        return getReference() != null && getReference().isSetRoutingRules();
+    }
+
+    @Override
     public PaymentRoutingRule convertToDatabaseObject(RoutingRulesObject rulesObject,
                                                       Long versionId,
                                                       boolean current,

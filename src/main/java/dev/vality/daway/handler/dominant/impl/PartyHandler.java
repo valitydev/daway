@@ -50,6 +50,11 @@ public class PartyHandler extends AbstractDominantHandler<PartyConfigObject, Par
     }
 
     @Override
+    protected boolean acceptReference() {
+        return getReference() != null && getReference().isSetPartyConfig();
+    }
+
+    @Override
     public Party convertToDatabaseObject(PartyConfigObject partyConfigObject, Long versionId, boolean current,
                                          String createdAt) {
         Party party = new Party();

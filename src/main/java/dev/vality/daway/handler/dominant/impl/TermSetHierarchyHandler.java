@@ -48,6 +48,11 @@ public class TermSetHierarchyHandler
     }
 
     @Override
+    protected boolean acceptReference() {
+        return getReference() != null && getReference().isSetTermSetHierarchy();
+    }
+
+    @Override
     public TermSetHierarchy convertToDatabaseObject(TermSetHierarchyObject termSetHierarchyObject, Long versionId,
                                                     boolean current, String createdAt) {
         TermSetHierarchy termSetHierarchy = new TermSetHierarchy();
