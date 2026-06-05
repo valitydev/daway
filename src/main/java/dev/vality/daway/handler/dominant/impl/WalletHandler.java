@@ -46,6 +46,11 @@ public class WalletHandler extends AbstractDominantHandler<WalletConfigObject, W
     }
 
     @Override
+    protected boolean acceptReference() {
+        return getReference() != null && getReference().isSetWalletConfig();
+    }
+
+    @Override
     public Wallet convertToDatabaseObject(WalletConfigObject walletConfigObjectData,
                                           Long versionId,
                                           boolean current,

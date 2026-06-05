@@ -48,6 +48,11 @@ public class ProviderHandler extends AbstractDominantHandler<ProviderObject, Pro
     }
 
     @Override
+    protected boolean acceptReference() {
+        return getReference() != null && getReference().isSetProvider();
+    }
+
+    @Override
     public Provider convertToDatabaseObject(ProviderObject providerObject, Long versionId, boolean current,
                                             String createdAt) {
         Provider provider = new Provider();

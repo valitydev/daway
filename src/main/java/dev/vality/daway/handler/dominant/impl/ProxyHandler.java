@@ -46,6 +46,11 @@ public class ProxyHandler extends AbstractDominantHandler<ProxyObject, Proxy, In
     }
 
     @Override
+    protected boolean acceptReference() {
+        return getReference() != null && getReference().isSetProxy();
+    }
+
+    @Override
     public Proxy convertToDatabaseObject(ProxyObject proxyObject, Long versionId, boolean current, String createdAt) {
         Proxy proxy = new Proxy();
         proxy.setVersionId(versionId);

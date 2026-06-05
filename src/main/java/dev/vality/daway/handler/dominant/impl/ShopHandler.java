@@ -49,6 +49,11 @@ public class ShopHandler extends AbstractDominantHandler<ShopConfigObject, Shop,
     }
 
     @Override
+    protected boolean acceptReference() {
+        return getReference() != null && getReference().isSetShopConfig();
+    }
+
+    @Override
     public Shop convertToDatabaseObject(ShopConfigObject shopConfigObject, Long versionId, boolean current,
                                         String createdAt) {
         dev.vality.daway.domain.tables.pojos.Shop shop = new dev.vality.daway.domain.tables.pojos.Shop();

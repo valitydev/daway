@@ -45,6 +45,11 @@ public class CurrencyHandler extends AbstractDominantHandler<CurrencyObject, Cur
     }
 
     @Override
+    protected boolean acceptReference() {
+        return getReference() != null && getReference().isSetCurrency();
+    }
+
+    @Override
     public Currency convertToDatabaseObject(CurrencyObject currencyObject, Long versionId, boolean current,
                                             String createdAt) {
         Currency currency = new Currency();

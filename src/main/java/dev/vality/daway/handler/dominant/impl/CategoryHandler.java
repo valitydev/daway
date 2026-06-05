@@ -45,6 +45,11 @@ public class CategoryHandler extends AbstractDominantHandler<CategoryObject, Cat
     }
 
     @Override
+    protected boolean acceptReference() {
+        return getReference() != null && getReference().isSetCategory();
+    }
+
+    @Override
     public Category convertToDatabaseObject(CategoryObject categoryObject, Long versionId, boolean current, String createdAt) {
         Category category = new Category();
         category.setVersionId(versionId);
