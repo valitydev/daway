@@ -47,13 +47,14 @@ public abstract class AbstractDominantHandler<T, C, I> implements DominantHandle
     @Override
     @Transactional(propagation = Propagation.REQUIRED)
     public void handle(FinalOperation operation, Long versionId, String createdAt) {
-        T object = getTargetObject();
         if (operation.isSetInsert()) {
+            T object = getTargetObject();
             insertDomainObject(object, versionId, createdAt);
         } else if (operation.isSetUpdate()) {
+            T object = getTargetObject();
             updateDomainObject(object, versionId, createdAt);
         } else if (operation.isSetRemove()) {
-            removeDomainObject(object, versionId, createdAt);
+            removeDomainObject(versionId);
         } else {
             throw new IllegalStateException(
                     UNKNOWN_TYPE_EX + operation);
@@ -96,12 +97,9 @@ public abstract class AbstractDominantHandler<T, C, I> implements DominantHandle
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
-    public void removeDomainObject(T object, Long versionId, String createdAt) {
-        log.info("Start to remove '{}' with id={}, versionId={}", object.getClass().getSimpleName(),
-                getTargetRefId(), versionId);
+    public void removeDomainObject(Long versionId) {
+        log.info("Start to remove object with id={}, versionId={}", getTargetRefId(), versionId);
         getDomainObjectDao().updateNotCurrent(getTargetRefId());
-        getDomainObjectDao().save(convertToDatabaseObject(object, versionId, false, createdAt));
-        log.info("End to remove '{}' with id={}, versionId={}", object.getClass().getSimpleName(),
-                getTargetRefId(), versionId);
+        log.info("End to remove object with id={}, versionId={}", getTargetRefId(), versionId);
     }
 }
