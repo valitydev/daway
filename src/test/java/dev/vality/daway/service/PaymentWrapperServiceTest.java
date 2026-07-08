@@ -7,6 +7,7 @@ import dev.vality.daway.dao.invoicing.impl.PaymentDaoImpl;
 import dev.vality.daway.domain.enums.PaymentChangeType;
 import dev.vality.daway.domain.tables.pojos.CashFlow;
 import dev.vality.daway.domain.tables.pojos.CashFlowLink;
+import dev.vality.daway.domain.tables.pojos.PaymentExchangeContext;
 import dev.vality.daway.domain.tables.pojos.PaymentFee;
 import dev.vality.daway.model.CashFlowWrapper;
 import dev.vality.daway.model.InvoicingKey;
@@ -95,6 +96,7 @@ class PaymentWrapperServiceTest {
                 .map(PaymentWrapper::getPayment)
                 .forEach(payment -> payment.setEventCreatedAt(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)));
         paymentWrappers.forEach(pw -> {
+            pw.setPaymentExchangeContext(null);
             pw.setCashFlowWrapper(new CashFlowWrapper(
                     RandomBeans.random(CashFlowLink.class),
                     RandomBeans.randomListOf(random.nextLong(100), 3, CashFlow.class)
@@ -167,5 +169,50 @@ class PaymentWrapperServiceTest {
         PaymentWrapper emptyWrapper = new PaymentWrapper();
 
         assertDoesNotThrow(() -> paymentWrapperService.save(List.of(wrapperWithFee, emptyWrapper)));
+    }
+
+    @Test
+    void paymentExchangeContextCurrentSwitchTest() {
+        String invoiceId = TestData.randomString();
+        String paymentId = TestData.randomString();
+
+        PaymentWrapper firstWrapper = buildPaymentExchangeContextWrapper(invoiceId, paymentId, 1L, 1, 60797502L);
+        PaymentWrapper secondWrapper = buildPaymentExchangeContextWrapper(invoiceId, paymentId, 2L, 1, 70797502L);
+
+        paymentWrapperService.save(List.of(firstWrapper, secondWrapper));
+
+        assertEquals(2, countPaymentEntity(jdbcTemplate, "payment_exchange_context", invoiceId, paymentId, false));
+        assertEquals(1, countPaymentEntity(jdbcTemplate, "payment_exchange_context", invoiceId, paymentId, true));
+        assertEquals(70797502L, jdbcTemplate.queryForObject("""
+                        SELECT exchange_rate_rational_p
+                        FROM dw.payment_exchange_context
+                        WHERE invoice_id = ? AND payment_id = ? AND current
+                        """,
+                Long.class,
+                invoiceId,
+                paymentId));
+    }
+
+    private PaymentWrapper buildPaymentExchangeContextWrapper(String invoiceId,
+                                                              String paymentId,
+                                                              Long sequenceId,
+                                                              Integer changeId,
+                                                              Long exchangeRateP) {
+        PaymentExchangeContext paymentExchangeContext = new PaymentExchangeContext();
+        paymentExchangeContext.setEventCreatedAt(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS));
+        paymentExchangeContext.setInvoiceId(invoiceId);
+        paymentExchangeContext.setPaymentId(paymentId);
+        paymentExchangeContext.setSourceCurrencyCode("RUB");
+        paymentExchangeContext.setDestinationCurrencyCode("USD");
+        paymentExchangeContext.setExchangeRateRationalP(exchangeRateP);
+        paymentExchangeContext.setExchangeRateRationalQ(1000000L);
+        paymentExchangeContext.setSequenceId(sequenceId);
+        paymentExchangeContext.setChangeId(changeId);
+        paymentExchangeContext.setCurrent(true);
+
+        PaymentWrapper paymentWrapper = new PaymentWrapper();
+        paymentWrapper.setKey(InvoicingKey.buildKey(invoiceId, paymentId));
+        paymentWrapper.setPaymentExchangeContext(paymentExchangeContext);
+        return paymentWrapper;
     }
 }
