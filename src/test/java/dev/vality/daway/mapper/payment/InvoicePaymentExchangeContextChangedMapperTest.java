@@ -1,14 +1,9 @@
 package dev.vality.daway.mapper.payment;
 
-import dev.vality.damsel.base.Rational;
-import dev.vality.damsel.domain.ExchangeContext;
 import dev.vality.damsel.payment_processing.InvoiceChange;
-import dev.vality.damsel.payment_processing.InvoicePaymentChange;
-import dev.vality.damsel.payment_processing.InvoicePaymentChangePayload;
-import dev.vality.damsel.payment_processing.InvoicePaymentExchangeContextChanged;
+import dev.vality.daway.TestData;
 import dev.vality.daway.domain.tables.pojos.PaymentExchangeContext;
 import dev.vality.daway.model.PaymentWrapper;
-import dev.vality.geck.common.util.TypeUtil;
 import dev.vality.machinegun.eventsink.MachineEvent;
 import org.junit.jupiter.api.Test;
 
@@ -26,17 +21,8 @@ class InvoicePaymentExchangeContextChangedMapperTest {
     @Test
     void mapTest() {
         LocalDateTime createdAt = LocalDateTime.now().truncatedTo(ChronoUnit.MICROS);
-        MachineEvent event = new MachineEvent()
-                .setSourceId("invoice_id")
-                .setEventId(42L)
-                .setCreatedAt(TypeUtil.temporalToString(createdAt));
-        InvoiceChange change = InvoiceChange.invoice_payment_change(new InvoicePaymentChange()
-                .setId("payment_id")
-                .setPayload(InvoicePaymentChangePayload.invoice_payment_exchange_context_changed(
-                        new InvoicePaymentExchangeContextChanged(new ExchangeContext(
-                                "RUB",
-                                "USD",
-                                new Rational(60797502L, 1000000L))))));
+        MachineEvent event = TestData.createInvoiceEvent("invoice_id", 42L, createdAt);
+        InvoiceChange change = TestData.createInvoicePaymentExchangeContextChanged("payment_id");
 
         PaymentWrapper wrapper = mapper.map(change, event, 7);
         PaymentExchangeContext paymentExchangeContext = wrapper.getPaymentExchangeContext();

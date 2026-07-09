@@ -7,7 +7,6 @@ import dev.vality.daway.dao.invoicing.impl.PaymentDaoImpl;
 import dev.vality.daway.domain.enums.PaymentChangeType;
 import dev.vality.daway.domain.tables.pojos.CashFlow;
 import dev.vality.daway.domain.tables.pojos.CashFlowLink;
-import dev.vality.daway.domain.tables.pojos.PaymentExchangeContext;
 import dev.vality.daway.domain.tables.pojos.PaymentFee;
 import dev.vality.daway.model.CashFlowWrapper;
 import dev.vality.daway.model.InvoicingKey;
@@ -176,8 +175,10 @@ class PaymentWrapperServiceTest {
         String invoiceId = TestData.randomString();
         String paymentId = TestData.randomString();
 
-        PaymentWrapper firstWrapper = buildPaymentExchangeContextWrapper(invoiceId, paymentId, 1L, 1, 60797502L);
-        PaymentWrapper secondWrapper = buildPaymentExchangeContextWrapper(invoiceId, paymentId, 2L, 1, 70797502L);
+        PaymentWrapper firstWrapper =
+                TestData.createPaymentExchangeContextWrapper(invoiceId, paymentId, 1L, 1, 60797502L);
+        PaymentWrapper secondWrapper =
+                TestData.createPaymentExchangeContextWrapper(invoiceId, paymentId, 2L, 1, 70797502L);
 
         paymentWrapperService.save(List.of(firstWrapper, secondWrapper));
 
@@ -191,28 +192,5 @@ class PaymentWrapperServiceTest {
                 Long.class,
                 invoiceId,
                 paymentId));
-    }
-
-    private PaymentWrapper buildPaymentExchangeContextWrapper(String invoiceId,
-                                                              String paymentId,
-                                                              Long sequenceId,
-                                                              Integer changeId,
-                                                              Long exchangeRateP) {
-        PaymentExchangeContext paymentExchangeContext = new PaymentExchangeContext();
-        paymentExchangeContext.setEventCreatedAt(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS));
-        paymentExchangeContext.setInvoiceId(invoiceId);
-        paymentExchangeContext.setPaymentId(paymentId);
-        paymentExchangeContext.setSourceCurrencyCode("RUB");
-        paymentExchangeContext.setDestinationCurrencyCode("USD");
-        paymentExchangeContext.setExchangeRateRationalP(exchangeRateP);
-        paymentExchangeContext.setExchangeRateRationalQ(1000000L);
-        paymentExchangeContext.setSequenceId(sequenceId);
-        paymentExchangeContext.setChangeId(changeId);
-        paymentExchangeContext.setCurrent(true);
-
-        PaymentWrapper paymentWrapper = new PaymentWrapper();
-        paymentWrapper.setKey(InvoicingKey.buildKey(invoiceId, paymentId));
-        paymentWrapper.setPaymentExchangeContext(paymentExchangeContext);
-        return paymentWrapper;
     }
 }

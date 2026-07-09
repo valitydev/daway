@@ -1,5 +1,6 @@
 package dev.vality.daway;
 
+import dev.vality.damsel.base.Rational;
 import dev.vality.damsel.domain.*;
 import dev.vality.damsel.domain.CashFlowAccount;
 import dev.vality.damsel.domain.InvoicePaymentChargeback;
@@ -14,7 +15,10 @@ import dev.vality.damsel.user_interaction.UserInteraction;
 import dev.vality.daway.domain.enums.*;
 import dev.vality.daway.domain.tables.pojos.Chargeback;
 import dev.vality.daway.domain.tables.pojos.FistfulCashFlow;
+import dev.vality.daway.domain.tables.pojos.PaymentExchangeContext;
 import dev.vality.daway.domain.tables.pojos.WithdrawalAdjustment;
+import dev.vality.daway.model.InvoicingKey;
+import dev.vality.daway.model.PaymentWrapper;
 import dev.vality.fistful.account.Account;
 import dev.vality.fistful.base.Realm;
 import dev.vality.fistful.cashflow.FinalCashFlow;
@@ -232,6 +236,70 @@ public class TestData {
 
     public static String randomString() {
         return UUID.randomUUID().toString();
+    }
+
+    public static ExchangeContext createExchangeContext() {
+        return createExchangeContext("RUB", "USD", 60797502L, 1000000L);
+    }
+
+    public static ExchangeContext createExchangeContext(String sourceCurrencyCode,
+                                                        String destinationCurrencyCode,
+                                                        Long rationalP,
+                                                        Long rationalQ) {
+        return new ExchangeContext(sourceCurrencyCode, destinationCurrencyCode, new Rational(rationalP, rationalQ));
+    }
+
+    public static FinalCashFlowPosting createPaymentCashFlowPosting() {
+        return new FinalCashFlowPosting()
+                .setSource(new FinalCashFlowAccount()
+                        .setAccountId(1)
+                        .setAccountType(CashFlowAccount.merchant(MerchantCashFlowAccount.settlement)))
+                .setDestination(new FinalCashFlowAccount()
+                        .setAccountId(2)
+                        .setAccountType(CashFlowAccount.system(SystemCashFlowAccount.settlement)))
+                .setVolume(new Cash(1000L, new CurrencyRef("RUB")));
+    }
+
+    public static FinalCashFlowPosting createPaymentCashFlowPostingWithExchangeContext() {
+        return createPaymentCashFlowPosting()
+                .setExchangeContext(createExchangeContext());
+    }
+
+    public static MachineEvent createInvoiceEvent(String invoiceId, Long sequenceId, LocalDateTime createdAt) {
+        return new MachineEvent()
+                .setSourceId(invoiceId)
+                .setEventId(sequenceId)
+                .setCreatedAt(TypeUtil.temporalToString(createdAt));
+    }
+
+    public static InvoiceChange createInvoicePaymentExchangeContextChanged(String paymentId) {
+        return InvoiceChange.invoice_payment_change(new InvoicePaymentChange()
+                .setId(paymentId)
+                .setPayload(InvoicePaymentChangePayload.invoice_payment_exchange_context_changed(
+                        new InvoicePaymentExchangeContextChanged(createExchangeContext()))));
+    }
+
+    public static PaymentWrapper createPaymentExchangeContextWrapper(String invoiceId,
+                                                                     String paymentId,
+                                                                     Long sequenceId,
+                                                                     Integer changeId,
+                                                                     Long exchangeRateP) {
+        PaymentExchangeContext paymentExchangeContext = new PaymentExchangeContext();
+        paymentExchangeContext.setEventCreatedAt(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS));
+        paymentExchangeContext.setInvoiceId(invoiceId);
+        paymentExchangeContext.setPaymentId(paymentId);
+        paymentExchangeContext.setSourceCurrencyCode("RUB");
+        paymentExchangeContext.setDestinationCurrencyCode("USD");
+        paymentExchangeContext.setExchangeRateRationalP(exchangeRateP);
+        paymentExchangeContext.setExchangeRateRationalQ(1000000L);
+        paymentExchangeContext.setSequenceId(sequenceId);
+        paymentExchangeContext.setChangeId(changeId);
+        paymentExchangeContext.setCurrent(true);
+
+        PaymentWrapper paymentWrapper = new PaymentWrapper();
+        paymentWrapper.setKey(InvoicingKey.buildKey(invoiceId, paymentId));
+        paymentWrapper.setPaymentExchangeContext(paymentExchangeContext);
+        return paymentWrapper;
     }
 
     public static CountryObject buildCountryObject() {

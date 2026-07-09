@@ -35,7 +35,7 @@ public class PaymentExchangeContextDaoImpl extends AbstractGenericDao implements
                 .map(paymentExchangeContext -> getDslContext().newRecord(
                         PAYMENT_EXCHANGE_CONTEXT, paymentExchangeContext))
                 .map(this::prepareInsertQuery)
-                .collect(Collectors.toList());
+                .toList();
         batchExecute(queries);
     }
 
