@@ -27,6 +27,9 @@ public class PaymentWrapperTestUtil {
         if (wrapper.getPaymentRoute() != null) {
             wrapper.getPaymentRoute().setCurrent(current);
         }
+        if (wrapper.getPaymentExchangeContext() != null) {
+            wrapper.getPaymentExchangeContext().setCurrent(current);
+        }
         if (wrapper.getCashFlowWrapper() != null) {
             wrapper.getCashFlowWrapper().getCashFlowLink().setCurrent(current);
         }
@@ -68,6 +71,10 @@ public class PaymentWrapperTestUtil {
         if (wrapper.getPaymentRoute() != null) {
             wrapper.getPaymentRoute().setInvoiceId(invoiceId);
             wrapper.getPaymentRoute().setPaymentId(paymentId);
+        }
+        if (wrapper.getPaymentExchangeContext() != null) {
+            wrapper.getPaymentExchangeContext().setInvoiceId(invoiceId);
+            wrapper.getPaymentExchangeContext().setPaymentId(paymentId);
         }
         if (wrapper.getCashFlowWrapper() != null) {
             wrapper.getCashFlowWrapper().getCashFlowLink().setInvoiceId(invoiceId);
