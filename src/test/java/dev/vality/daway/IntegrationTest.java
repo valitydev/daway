@@ -235,6 +235,54 @@ class IntegrationTest {
         assertDuplication();
     }
 
+    @Test
+    void transactionInfoAdjustmentIsAppliedOnlyWhenCaptured() {
+        cleanUpTables();
+        invoicingService.handleEvents(getInitialInvoicePaymentEvents(invoiceId, paymentId));
+
+        var transactionInfo = new TransactionInfo()
+                .setId("adjustedTrxId")
+                .setExtra(Map.of("source", "dispute"))
+                .setAdditionalInfo(new AdditionalTransactionInfo().setRrn("adjustedRrn"));
+        invoicingService.handleEvents(List.of(createTransactionInfoAdjustmentCreatedEvent(2, transactionInfo)));
+        assertEquals("adjustedRrn", jdbcTemplate.queryForObject(
+                "SELECT transaction_info_rrn FROM dw.adjustment WHERE current",
+                String.class));
+        assertCurrentTransactionInfo("trxId", null);
+
+        invoicingService.handleEvents(List.of(createAdjustmentStatusChangedEvent(
+                3,
+                InvoicePaymentAdjustmentStatus.processed(new InvoicePaymentAdjustmentProcessed()))));
+        assertCurrentTransactionInfo("trxId", null);
+
+        invoicingService.handleEvents(List.of(createAdjustmentStatusChangedEvent(
+                4,
+                InvoicePaymentAdjustmentStatus.captured(
+                        new InvoicePaymentAdjustmentCaptured().setAt("2026-07-13T14:00:00Z")))));
+        assertCurrentTransactionInfo("trxId", "adjustedRrn");
+    }
+
+    @Test
+    void cancelledTransactionInfoAdjustmentIsNotApplied() {
+        cleanUpTables();
+        invoicingService.handleEvents(getInitialInvoicePaymentEvents(invoiceId, paymentId));
+
+        var transactionInfo = new TransactionInfo()
+                .setId("cancelledTrxId")
+                .setExtra(Map.of())
+                .setAdditionalInfo(new AdditionalTransactionInfo().setRrn("cancelledRrn"));
+        invoicingService.handleEvents(List.of(createTransactionInfoAdjustmentCreatedEvent(2, transactionInfo)));
+        invoicingService.handleEvents(List.of(createAdjustmentStatusChangedEvent(
+                3,
+                InvoicePaymentAdjustmentStatus.processed(new InvoicePaymentAdjustmentProcessed()))));
+        invoicingService.handleEvents(List.of(createAdjustmentStatusChangedEvent(
+                4,
+                InvoicePaymentAdjustmentStatus.cancelled(
+                        new InvoicePaymentAdjustmentCancelled().setAt("2026-07-13T14:00:00Z")))));
+
+        assertCurrentTransactionInfo("trxId", null);
+    }
+
     @NotNull
     private List<MachineEvent> getInitialInvoicePaymentEvents(String invoiceId, String paymentId) {
         return List.of(
@@ -396,6 +444,54 @@ class IntegrationTest {
         );
     }
 
+    private MachineEvent createTransactionInfoAdjustmentCreatedEvent(long eventId, TransactionInfo transactionInfo) {
+        var adjustment = new InvoicePaymentAdjustment()
+                .setId("transactionInfoAdjustment")
+                .setStatus(InvoicePaymentAdjustmentStatus.pending(
+                        new dev.vality.damsel.domain.InvoicePaymentAdjustmentPending()))
+                .setCreatedAt("2026-07-13T14:00:00Z")
+                .setDomainRevision(1)
+                .setReason("providerCallbackId=test")
+                .setNewCashFlow(List.of())
+                .setOldCashFlowInverse(List.of())
+                .setState(InvoicePaymentAdjustmentState.transaction_info(
+                        new InvoicePaymentAdjustmentTransactionInfoState()
+                                .setScenario(new InvoicePaymentAdjustmentTransactionInfo(transactionInfo))));
+        var payload = InvoicePaymentChangePayload.invoice_payment_adjustment_change(
+                new InvoicePaymentAdjustmentChange()
+                        .setId(adjustment.getId())
+                        .setPayload(InvoicePaymentAdjustmentChangePayload.invoice_payment_adjustment_created(
+                                new InvoicePaymentAdjustmentCreated(adjustment))));
+        return createPaymentChangeEvent(eventId, payload);
+    }
+
+    private MachineEvent createAdjustmentStatusChangedEvent(
+            long eventId,
+            InvoicePaymentAdjustmentStatus status) {
+        var payload = InvoicePaymentChangePayload.invoice_payment_adjustment_change(
+                new InvoicePaymentAdjustmentChange()
+                        .setId("transactionInfoAdjustment")
+                        .setPayload(InvoicePaymentAdjustmentChangePayload.invoice_payment_adjustment_status_changed(
+                                new InvoicePaymentAdjustmentStatusChanged(status))));
+        return createPaymentChangeEvent(eventId, payload);
+    }
+
+    private MachineEvent createPaymentChangeEvent(long eventId, InvoicePaymentChangePayload payload) {
+        var change = InvoiceChange.invoice_payment_change(
+                new InvoicePaymentChange().setId(paymentId).setPayload(payload));
+        return new MachineEvent()
+                .setSourceId(invoiceId)
+                .setEventId(eventId)
+                .setCreatedAt("2026-07-13T14:00:00Z")
+                .setData(Value.bin(serializer.serialize(EventPayload.invoice_changes(List.of(change)))));
+    }
+
+    private void assertCurrentTransactionInfo(String transactionId, String rrn) {
+        var paymentAdditionalInfo = paymentAdditionalInfoDao.get(invoiceId, paymentId);
+        assertEquals(transactionId, paymentAdditionalInfo.getTransactionId());
+        assertEquals(rrn, paymentAdditionalInfo.getRrn());
+    }
+
     private void cleanUpTables() {
         jdbcTemplate.execute("truncate table dw.invoice cascade");
         jdbcTemplate.execute("truncate table dw.invoice_status_info cascade");
@@ -410,6 +506,7 @@ class IntegrationTest {
         jdbcTemplate.execute("truncate table dw.payment_route cascade");
         jdbcTemplate.execute("truncate table dw.cash_flow_link cascade");
         jdbcTemplate.execute("truncate table dw.cash_flow cascade");
+        jdbcTemplate.execute("truncate table dw.adjustment cascade");
     }
 
     private void assertDuplication() {

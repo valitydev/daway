@@ -6,12 +6,15 @@ import dev.vality.damsel.payment_processing.InvoicePaymentAdjustmentChange;
 import dev.vality.damsel.payment_processing.InvoicePaymentChange;
 import dev.vality.daway.dao.invoicing.iface.AdjustmentDao;
 import dev.vality.daway.dao.invoicing.iface.CashFlowDao;
+import dev.vality.daway.dao.invoicing.iface.PaymentAdditionalInfoDao;
 import dev.vality.daway.domain.enums.AdjustmentCashFlowType;
 import dev.vality.daway.domain.enums.AdjustmentStatus;
 import dev.vality.daway.domain.tables.pojos.Adjustment;
 import dev.vality.daway.domain.tables.pojos.CashFlow;
+import dev.vality.daway.domain.tables.pojos.PaymentAdditionalInfo;
 import dev.vality.daway.factory.machine.event.MachineEventCopyFactory;
 import dev.vality.daway.handler.event.stock.impl.invoicing.InvoicingHandler;
+import dev.vality.daway.model.InvoicingKey;
 import dev.vality.geck.common.util.TBaseUtil;
 import dev.vality.geck.common.util.TypeUtil;
 import dev.vality.geck.filter.Filter;
@@ -27,6 +30,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
 
 @Slf4j
 @Component
@@ -35,6 +39,7 @@ public class InvoicePaymentAdjustmentStatusChangedHandler implements InvoicingHa
 
     private final AdjustmentDao adjustmentDao;
     private final CashFlowDao cashFlowDao;
+    private final PaymentAdditionalInfoDao paymentAdditionalInfoDao;
     private final MachineEventCopyFactory<Adjustment, Integer> machineEventCopyFactory;
 
     @Getter
@@ -92,6 +97,11 @@ public class InvoicePaymentAdjustmentStatusChangedHandler implements InvoicingHa
                         pcf.setObjId(id);
                     });
                     cashFlowDao.save(oldCashFlows);
+                    applyTransactionInfoAdjustment(
+                            adjustmentOld,
+                            invoicePaymentAdjustmentStatus,
+                            event,
+                            changeId);
                     log.info("Adjustment status change has been saved, " +
                                     "sequenceId={}, invoiceId={}, paymentId={}, adjustmentId={}",
                             sequenceId, invoiceId, paymentId, adjustmentId);
@@ -100,6 +110,32 @@ public class InvoicePaymentAdjustmentStatusChangedHandler implements InvoicingHa
                         .info("Adjustment status change bound duplicated," +
                                         " sequenceId={}, invoiceId={}, paymentId={}, adjustmentId={}",
                                 sequenceId, invoiceId, paymentId, adjustmentId));
+    }
+
+    private void applyTransactionInfoAdjustment(
+            Adjustment adjustment,
+            InvoicePaymentAdjustmentStatus status,
+            MachineEvent event,
+            int changeId) {
+        if (!status.isSetCaptured() || adjustment.getTransactionInfoRrn() == null) {
+            return;
+        }
+        var invoiceId = adjustment.getInvoiceId();
+        var paymentId = adjustment.getPaymentId();
+        var key = InvoicingKey.buildKey(invoiceId, paymentId);
+        var currentAdditionalInfo = paymentAdditionalInfoDao.safeGet(invoiceId, paymentId);
+        var additionalInfo = currentAdditionalInfo == null
+                ? new PaymentAdditionalInfo()
+                : new PaymentAdditionalInfo(currentAdditionalInfo);
+        additionalInfo.setId(null);
+        additionalInfo.setEventCreatedAt(TypeUtil.stringToLocalDateTime(event.getCreatedAt()));
+        additionalInfo.setInvoiceId(invoiceId);
+        additionalInfo.setPaymentId(paymentId);
+        additionalInfo.setRrn(adjustment.getTransactionInfoRrn());
+        additionalInfo.setSequenceId(event.getEventId());
+        additionalInfo.setChangeId(changeId);
+        paymentAdditionalInfoDao.saveBatch(List.of(additionalInfo));
+        paymentAdditionalInfoDao.switchCurrent(Set.of(key));
     }
 
 }

@@ -98,6 +98,11 @@ public class InvoicePaymentAdjustmentCreatedHandler implements InvoicingHandler 
                         invoicePaymentAdjustmentState.getStatusChange().getScenario().getTargetStatus(),
                         PaymentStatus.class);
                 adjustment.setPaymentStatus(paymentStatus);
+            } else if (invoicePaymentAdjustmentState.isSetTransactionInfo()) {
+                var transactionInfo = invoicePaymentAdjustmentState.getTransactionInfo().getScenario().getTrx();
+                if (transactionInfo.isSetAdditionalInfo()) {
+                    adjustment.setTransactionInfoRrn(transactionInfo.getAdditionalInfo().getRrn());
+                }
             }
         }
 
