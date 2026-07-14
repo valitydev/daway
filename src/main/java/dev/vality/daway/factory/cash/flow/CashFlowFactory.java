@@ -37,6 +37,12 @@ public class CashFlowFactory {
             pcf.setAmount(cf.getVolume().getAmount());
             pcf.setCurrencyCode(cf.getVolume().getCurrency().getSymbolicCode());
             pcf.setDetails(cf.getDetails());
+            if (cf.isSetExchangeContext()) {
+                pcf.setExchangeSourceCurrencyCode(cf.getExchangeContext().getSourceCurrency());
+                pcf.setExchangeDestinationCurrencyCode(cf.getExchangeContext().getDestinationCurrency());
+                pcf.setExchangeRateRationalP(cf.getExchangeContext().getExchangeRate().getP());
+                pcf.setExchangeRateRationalQ(cf.getExchangeContext().getExchangeRate().getQ());
+            }
             return pcf;
         }).collect(Collectors.toList());
     }

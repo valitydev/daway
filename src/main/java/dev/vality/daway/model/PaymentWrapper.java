@@ -18,6 +18,7 @@ public class PaymentWrapper {
     private PaymentRiskData paymentRiskData;
     private PaymentFee paymentFee;
     private PaymentRoute paymentRoute;
+    private PaymentExchangeContext paymentExchangeContext;
     private CashFlowWrapper cashFlowWrapper;
     private PaymentCashChange paymentCashChange;
     private InvoicingKey key;
