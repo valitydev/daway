@@ -625,6 +625,24 @@ public class TestData {
         return timestampedChange;
     }
 
+    public static TimestampedChange createWithdrawalBodyChangedChange() {
+        BodyChange bodyChange = new BodyChange()
+                .setOldBody(new dev.vality.fistful.base.Cash()
+                        .setAmount(100L)
+                        .setCurrency(new dev.vality.fistful.base.CurrencyRef()
+                                .setSymbolicCode("RUB")))
+                .setNewBody(new dev.vality.fistful.base.Cash()
+                        .setAmount(200L)
+                        .setCurrency(new dev.vality.fistful.base.CurrencyRef()
+                                .setSymbolicCode("USD")));
+        Change change = new Change();
+        change.setBodyChanged(bodyChange);
+        TimestampedChange timestampedChange = new TimestampedChange();
+        timestampedChange.setOccuredAt(OCCURED_AT);
+        timestampedChange.setChange(change);
+        return timestampedChange;
+    }
+
     public static MachineEvent createInvoice(InvoicePaymentChangePayload invoicePaymentChangePayload) {
         PaymentEventPayloadSerializer paymentEventPayloadSerializer = new PaymentEventPayloadSerializer();
         MachineEvent message = new MachineEvent();
