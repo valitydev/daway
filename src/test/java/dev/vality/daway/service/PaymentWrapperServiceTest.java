@@ -22,7 +22,7 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Random;
+import java.util.concurrent.atomic.AtomicLong;
 
 import static dev.vality.daway.utils.JdbcUtil.countEntities;
 import static dev.vality.daway.utils.JdbcUtil.countPaymentEntity;
@@ -89,7 +89,8 @@ class PaymentWrapperServiceTest {
     }
 
     private List<PaymentWrapper> preparePaymentWrappers() {
-        Random random = new Random();
+        AtomicLong cashFlowSeed = new AtomicLong();
+        AtomicLong cashFlowId = new AtomicLong();
         List<PaymentWrapper> paymentWrappers = RandomBeans.randomListOf(2, PaymentWrapper.class);
         paymentWrappers.stream()
                 .map(PaymentWrapper::getPayment)
@@ -98,9 +99,12 @@ class PaymentWrapperServiceTest {
             pw.setPaymentExchangeContext(null);
             pw.setCashFlowWrapper(new CashFlowWrapper(
                     RandomBeans.random(CashFlowLink.class),
-                    RandomBeans.randomListOf(random.nextLong(100), 3, CashFlow.class)
+                    RandomBeans.randomListOf(cashFlowSeed.getAndIncrement(), 3, CashFlow.class)
             ));
-            pw.getCashFlowWrapper().getCashFlows().forEach(cf -> cf.setObjType(PaymentChangeType.payment));
+            pw.getCashFlowWrapper().getCashFlows().forEach(cf -> {
+                cf.setId(cashFlowId.incrementAndGet());
+                cf.setObjType(PaymentChangeType.payment);
+            });
             PaymentWrapperTestUtil.setCurrent(pw, true);
         });
         PaymentWrapperTestUtil.setInvoiceIdAndPaymentId(paymentWrappers.get(0), invoiceIdFirst, paymentIdFirst);

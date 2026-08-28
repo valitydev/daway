@@ -15,7 +15,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
 
 import java.util.List;
-import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -60,12 +59,11 @@ class InvoiceWrapperServiceTest {
     }
 
     private List<InvoiceWrapper> prepareInvoiceWrappers() {
-        Random random = new Random();
         List<InvoiceWrapper> invoiceWrappers = IntStream.range(1, 5)
                 .mapToObj(x -> new InvoiceWrapper(
-                        RandomBeans.random(random.nextLong(), Invoice.class, "id"),
-                        RandomBeans.random(random.nextLong(), InvoiceStatusInfo.class, "id", "invoiceId"),
-                        RandomBeans.randomListOf(random.nextLong(), 3, InvoiceCart.class, "id", "invoiceId")))
+                        RandomBeans.random((long) x * 3, Invoice.class, "id"),
+                        RandomBeans.random((long) x * 3 + 1, InvoiceStatusInfo.class, "id", "invoiceId"),
+                        RandomBeans.randomListOf((long) x * 3 + 2, 3, InvoiceCart.class, "id", "invoiceId")))
                 .collect(Collectors.toList());
 
         invoiceWrappers.forEach(iw -> {
