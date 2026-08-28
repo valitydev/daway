@@ -418,6 +418,31 @@ public class TestData {
         return timestampedChange;
     }
 
+    public static TimestampedChange createWithdrawalAdjustmentCreatedCashFlowChange(String id) {
+        Adjustment adjustment = new Adjustment();
+        adjustment.setId(id);
+        adjustment.setOperationTimestamp(OCCURED_AT);
+        adjustment.setCreatedAt(OCCURED_AT);
+        adjustment.setStatus(Status.pending(new Pending()));
+        adjustment.setChangesPlan(
+                new ChangesPlan()
+                        .setNewCashFlow(new CashFlowChangePlan()
+                                .setOldCashFlowInverted(new FinalCashFlow().setPostings(getFinalCashFlowPostings()))
+                                .setNewCashFlow(new FinalCashFlow().setPostings(getFinalCashFlowPostings())))
+        );
+        var payload = new dev.vality.fistful.withdrawal.adjustment.Change();
+        payload.setCreated(new CreatedChange().setAdjustment(adjustment));
+        AdjustmentChange adjustmentChange = new AdjustmentChange();
+        adjustmentChange.setId("id");
+        adjustmentChange.setPayload(payload);
+        Change change = new Change();
+        change.setAdjustment(adjustmentChange);
+        TimestampedChange timestampedChange = new TimestampedChange();
+        timestampedChange.setOccuredAt(OCCURED_AT);
+        timestampedChange.setChange(change);
+        return timestampedChange;
+    }
+
     public static TimestampedChange createWithdrawalAdjustmentStatusChange(String id) {
         var payload = new dev.vality.fistful.withdrawal.adjustment.Change();
         payload.setStatusChanged(new StatusChange(Status.succeeded(new Succeeded())));

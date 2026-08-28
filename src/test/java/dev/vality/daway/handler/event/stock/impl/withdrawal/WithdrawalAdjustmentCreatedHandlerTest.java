@@ -3,6 +3,7 @@ package dev.vality.daway.handler.event.stock.impl.withdrawal;
 import dev.vality.daway.TestData;
 import dev.vality.daway.config.PostgresqlJooqSpringBootITest;
 import dev.vality.daway.dao.withdrawal.impl.WithdrawalAdjustmentDaoImpl;
+import dev.vality.daway.domain.enums.WithdrawalAdjustmentType;
 import dev.vality.daway.domain.tables.records.WithdrawalAdjustmentRecord;
 import dev.vality.daway.factory.machine.event.WithdrawalAdjustmentMachineEventCopyFactoryImpl;
 import dev.vality.fistful.withdrawal.TimestampedChange;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 
 import static dev.vality.daway.domain.tables.WithdrawalAdjustment.WITHDRAWAL_ADJUSTMENT;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
@@ -54,5 +56,22 @@ class WithdrawalAdjustmentCreatedHandlerTest {
         assertNotNull(record);
         assertNull(record.getWithdrawalStatus());
         assertNotNull(record.getDomainRevision());
+    }
+
+    @Test
+    void handleCashFlowChange() {
+        TimestampedChange timestampedChange =
+                TestData.createWithdrawalAdjustmentCreatedCashFlowChange("adjustmentId");
+
+        handler.handle(timestampedChange, TestData.createMachineEvent(timestampedChange));
+
+        WithdrawalAdjustmentRecord record = dslContext.fetchAny(WITHDRAWAL_ADJUSTMENT);
+        assertNotNull(record);
+        assertEquals(WithdrawalAdjustmentType.cash_flow, record.getType());
+        assertNotNull(record.getAmount());
+        assertNotNull(record.getFee());
+        assertNotNull(record.getProviderFee());
+        assertNull(record.getWithdrawalStatus());
+        assertNull(record.getDomainRevision());
     }
 }
