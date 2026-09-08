@@ -20,6 +20,7 @@ import dev.vality.daway.model.InvoicingKey;
 import dev.vality.daway.model.PartyShop;
 import dev.vality.daway.model.PaymentWrapper;
 import dev.vality.daway.service.PartyShopCacheService;
+import dev.vality.daway.util.JsonUtil;
 import dev.vality.geck.common.util.TBaseUtil;
 import dev.vality.geck.common.util.TypeUtil;
 import dev.vality.geck.filter.Filter;
@@ -177,6 +178,12 @@ public class InvoicePaymentCreatedMapper implements Mapper<PaymentWrapper> {
             if (paymentResource.getResource().isSetClientInfo()) {
                 payerInfo.setIpAddress(paymentResource.getResource().getClientInfo().getIpAddress());
                 payerInfo.setFingerprint(paymentResource.getResource().getClientInfo().getFingerprint());
+                payerInfo.setPeerUserAgent(paymentResource.getResource().getClientInfo().getPeerUserAgent());
+                payerInfo.setPeerAcceptHeader(paymentResource.getResource().getClientInfo().getPeerAcceptHeader());
+                payerInfo.setDeviceInfoJson(JsonUtil.objectToJsonString(JsonUtil.thriftBaseToJsonNode(
+                        paymentResource.getResource().getClientInfo().getDeviceInfo())));
+                payerInfo.setBrowserInfoJson(JsonUtil.objectToJsonString(JsonUtil.thriftBaseToJsonNode(
+                        paymentResource.getResource().getClientInfo().getBrowserInfo())));
             }
         } else if (payer.isSetRecurrent()) {
             payerInfo.setRecurrentParentInvoiceId(payer.getRecurrent().getRecurrentParent().getInvoiceId());
