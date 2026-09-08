@@ -53,7 +53,7 @@ public class WithdrawalTransferStatusChangedHandler implements WithdrawalHandler
         var timeRange = TimeUtil.getTimeRange(event.getCreatedAt());
         final Withdrawal withdrawalOld =
                 Optional.ofNullable(withdrawalDao.get(withdrawalId, timeRange.getLeft(), timeRange.getRight()))
-                        .orElse(withdrawalDao.get(withdrawalId));
+                        .orElseGet(() -> withdrawalDao.get(withdrawalId));
         Withdrawal withdrawalNew = machineEventCopyFactory
                 .create(event, sequenceId, withdrawalId, withdrawalOld, timestampedChange.getOccuredAt());
         withdrawalNew.setWithdrawalTransferStatus(TBaseUtil.unionFieldToEnum(status, WithdrawalTransferStatus.class));

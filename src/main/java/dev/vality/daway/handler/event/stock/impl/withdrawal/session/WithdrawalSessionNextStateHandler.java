@@ -45,7 +45,7 @@ public class WithdrawalSessionNextStateHandler implements WithdrawalSessionHandl
         var timeRange = TimeUtil.getTimeRange(event.getCreatedAt());
         final WithdrawalSession withdrawalSessionOld = Optional
                 .ofNullable(withdrawalSessionDao.get(withdrawalSessionId, timeRange.getLeft(), timeRange.getRight()))
-                .orElse(withdrawalSessionDao.get(withdrawalSessionId));
+                .orElseGet(() -> withdrawalSessionDao.get(withdrawalSessionId));
         WithdrawalSession withdrawalSessionNew = withdrawalSessionMachineEventCopyFactory
                 .create(event, sequenceId, withdrawalSessionId, withdrawalSessionOld, timestampedChange.getOccuredAt());
         withdrawalSessionNew.setAdapterState(JsonUtil.thriftBaseToJsonString(change.getNextState()));
