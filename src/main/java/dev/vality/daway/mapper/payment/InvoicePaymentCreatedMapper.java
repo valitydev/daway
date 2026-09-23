@@ -180,10 +180,14 @@ public class InvoicePaymentCreatedMapper implements Mapper<PaymentWrapper> {
                 payerInfo.setFingerprint(paymentResource.getResource().getClientInfo().getFingerprint());
                 payerInfo.setPeerUserAgent(paymentResource.getResource().getClientInfo().getPeerUserAgent());
                 payerInfo.setPeerAcceptHeader(paymentResource.getResource().getClientInfo().getPeerAcceptHeader());
-                payerInfo.setDeviceInfoJson(JsonUtil.objectToJsonString(JsonUtil.thriftBaseToJsonNode(
-                        paymentResource.getResource().getClientInfo().getDeviceInfo())));
-                payerInfo.setBrowserInfoJson(JsonUtil.objectToJsonString(JsonUtil.thriftBaseToJsonNode(
-                        paymentResource.getResource().getClientInfo().getBrowserInfo())));
+                if (paymentResource.getResource().getClientInfo().isSetDeviceInfo()) {
+                    payerInfo.setDeviceInfoJson(JsonUtil.objectToJsonString(JsonUtil.thriftBaseToJsonNode(
+                            paymentResource.getResource().getClientInfo().getDeviceInfo())));
+                }
+                if (paymentResource.getResource().getClientInfo().isSetBrowserInfo()) {
+                    payerInfo.setBrowserInfoJson(JsonUtil.objectToJsonString(JsonUtil.thriftBaseToJsonNode(
+                            paymentResource.getResource().getClientInfo().getBrowserInfo())));
+                }
             }
         } else if (payer.isSetRecurrent()) {
             payerInfo.setRecurrentParentInvoiceId(payer.getRecurrent().getRecurrentParent().getInvoiceId());
