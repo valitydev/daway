@@ -8,6 +8,7 @@ import dev.vality.daway.domain.tables.pojos.CashFlow;
 import dev.vality.daway.exception.DaoException;
 import dev.vality.mapper.RecordRowMapper;
 import org.jooq.Query;
+import org.springframework.boot.sql.init.dependency.DependsOnDatabaseInitialization;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
 import static dev.vality.daway.domain.tables.CashFlow.CASH_FLOW;
 
 @Component
+@DependsOnDatabaseInitialization
 public class CashFlowDaoImpl extends AbstractGenericDao implements CashFlowDao {
 
     private final RowMapper<CashFlow> cashFlowRowMapper;

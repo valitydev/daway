@@ -8,12 +8,14 @@ import dev.vality.daway.domain.tables.pojos.PaymentRoutingRule;
 import dev.vality.daway.domain.tables.records.PaymentRoutingRuleRecord;
 import dev.vality.daway.exception.DaoException;
 import org.jooq.Query;
+import org.springframework.boot.sql.init.dependency.DependsOnDatabaseInitialization;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
 @Component
+@DependsOnDatabaseInitialization
 public class PaymentRoutingRulesDaoImpl extends AbstractGenericDao
         implements DomainObjectDao<PaymentRoutingRule, Integer> {
 

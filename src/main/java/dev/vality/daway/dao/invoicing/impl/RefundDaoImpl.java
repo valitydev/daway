@@ -9,7 +9,7 @@ import dev.vality.daway.exception.DaoException;
 import dev.vality.daway.exception.NotFoundException;
 import dev.vality.mapper.RecordRowMapper;
 import org.jooq.Query;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.sql.init.dependency.DependsOnDatabaseInitialization;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -21,11 +21,11 @@ import java.util.Optional;
 import static dev.vality.daway.domain.tables.Refund.REFUND;
 
 @Component
+@DependsOnDatabaseInitialization
 public class RefundDaoImpl extends AbstractGenericDao implements RefundDao {
 
     private final RowMapper<Refund> refundRowMapper;
 
-    @Autowired
     public RefundDaoImpl(DataSource dataSource) {
         super(dataSource);
         refundRowMapper = new RecordRowMapper<>(REFUND, Refund.class);

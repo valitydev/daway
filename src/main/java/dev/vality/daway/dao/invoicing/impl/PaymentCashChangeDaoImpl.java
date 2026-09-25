@@ -9,6 +9,7 @@ import dev.vality.daway.model.InvoicingKey;
 import dev.vality.mapper.RecordRowMapper;
 import org.jooq.Query;
 import org.jooq.impl.DSL;
+import org.springframework.boot.sql.init.dependency.DependsOnDatabaseInitialization;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
@@ -20,6 +21,7 @@ import java.util.stream.Collectors;
 import static dev.vality.daway.domain.Tables.PAYMENT_CASH_CHANGE;
 
 @Component
+@DependsOnDatabaseInitialization
 public class PaymentCashChangeDaoImpl extends AbstractGenericDao implements PaymentCashChangeDao {
 
     private final RowMapper<PaymentCashChange> cashChangeRowMapper;

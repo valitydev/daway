@@ -8,7 +8,7 @@ import dev.vality.daway.exception.DaoException;
 import dev.vality.daway.exception.NotFoundException;
 import dev.vality.mapper.RecordRowMapper;
 import org.jooq.Query;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.sql.init.dependency.DependsOnDatabaseInitialization;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
@@ -19,11 +19,11 @@ import java.util.Optional;
 import static dev.vality.daway.domain.tables.Source.SOURCE;
 
 @Component
+@DependsOnDatabaseInitialization
 public class SourceDaoImpl extends AbstractGenericDao implements SourceDao {
 
     private final RowMapper<Source> sourceRowMapper;
 
-    @Autowired
     public SourceDaoImpl(DataSource dataSource) {
         super(dataSource);
         sourceRowMapper = new RecordRowMapper<>(SOURCE, Source.class);

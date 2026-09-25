@@ -9,6 +9,7 @@ import dev.vality.daway.exception.NotFoundException;
 import dev.vality.mapper.RecordRowMapper;
 import org.jooq.Query;
 import org.jooq.impl.DSL;
+import org.springframework.boot.sql.init.dependency.DependsOnDatabaseInitialization;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
@@ -21,6 +22,7 @@ import java.util.stream.Collectors;
 import static dev.vality.daway.domain.Tables.INVOICE_STATUS_INFO;
 
 @Component
+@DependsOnDatabaseInitialization
 public class InvoiceStatusInfoDaoImpl extends AbstractGenericDao implements InvoiceStatusInfoDao {
 
     private final RowMapper<InvoiceStatusInfo> rowMapper;

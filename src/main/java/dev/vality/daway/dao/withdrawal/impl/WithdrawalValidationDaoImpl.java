@@ -6,6 +6,7 @@ import dev.vality.daway.domain.tables.pojos.WithdrawalValidation;
 import dev.vality.daway.domain.tables.records.WithdrawalValidationRecord;
 import dev.vality.daway.exception.DaoException;
 import org.jooq.Query;
+import org.springframework.boot.sql.init.dependency.DependsOnDatabaseInitialization;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
 
@@ -16,6 +17,7 @@ import static dev.vality.daway.domain.tables.Withdrawal.WITHDRAWAL;
 import static dev.vality.daway.domain.tables.WithdrawalValidation.WITHDRAWAL_VALIDATION;
 
 @Component
+@DependsOnDatabaseInitialization
 public class WithdrawalValidationDaoImpl extends AbstractGenericDao implements WithdrawalValidationDao {
 
     public WithdrawalValidationDaoImpl(DataSource dataSource) {

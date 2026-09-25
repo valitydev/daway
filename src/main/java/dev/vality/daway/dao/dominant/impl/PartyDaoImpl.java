@@ -9,6 +9,7 @@ import dev.vality.daway.exception.NotFoundException;
 import dev.vality.mapper.RecordRowMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.jooq.Query;
+import org.springframework.boot.sql.init.dependency.DependsOnDatabaseInitialization;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
@@ -20,6 +21,7 @@ import static dev.vality.daway.domain.Tables.PARTY;
 
 @Slf4j
 @Component
+@DependsOnDatabaseInitialization
 public class PartyDaoImpl extends AbstractGenericDao implements DomainObjectDao<Party, String> {
 
     private final RowMapper<Party> rowMapper;

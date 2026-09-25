@@ -7,6 +7,7 @@ import dev.vality.daway.domain.tables.pojos.Terminal;
 import dev.vality.daway.domain.tables.records.TerminalRecord;
 import dev.vality.daway.exception.DaoException;
 import org.jooq.Query;
+import org.springframework.boot.sql.init.dependency.DependsOnDatabaseInitialization;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
 
@@ -14,6 +15,7 @@ import javax.sql.DataSource;
 import java.util.Optional;
 
 @Component
+@DependsOnDatabaseInitialization
 public class TerminalDaoImpl extends AbstractGenericDao implements DomainObjectDao<Terminal, Integer> {
 
     public TerminalDaoImpl(DataSource dataSource) {

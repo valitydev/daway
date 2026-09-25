@@ -1,7 +1,7 @@
 package dev.vality.daway.config;
 
 import dev.vality.testcontainers.annotations.postgresql.PostgresqlTestcontainerSingleton;
-import org.springframework.boot.test.autoconfigure.jooq.JooqTest;
+import org.springframework.boot.jooq.test.autoconfigure.JooqTest;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.lang.annotation.ElementType;
