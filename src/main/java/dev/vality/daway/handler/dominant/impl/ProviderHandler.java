@@ -1,15 +1,15 @@
 package dev.vality.daway.handler.dominant.impl;
 
 import dev.vality.damsel.domain.ProviderObject;
+import dev.vality.damsel.domain.ProviderAccount;
 import dev.vality.daway.dao.dominant.iface.DomainObjectDao;
 import dev.vality.daway.dao.dominant.impl.ProviderDaoImpl;
 import dev.vality.daway.domain.tables.pojos.Provider;
 import dev.vality.daway.handler.dominant.AbstractDominantHandler;
 import dev.vality.daway.util.JsonUtil;
-import dev.vality.geck.common.util.TypeUtil;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -85,12 +85,23 @@ public class ProviderHandler extends AbstractDominantHandler<ProviderObject, Pro
         }
 
         if (data.isSetAccounts()) {
-            Map<String, Long> accountsMap = data.getAccounts().entrySet()
+            Map<String, Map<String, Long>> accountsMap = data.getAccounts().entrySet()
                     .stream()
-                    .collect(Collectors.toMap(e -> e.getKey().getSymbolicCode(), e -> e.getValue().getSettlement()));
+                    .collect(Collectors.toMap(
+                            entry -> entry.getKey().getSymbolicCode(),
+                            entry -> convertProviderAccounts(entry.getValue())));
             provider.setAccountsJson(JsonUtil.objectToJsonString(accountsMap));
         }
         provider.setCurrent(current);
         return provider;
+    }
+
+    private Map<String, Long> convertProviderAccounts(ProviderAccount providerAccount) {
+        Map<String, Long> accounts = new LinkedHashMap<>();
+        accounts.put("settlement", providerAccount.getSettlement());
+        if (providerAccount.isSetGuarantee()) {
+            accounts.put("guarantee", providerAccount.getGuarantee());
+        }
+        return accounts;
     }
 }

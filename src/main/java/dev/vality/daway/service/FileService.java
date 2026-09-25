@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.util.Objects;
 
 @Slf4j
@@ -25,7 +25,7 @@ public class FileService {
 
     private String getProperty(String stringFilePath) {
         try {
-            var path = Paths.get(stringFilePath);
+            var path = Path.of(stringFilePath);
             String content = Files.readString(path);
             return content.split(DELIMITER)[1];
         } catch (IOException e) {

@@ -8,7 +8,7 @@ import dev.vality.daway.exception.DaoException;
 import dev.vality.daway.exception.NotFoundException;
 import dev.vality.mapper.RecordRowMapper;
 import org.jooq.Query;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.sql.init.dependency.DependsOnDatabaseInitialization;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
@@ -19,11 +19,11 @@ import java.util.Optional;
 import static dev.vality.daway.domain.tables.WithdrawalAdjustment.WITHDRAWAL_ADJUSTMENT;
 
 @Component
+@DependsOnDatabaseInitialization
 public class WithdrawalAdjustmentDaoImpl extends AbstractGenericDao implements WithdrawalAdjustmentDao {
 
     private final RowMapper<WithdrawalAdjustment> withdrawalAdjustmentRowMapper;
 
-    @Autowired
     public WithdrawalAdjustmentDaoImpl(DataSource dataSource) {
         super(dataSource);
         withdrawalAdjustmentRowMapper = new RecordRowMapper<>(WITHDRAWAL_ADJUSTMENT, WithdrawalAdjustment.class);

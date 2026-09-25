@@ -7,6 +7,7 @@ import dev.vality.daway.domain.tables.records.WithdrawalCashChangeRecord;
 import dev.vality.daway.exception.DaoException;
 import org.jooq.Query;
 import org.jooq.impl.DSL;
+import org.springframework.boot.sql.init.dependency.DependsOnDatabaseInitialization;
 import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
@@ -14,6 +15,7 @@ import javax.sql.DataSource;
 import static dev.vality.daway.domain.Tables.WITHDRAWAL_CASH_CHANGE;
 
 @Component
+@DependsOnDatabaseInitialization
 public class WithdrawalCashChangeDaoImpl extends AbstractGenericDao implements WithdrawalCashChangeDao {
 
     public WithdrawalCashChangeDaoImpl(DataSource dataSource) {

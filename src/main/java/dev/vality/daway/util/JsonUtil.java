@@ -1,17 +1,18 @@
 package dev.vality.daway.util;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.vality.geck.serializer.kit.json.JsonHandler;
 import dev.vality.geck.serializer.kit.tbase.TBaseProcessor;
 import org.apache.thrift.TBase;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.io.IOException;
 import java.util.Objects;
 
 public class JsonUtil {
-    private static final ObjectMapper objectMapper = new ObjectMapper();
+    private static final ObjectMapper objectMapper = new JsonMapper();
 
     public static String thriftBaseToJsonString(TBase thriftBase) {
         try {
@@ -23,8 +24,9 @@ public class JsonUtil {
 
     public static JsonNode thriftBaseToJsonNode(TBase thriftBase) {
         try {
-            return new TBaseProcessor().process(thriftBase, new JsonHandler());
-        } catch (IOException e) {
+            var legacyJsonNode = new TBaseProcessor().process(thriftBase, new JsonHandler());
+            return objectMapper.readTree(legacyJsonNode.toString());
+        } catch (IOException | JacksonException e) {
             throw new RuntimeException("Couldn't convert to json node: " + thriftBase, e);
         }
     }
@@ -32,7 +34,7 @@ public class JsonUtil {
     public static String objectToJsonString(Object o) {
         try {
             return objectMapper.writeValueAsString(o);
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             throw new RuntimeException("Couldn't convert object to json string: " + o, e);
         }
     }
@@ -40,7 +42,7 @@ public class JsonUtil {
     public static <T> T stringToObject(byte[] stringObject, Class<T> type) {
         try {
             return objectMapper.readValue(stringObject, type);
-        } catch (IOException e) {
+        } catch (JacksonException e) {
             throw new IllegalStateException("Couldn't convert json string to object: ", e);
         }
     }
@@ -51,7 +53,7 @@ public class JsonUtil {
                 return new byte[0];
             }
             return objectMapper.writeValueAsBytes(object);
-        } catch (IOException e) {
+        } catch (JacksonException e) {
             throw new IllegalStateException("Couldn't convert object to byte array: ", e);
         }
     }

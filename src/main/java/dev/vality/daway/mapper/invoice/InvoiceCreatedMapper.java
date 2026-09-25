@@ -1,6 +1,6 @@
 package dev.vality.daway.mapper.invoice;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import tools.jackson.databind.JsonNode;
 import dev.vality.damsel.domain.Invoice;
 import dev.vality.damsel.payment_processing.InvoiceChange;
 import dev.vality.daway.domain.enums.InvoiceStatus;

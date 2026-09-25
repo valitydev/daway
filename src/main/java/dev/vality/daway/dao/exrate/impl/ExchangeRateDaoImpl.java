@@ -6,8 +6,8 @@ import dev.vality.daway.dao.exrate.iface.ExchangeRateDao;
 import dev.vality.daway.domain.tables.pojos.ExRate;
 import dev.vality.mapper.RecordRowMapper;
 import org.jooq.Query;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.sql.init.dependency.DependsOnDatabaseInitialization;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
@@ -18,11 +18,11 @@ import java.util.stream.Collectors;
 import static dev.vality.daway.domain.tables.ExRate.EX_RATE;
 
 @Component
+@DependsOnDatabaseInitialization
 public class ExchangeRateDaoImpl extends AbstractGenericDao implements ExchangeRateDao {
 
     private final RowMapper<ExRate> rowMapper;
 
-    @Autowired
     public ExchangeRateDaoImpl(@Qualifier("dataSource") DataSource dataSource) {
         super(dataSource);
         this.rowMapper = new RecordRowMapper<>(EX_RATE, ExRate.class);

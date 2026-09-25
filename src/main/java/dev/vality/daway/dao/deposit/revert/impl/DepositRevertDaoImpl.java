@@ -7,7 +7,7 @@ import dev.vality.daway.domain.tables.records.DepositRevertRecord;
 import dev.vality.daway.exception.DaoException;
 import dev.vality.mapper.RecordRowMapper;
 import org.jooq.Query;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.sql.init.dependency.DependsOnDatabaseInitialization;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
@@ -18,11 +18,11 @@ import java.util.Optional;
 import static dev.vality.daway.domain.tables.DepositRevert.DEPOSIT_REVERT;
 
 @Component
+@DependsOnDatabaseInitialization
 public class DepositRevertDaoImpl extends AbstractGenericDao implements DepositRevertDao {
 
     private final RowMapper<DepositRevert> depositRowMapper;
 
-    @Autowired
     public DepositRevertDaoImpl(DataSource dataSource) {
         super(dataSource);
         depositRowMapper = new RecordRowMapper<>(DEPOSIT_REVERT, DepositRevert.class);
