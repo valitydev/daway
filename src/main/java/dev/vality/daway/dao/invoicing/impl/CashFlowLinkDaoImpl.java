@@ -11,7 +11,6 @@ import dev.vality.mapper.RecordRowMapper;
 import org.jooq.Field;
 import org.jooq.Query;
 import org.jooq.impl.DSL;
-import org.springframework.boot.sql.init.dependency.DependsOnDatabaseInitialization;
 import org.springframework.jdbc.core.DataClassRowMapper;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
@@ -26,7 +25,6 @@ import java.util.stream.Collectors;
 import static dev.vality.daway.domain.Tables.CASH_FLOW_LINK;
 
 @Component
-@DependsOnDatabaseInitialization
 public class CashFlowLinkDaoImpl extends AbstractGenericDao implements CashFlowLinkDao {
 
     private final RowMapper<CashFlowLink> rowMapper;

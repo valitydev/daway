@@ -7,7 +7,6 @@ import dev.vality.daway.domain.tables.records.RateRecord;
 import dev.vality.daway.exception.DaoException;
 import org.jooq.Query;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.sql.init.dependency.DependsOnDatabaseInitialization;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
@@ -19,7 +18,6 @@ import java.util.Optional;
 import static dev.vality.daway.domain.tables.Rate.RATE;
 
 @Component
-@DependsOnDatabaseInitialization
 public class RateDaoImpl extends AbstractGenericDao implements RateDao {
 
     public RateDaoImpl(@Qualifier("dataSource") DataSource dataSource) {

@@ -7,7 +7,6 @@ import dev.vality.daway.domain.tables.pojos.TermSetHierarchy;
 import dev.vality.daway.domain.tables.records.TermSetHierarchyRecord;
 import dev.vality.daway.exception.DaoException;
 import org.jooq.Query;
-import org.springframework.boot.sql.init.dependency.DependsOnDatabaseInitialization;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
 
@@ -15,7 +14,6 @@ import javax.sql.DataSource;
 import java.util.Optional;
 
 @Component
-@DependsOnDatabaseInitialization
 public class TermSetHierarchyDaoImpl extends AbstractGenericDao implements DomainObjectDao<TermSetHierarchy, Integer> {
 
     public TermSetHierarchyDaoImpl(DataSource dataSource) {

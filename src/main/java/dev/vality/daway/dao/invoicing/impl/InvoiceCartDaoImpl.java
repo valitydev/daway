@@ -7,7 +7,6 @@ import dev.vality.daway.exception.DaoException;
 import dev.vality.mapper.RecordRowMapper;
 import org.jooq.Query;
 import org.jooq.impl.DSL;
-import org.springframework.boot.sql.init.dependency.DependsOnDatabaseInitialization;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.SingleColumnRowMapper;
 import org.springframework.stereotype.Component;
@@ -21,7 +20,6 @@ import java.util.stream.Collectors;
 import static dev.vality.daway.domain.tables.InvoiceCart.INVOICE_CART;
 
 @Component
-@DependsOnDatabaseInitialization
 public class InvoiceCartDaoImpl extends AbstractGenericDao implements InvoiceCartDao {
 
     private final RowMapper<InvoiceCart> invoiceCartRowMapper;

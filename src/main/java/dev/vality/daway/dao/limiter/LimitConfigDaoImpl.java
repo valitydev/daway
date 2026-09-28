@@ -4,7 +4,6 @@ import dev.vality.dao.impl.AbstractGenericDao;
 import dev.vality.daway.domain.tables.pojos.LimitConfig;
 import dev.vality.daway.exception.DaoException;
 import dev.vality.mapper.RecordRowMapper;
-import org.springframework.boot.sql.init.dependency.DependsOnDatabaseInitialization;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
@@ -15,7 +14,6 @@ import java.util.Optional;
 import static dev.vality.daway.domain.Tables.LIMIT_CONFIG;
 
 @Component
-@DependsOnDatabaseInitialization
 public class LimitConfigDaoImpl extends AbstractGenericDao implements LimitConfigDao {
 
     private final RowMapper<LimitConfig> limitConfigRowMapper;
