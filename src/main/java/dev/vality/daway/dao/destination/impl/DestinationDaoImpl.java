@@ -8,7 +8,6 @@ import dev.vality.daway.exception.DaoException;
 import dev.vality.daway.exception.NotFoundException;
 import dev.vality.mapper.RecordRowMapper;
 import org.jooq.Query;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
@@ -23,7 +22,6 @@ public class DestinationDaoImpl extends AbstractGenericDao implements Destinatio
 
     private final RowMapper<Destination> destinationRowMapper;
 
-    @Autowired
     public DestinationDaoImpl(DataSource dataSource) {
         super(dataSource);
         destinationRowMapper = new RecordRowMapper<>(DESTINATION, Destination.class);

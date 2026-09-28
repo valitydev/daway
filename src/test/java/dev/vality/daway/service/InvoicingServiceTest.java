@@ -25,27 +25,29 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.quality.Strictness;
 
 import java.time.Instant;
 import java.util.*;
 
 import static org.mockito.Mockito.*;
 
-@ExtendWith(SpringExtension.class)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class InvoicingServiceTest {
 
     private final List<Mapper<InvoiceWrapper>> wrongHandlers = new ArrayList<>();
     private final List<Mapper<InvoiceWrapper>> rightHandlers = new ArrayList<>();
 
-    @MockitoBean
+    @Mock
     private InvoiceWrapperService invoiceWrapperService;
-    @MockitoBean
+    @Mock
     private PaymentWrapperService paymentWrapperService;
-    @MockitoBean
+    @Mock
     private PartyShopCacheService partyShopCacheService;
-    @MockitoBean
+    @Mock
     private PaymentRouteDao paymentRouteDao;
     @Mock
     private MachineEventCopyFactory<Chargeback, Integer> machineEventCopyFactory;

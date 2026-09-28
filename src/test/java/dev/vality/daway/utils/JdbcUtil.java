@@ -26,7 +26,7 @@ public class JdbcUtil {
             query += " AND current";
         }
         return Objects.requireNonNull(
-                jdbcTemplate.queryForObject(query, new Object[]{invoiceId, paymentId}, Integer.class));
+                jdbcTemplate.queryForObject(query, Integer.class,invoiceId, paymentId));
     }
 
     public static int countInvoiceEntity(JdbcTemplate jdbcTemplate,
@@ -37,6 +37,6 @@ public class JdbcUtil {
         if (withCurrent) {
             query += " AND current";
         }
-        return Objects.requireNonNull(jdbcTemplate.queryForObject(query, new Object[]{invoiceId}, Integer.class));
+        return Objects.requireNonNull(jdbcTemplate.queryForObject(query, Integer.class,invoiceId));
     }
 }

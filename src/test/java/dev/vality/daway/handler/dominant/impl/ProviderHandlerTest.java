@@ -8,6 +8,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -21,6 +23,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @ExtendWith(MockitoExtension.class)
 class ProviderHandlerTest {
+
+    private static final String PROVIDER_ACCOUNT_CURRENCY = "RUB";
+    private static final long SETTLEMENT_ACCOUNT_ID = 10L;
+    private static final long GUARANTEE_ACCOUNT_ID = 20L;
 
     @Mock
     private ProviderDaoImpl providerDao;
@@ -46,6 +52,13 @@ class ProviderHandlerTest {
         Assertions.assertEquals(provider.getDescription(), providerObject.getData().getDescription());
         Assertions.assertFalse(provider.getPaymentTermsJson().isEmpty());
         Assertions.assertFalse(provider.getRecurrentPaytoolTermsJson().isEmpty());
+        JsonNode providerAccounts = new JsonMapper().readTree(provider.getAccountsJson());
+        Assertions.assertEquals(
+                SETTLEMENT_ACCOUNT_ID,
+                providerAccounts.get(PROVIDER_ACCOUNT_CURRENCY).get("settlement").asLong());
+        Assertions.assertEquals(
+                GUARANTEE_ACCOUNT_ID,
+                providerAccounts.get(PROVIDER_ACCOUNT_CURRENCY).get("guarantee").asLong());
     }
 
     private ProviderObject buildProviderObject() throws IOException {
@@ -62,11 +75,9 @@ class ProviderHandlerTest {
                                         dev.vality.testcontainers.annotations.util.RandomBeans.random(String.class)))
                         )
                         .setAccounts(
-                                Map.of(new CurrencyRef(
-                                                dev.vality.testcontainers.annotations.util.RandomBeans.random(String.class)),
-                                        new ProviderAccount(
-                                                dev.vality.testcontainers.annotations.util.RandomBeans.random(
-                                                        Long.class))))
+                                Map.of(new CurrencyRef(PROVIDER_ACCOUNT_CURRENCY),
+                                        new ProviderAccount(SETTLEMENT_ACCOUNT_ID)
+                                                .setGuarantee(GUARANTEE_ACCOUNT_ID)))
                         .setTerms(new ProvisionTermSet()
                                 .setPayments(buildProvisionTermSet())
                                 .setRecurrentPaytools(buildRecurrentPaytools())

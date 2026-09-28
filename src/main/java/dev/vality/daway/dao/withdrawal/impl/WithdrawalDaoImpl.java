@@ -8,7 +8,6 @@ import dev.vality.daway.exception.DaoException;
 import dev.vality.daway.exception.NotFoundException;
 import dev.vality.mapper.RecordRowMapper;
 import org.jooq.Query;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
@@ -24,7 +23,6 @@ public class WithdrawalDaoImpl extends AbstractGenericDao implements WithdrawalD
 
     private final RowMapper<Withdrawal> withdrawalRowMapper;
 
-    @Autowired
     public WithdrawalDaoImpl(DataSource dataSource) {
         super(dataSource);
         withdrawalRowMapper = new RecordRowMapper<>(WITHDRAWAL, Withdrawal.class);

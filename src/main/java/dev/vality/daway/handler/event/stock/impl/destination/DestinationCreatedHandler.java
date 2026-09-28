@@ -1,6 +1,6 @@
 package dev.vality.daway.handler.event.stock.impl.destination;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import tools.jackson.databind.JsonNode;
 import dev.vality.daway.dao.destination.iface.DestinationDao;
 import dev.vality.daway.domain.enums.DestinationResourceType;
 import dev.vality.daway.domain.enums.DestinationStatus;

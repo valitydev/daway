@@ -7,7 +7,6 @@ import dev.vality.daway.domain.tables.records.DepositAdjustmentRecord;
 import dev.vality.daway.exception.DaoException;
 import dev.vality.mapper.RecordRowMapper;
 import org.jooq.Query;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Component;
@@ -22,7 +21,6 @@ public class DepositAdjustmentDaoImpl extends AbstractGenericDao implements Depo
 
     private final RowMapper<DepositAdjustment> depositRowMapper;
 
-    @Autowired
     public DepositAdjustmentDaoImpl(DataSource dataSource) {
         super(dataSource);
         depositRowMapper = new RecordRowMapper<>(DEPOSIT_ADJUSTMENT, DepositAdjustment.class);

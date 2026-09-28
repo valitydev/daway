@@ -6,7 +6,6 @@ import dev.vality.daway.domain.tables.pojos.Rate;
 import dev.vality.daway.domain.tables.records.RateRecord;
 import dev.vality.daway.exception.DaoException;
 import org.jooq.Query;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -21,7 +20,6 @@ import static dev.vality.daway.domain.tables.Rate.RATE;
 @Component
 public class RateDaoImpl extends AbstractGenericDao implements RateDao {
 
-    @Autowired
     public RateDaoImpl(@Qualifier("dataSource") DataSource dataSource) {
         super(dataSource);
     }
