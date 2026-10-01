@@ -7,7 +7,6 @@ import dev.vality.mapper.RecordRowMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.test.jdbc.JdbcTestUtils;
 
 import java.util.List;
 import java.util.Set;
@@ -32,11 +31,12 @@ public class LimitConfigServiceTest {
     @Test
     public void shouldHandleAndSave() {
         var limitConfigId = UUID.randomUUID().toString();
+        var secondLimitConfigId = UUID.randomUUID().toString();
         var limitConfig = getLimitConfig(limitConfigId);
         limitConfigService.handleEvents(List.of(
-                getMachineEvent(limitConfigId, limitConfig), getMachineEvent(UUID.randomUUID().toString())));
-        assertThat(JdbcTestUtils.countRowsInTable(jdbcTemplate, TABLE_NAME))
-                .isEqualTo(2);
+                getMachineEvent(limitConfigId, limitConfig), getMachineEvent(secondLimitConfigId)));
+        assertThat(countForLimitConfig(limitConfigId)).isEqualTo(1);
+        assertThat(countForLimitConfig(secondLimitConfigId)).isEqualTo(1);
         var saved = selectCurrent(limitConfigId);
         assertThat(saved.getShardSize())
                 .isEqualTo(limitConfig.getShardSize());
@@ -48,11 +48,16 @@ public class LimitConfigServiceTest {
         var limitConfig = getLimitConfig(limitConfigId);
         limitConfig.getScope().setMulti(Set.of());
         limitConfigService.handleEvents(List.of(getMachineEvent(limitConfigId, limitConfig)));
-        assertThat(JdbcTestUtils.countRowsInTable(jdbcTemplate, TABLE_NAME))
+        assertThat(countForLimitConfig(limitConfigId))
                 .isEqualTo(1);
         var saved = selectCurrent(limitConfigId);
         assertThat(saved.getShardSize())
                 .isEqualTo(limitConfig.getShardSize());
+    }
+
+    private int countForLimitConfig(String limitConfigId) {
+        return jdbcTemplate.queryForObject(
+                "SELECT count(*) FROM " + TABLE_NAME + " WHERE limit_config_id = ?", Integer.class, limitConfigId);
     }
 
     private dev.vality.daway.domain.tables.pojos.LimitConfig selectCurrent(String limitConfigId) {

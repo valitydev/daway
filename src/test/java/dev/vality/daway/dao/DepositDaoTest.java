@@ -23,7 +23,7 @@ public class DepositDaoTest {
     @Test
     public void depositDaoTest() {
         jdbcTemplate.execute("truncate table dw.deposit cascade");
-        Deposit deposit = dev.vality.testcontainers.annotations.util.RandomBeans.random(Deposit.class);
+        Deposit deposit = dev.vality.daway.utils.RandomBeans.random(Deposit.class);
         deposit.setCurrent(true);
         Long id = depositDao.save(deposit).get();
         deposit.setId(id);

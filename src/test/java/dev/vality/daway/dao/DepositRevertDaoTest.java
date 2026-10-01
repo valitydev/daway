@@ -15,7 +15,7 @@ public class DepositRevertDaoTest {
 
     @Test
     public void depositRevertTest() {
-        DepositRevert deposit = dev.vality.testcontainers.annotations.util.RandomBeans.random(DepositRevert.class);
+        DepositRevert deposit = dev.vality.daway.utils.RandomBeans.random(DepositRevert.class);
         deposit.setCurrent(true);
         Long id = depositRevertDao.save(deposit).get();
         deposit.setId(id);

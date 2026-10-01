@@ -23,7 +23,7 @@ public class DestinationDaoTest {
     @Test
     public void destinationDaoTest() {
         jdbcTemplate.execute("truncate table dw.destination cascade");
-        Destination destination = dev.vality.testcontainers.annotations.util.RandomBeans.random(Destination.class);
+        Destination destination = dev.vality.daway.utils.RandomBeans.random(Destination.class);
         destination.setCurrent(true);
         Long id = destinationDao.save(destination).get();
         destination.setId(id);

@@ -69,7 +69,7 @@ public class InvoicingServiceTest {
         rightHandlers.add(right);
 
         when(paymentDao.get(any(), any())).thenReturn(
-                dev.vality.testcontainers.annotations.util.RandomBeans.random(Payment.class));
+                dev.vality.daway.utils.RandomBeans.random(Payment.class));
 
         when(machineEventCopyFactory.create(any(), any(), any(), any())).thenReturn(new Chargeback());
         when(machineEventCopyFactory.create(any(), any(), any(), any(), any())).thenReturn(new Chargeback());
@@ -333,7 +333,7 @@ public class InvoicingServiceTest {
     private ChargebackDao mockChargebackDao() {
         ChargebackDao chargebackDao = mock(ChargebackDao.class);
         when(chargebackDao.get(anyString(), anyString(), anyString()))
-                .thenReturn(dev.vality.testcontainers.annotations.util.RandomBeans.random(Chargeback.class));
+                .thenReturn(dev.vality.daway.utils.RandomBeans.random(Chargeback.class));
         when(chargebackDao.save(any(Chargeback.class))).thenReturn(Optional.of(1L));
         return chargebackDao;
     }

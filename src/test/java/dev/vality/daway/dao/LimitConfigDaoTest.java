@@ -32,7 +32,7 @@ public class LimitConfigDaoTest {
 
     @Test
     public void limitConfigDaoTest() {
-        var pojo = dev.vality.testcontainers.annotations.util.RandomBeans.random(LimitConfig.class);
+        var pojo = dev.vality.daway.utils.RandomBeans.random(LimitConfig.class);
         pojo.setCurrent(true);
         pojo.setLimitScopeTypesJson(getLimitScopeTypesJson(getLimitConfig(pojo.getLimitConfigId()).getScope().getMulti()));
         var id = limitConfigDao.save(pojo).get();

@@ -10,7 +10,6 @@ import dev.vality.exrates.events.CurrencyEvent;
 import dev.vality.exrates.events.CurrencyEventPayload;
 import dev.vality.exrates.events.CurrencyExchangeRate;
 import dev.vality.geck.common.util.TypeUtil;
-import org.apache.thrift.TBase;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,7 +34,7 @@ public class ExchangeRateKafkaListenerTest {
     public String topic;
 
     @Autowired
-    private dev.vality.testcontainers.annotations.kafka.config.KafkaProducer<TBase<?, ?>> testThriftKafkaProducer;
+    private KafkaProducer kafkaProducer;
 
     @MockitoSpyBean
     private ExchangeRateService exchangeRateService;
@@ -50,7 +49,7 @@ public class ExchangeRateKafkaListenerTest {
         CurrencyExchangeRate exchangeRate = currencyEvent.payload.getExchangeRate();
 
         // When
-        testThriftKafkaProducer.send(topic, currencyEvent);
+        kafkaProducer.send(topic, currencyEvent);
         await().atMost(30, TimeUnit.SECONDS).pollInterval(1, TimeUnit.SECONDS).until(() -> {
             return exchangeRateDao.findBySourceSymbolicCode(exchangeRate.getSourceCurrency().getSymbolicCode()) != null;
         });

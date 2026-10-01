@@ -121,9 +121,3 @@ cache:
     expire:
       after:
         sec: 600
-
-testcontainers:
-  postgresql:
-    tag: '17.4'
-  kafka:
-    tag: '6.2.0'

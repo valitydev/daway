@@ -34,7 +34,7 @@ class WithdrawalSessionDaoTest {
 
     @Test
     void withdrawalSessionDao() {
-        WithdrawalSession withdrawalSession = dev.vality.testcontainers.annotations.util.RandomBeans.random(WithdrawalSession.class);
+        WithdrawalSession withdrawalSession = dev.vality.daway.utils.RandomBeans.random(WithdrawalSession.class);
         withdrawalSession.setCurrent(true);
         Long id = withdrawalSessionDao.save(withdrawalSession).get();
         withdrawalSession.setId(id);

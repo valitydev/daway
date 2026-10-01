@@ -14,7 +14,7 @@ import dev.vality.daway.domain.tables.pojos.Currency;
 import dev.vality.daway.exception.NotFoundException;
 import dev.vality.daway.model.InvoicingKey;
 import dev.vality.daway.utils.HashUtil;
-import dev.vality.testcontainers.annotations.util.RandomBeans;
+import dev.vality.daway.utils.RandomBeans;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

@@ -12,7 +12,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Set;
 
-import static dev.vality.testcontainers.annotations.util.RandomBeans.randomThriftOnlyRequiredFields;
+import static dev.vality.daway.utils.RandomBeans.randomThriftOnlyRequiredFields;
 
 public class LimitConfigGenerator {
 

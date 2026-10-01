@@ -65,14 +65,14 @@ class ProviderHandlerTest {
         return new ProviderObject()
                 .setRef(new ProviderRef(1))
                 .setData(new Provider()
-                        .setName(dev.vality.testcontainers.annotations.util.RandomBeans.random(String.class))
-                        .setDescription(dev.vality.testcontainers.annotations.util.RandomBeans.random(String.class))
+                        .setName(dev.vality.daway.utils.RandomBeans.random(String.class))
+                        .setDescription(dev.vality.daway.utils.RandomBeans.random(String.class))
                         .setProxy(new Proxy()
                                 .setRef(new ProxyRef(
-                                        dev.vality.testcontainers.annotations.util.RandomBeans.random(Integer.class)))
-                                .setAdditional(Map.of(dev.vality.testcontainers.annotations.util.RandomBeans.random(
+                                        dev.vality.daway.utils.RandomBeans.random(Integer.class)))
+                                .setAdditional(Map.of(dev.vality.daway.utils.RandomBeans.random(
                                                 String.class),
-                                        dev.vality.testcontainers.annotations.util.RandomBeans.random(String.class)))
+                                        dev.vality.daway.utils.RandomBeans.random(String.class)))
                         )
                         .setAccounts(
                                 Map.of(new CurrencyRef(PROVIDER_ACCOUNT_CURRENCY),
@@ -116,8 +116,8 @@ class ProviderHandlerTest {
 
     private ProviderParameter buildProviderParameter() {
         ProviderParameter providerParameter = new ProviderParameter();
-        providerParameter.setId(dev.vality.testcontainers.annotations.util.RandomBeans.random(String.class));
-        providerParameter.setDescription(dev.vality.testcontainers.annotations.util.RandomBeans.random(String.class));
+        providerParameter.setId(dev.vality.daway.utils.RandomBeans.random(String.class));
+        providerParameter.setDescription(dev.vality.daway.utils.RandomBeans.random(String.class));
         providerParameter.setType(ProviderParameterType.string_type(new ProviderParameterString()));
         providerParameter.setIsRequired(true);
         return providerParameter;

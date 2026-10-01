@@ -19,7 +19,7 @@ public class DepositAdjustmentDaoTest {
 
     @Test
     public void depositAdjustmentTest() {
-        DepositAdjustment deposit = dev.vality.testcontainers.annotations.util.RandomBeans.random(DepositAdjustment.class);
+        DepositAdjustment deposit = dev.vality.daway.utils.RandomBeans.random(DepositAdjustment.class);
         deposit.setAmount(null);
         deposit.setCurrencyCode(null);
         deposit.setCurrent(true);

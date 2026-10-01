@@ -33,18 +33,6 @@
         <flyway.postgresql.transactional.lock>false</flyway.postgresql.transactional.lock>
     </properties>
 
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.testcontainers</groupId>
-                <artifactId>testcontainers-bom</artifactId>
-                <version>2.0.3</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-
     <dependencies>
         <!--spring -->
         <dependency>
@@ -241,16 +229,21 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>dev.vality</groupId>
-            <artifactId>testcontainers-annotations</artifactId>
-            <version>4.1.3</version>
+            <groupId>io.zonky.test</groupId>
+            <artifactId>embedded-postgres</artifactId>
+            <version>2.0.3</version>
             <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.junit.vintage</groupId>
-                    <artifactId>junit-vintage-engine</artifactId>
-                </exclusion>
-            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jeasy</groupId>
+            <artifactId>easy-random-core</artifactId>
+            <version>5.0.0</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
@@ -285,10 +278,10 @@
             <plugin>
                 <groupId>dev.vality.maven.plugins</groupId>
                 <artifactId>pg-embedded-plugin</artifactId>
-                <version>2.0.0</version>
+                <version>3.0.0</version>
                 <configuration>
                     <port>${local.pg.port}</port>
-                    <dbName>${db.name}</dbName>
+                    <name>${db.name}</name>
                     <schemas>
                         <schema>${db.schema}</schema>
                     </schemas>
@@ -296,14 +289,14 @@
                 <executions>
                     <execution>
                         <id>PG_server_start</id>
-                        <phase>initialize</phase>
+                        <phase>generate-sources</phase>
                         <goals>
                             <goal>start</goal>
                         </goals>
                     </execution>
                     <execution>
                         <id>PG_server_stop</id>
-                        <phase>generate-resources</phase>
+                        <phase>process-sources</phase>
                         <goals>
                             <goal>stop</goal>
                         </goals>
@@ -324,7 +317,7 @@
                 <executions>
                     <execution>
                         <id>migrate</id>
-                        <phase>initialize</phase>
+                        <phase>generate-sources</phase>
                         <goals>
                             <goal>migrate</goal>
                         </goals>
@@ -372,7 +365,7 @@
                 <executions>
                     <execution>
                         <id>gen-src</id>
-                        <phase>initialize</phase>
+                        <phase>generate-sources</phase>
                         <goals>
                             <goal>generate</goal>
                         </goals>

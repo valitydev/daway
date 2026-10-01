@@ -23,7 +23,7 @@ public class WalletDaoTest {
     @Test
     public void walletDaoTest() {
         jdbcTemplate.execute("truncate table dw.wallet cascade");
-        Wallet wallet = dev.vality.testcontainers.annotations.util.RandomBeans.random(Wallet.class);
+        Wallet wallet = dev.vality.daway.utils.RandomBeans.random(Wallet.class);
         wallet.setCurrent(true);
         Long id = walletDao.save(wallet);
         wallet.setId(id);

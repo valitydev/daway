@@ -17,7 +17,7 @@ import java.util.List;
 public class RateSinkEventTestUtils {
 
     public static List<SinkEvent> create(String sourceId, String... excludedFields) {
-        List<Quote> quotes = dev.vality.testcontainers.annotations.util.RandomBeans.randomListOf(4, Quote.class, excludedFields);
+        List<Quote> quotes = dev.vality.daway.utils.RandomBeans.randomListOf(4, Quote.class, excludedFields);
         quotes.forEach(quote -> {
             quote.getDestination().setExponent((short) 2);
             quote.getSource().setExponent((short) 2);

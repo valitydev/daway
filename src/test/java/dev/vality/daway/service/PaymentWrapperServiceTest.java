@@ -12,7 +12,7 @@ import dev.vality.daway.model.CashFlowWrapper;
 import dev.vality.daway.model.InvoicingKey;
 import dev.vality.daway.model.PaymentWrapper;
 import dev.vality.daway.utils.PaymentWrapperTestUtil;
-import dev.vality.testcontainers.annotations.util.RandomBeans;
+import dev.vality.daway.utils.RandomBeans;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -22,9 +22,9 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicLong;
 
-import static dev.vality.daway.utils.JdbcUtil.countEntities;
 import static dev.vality.daway.utils.JdbcUtil.countPaymentEntity;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -62,10 +62,10 @@ class PaymentWrapperServiceTest {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    private static final String invoiceIdFirst = "invoiceIdFirst";
-    private static final String invoiceIdSecond = "invoiceIdSecond";
-    private static final String paymentIdFirst = "paymentIdFirst";
-    private static final String paymentIdSecond = "paymentIdSecond";
+    private final String invoiceIdFirst = UUID.randomUUID().toString();
+    private final String invoiceIdSecond = UUID.randomUUID().toString();
+    private final String paymentIdFirst = UUID.randomUUID().toString();
+    private final String paymentIdSecond = UUID.randomUUID().toString();
 
     @Test
     void processTest() {
@@ -85,12 +85,11 @@ class PaymentWrapperServiceTest {
         paymentWrapperService.save(paymentWrappers);
         assertDuplication(invoiceIdFirst, paymentIdFirst);
         assertDuplication(invoiceIdSecond, paymentIdSecond);
-        assertTotalDuplication();
+        assertTotalDuplication(paymentWrappers);
     }
 
     private List<PaymentWrapper> preparePaymentWrappers() {
         AtomicLong cashFlowSeed = new AtomicLong();
-        AtomicLong cashFlowId = new AtomicLong();
         List<PaymentWrapper> paymentWrappers = RandomBeans.randomListOf(2, PaymentWrapper.class);
         paymentWrappers.stream()
                 .map(PaymentWrapper::getPayment)
@@ -102,14 +101,32 @@ class PaymentWrapperServiceTest {
                     RandomBeans.randomListOf(cashFlowSeed.getAndIncrement(), 3, CashFlow.class)
             ));
             pw.getCashFlowWrapper().getCashFlows().forEach(cf -> {
-                cf.setId(cashFlowId.incrementAndGet());
+                cf.setId(nextId("cash_flow"));
                 cf.setObjType(PaymentChangeType.payment);
             });
             PaymentWrapperTestUtil.setCurrent(pw, true);
         });
         PaymentWrapperTestUtil.setInvoiceIdAndPaymentId(paymentWrappers.get(0), invoiceIdFirst, paymentIdFirst);
         PaymentWrapperTestUtil.setInvoiceIdAndPaymentId(paymentWrappers.get(1), invoiceIdSecond, paymentIdSecond);
+        paymentWrappers.forEach(pw -> {
+            pw.getPayment().setId(nextId("payment"));
+            pw.getPaymentSessionInfo().setId(nextId("payment_session_info"));
+            pw.getPaymentStatusInfo().setId(nextId("payment_status_info"));
+            pw.getPaymentPayerInfo().setId(nextId("payment_payer_info"));
+            pw.getPaymentAdditionalInfo().setId(nextId("payment_additional_info"));
+            pw.getPaymentRecurrentInfo().setId(nextId("payment_recurrent_info"));
+            pw.getPaymentRiskData().setId(nextId("payment_risk_data"));
+            pw.getPaymentFee().setId(nextId("payment_fee"));
+            pw.getPaymentRoute().setId(nextId("payment_route"));
+            pw.getPaymentCashChange().setId(nextId("payment_cash_change"));
+            pw.getPaymentCashChange().setInvoiceId(pw.getPayment().getInvoiceId());
+            pw.getPaymentCashChange().setPaymentId(pw.getPayment().getPaymentId());
+        });
         return paymentWrappers;
+    }
+
+    private Long nextId(String table) {
+        return jdbcTemplate.queryForObject("SELECT nextval(?::regclass)", Long.class, "dw." + table + "_id_seq");
     }
 
     private void assertPaymentWrapperFromDao(PaymentWrapper expected, String invoiceId, String paymentId) {
@@ -143,18 +160,26 @@ class PaymentWrapperServiceTest {
         assertEquals(1, countPaymentEntity(jdbcTemplate, "payment_session_info", invoiceId, paymentId, false));
     }
 
-    private void assertTotalDuplication() {
-        assertEquals(2, countEntities(jdbcTemplate, "payment"));
-        assertEquals(2, countEntities(jdbcTemplate, "payment_status_info"));
-        assertEquals(2, countEntities(jdbcTemplate, "payment_payer_info"));
-        assertEquals(2, countEntities(jdbcTemplate, "payment_additional_info"));
-        assertEquals(2, countEntities(jdbcTemplate, "payment_recurrent_info"));
-        assertEquals(2, countEntities(jdbcTemplate, "payment_risk_data"));
-        assertEquals(2, countEntities(jdbcTemplate, "payment_fee"));
-        assertEquals(2, countEntities(jdbcTemplate, "payment_route"));
-        assertEquals(2, countEntities(jdbcTemplate, "cash_flow_link"));
-        assertEquals(6, countEntities(jdbcTemplate, "cash_flow"));
-        assertEquals(2, countEntities(jdbcTemplate, "payment_session_info"));
+    private void assertTotalDuplication(List<PaymentWrapper> paymentWrappers) {
+        assertEquals(2, countForPayments("payment"));
+        assertEquals(2, countForPayments("payment_status_info"));
+        assertEquals(2, countForPayments("payment_payer_info"));
+        assertEquals(2, countForPayments("payment_additional_info"));
+        assertEquals(2, countForPayments("payment_recurrent_info"));
+        assertEquals(2, countForPayments("payment_risk_data"));
+        assertEquals(2, countForPayments("payment_fee"));
+        assertEquals(2, countForPayments("payment_route"));
+        assertEquals(2, countForPayments("cash_flow_link"));
+        assertEquals(6, paymentWrappers.stream()
+                .mapToInt(wrapper -> cashFlowDao.getByObjId(wrapper.getCashFlowWrapper().getCashFlowLink().getId(),
+                        PaymentChangeType.payment).size())
+                .sum());
+        assertEquals(2, countForPayments("payment_session_info"));
+    }
+
+    private int countForPayments(String table) {
+        return countPaymentEntity(jdbcTemplate, table, invoiceIdFirst, paymentIdFirst, false)
+                + countPaymentEntity(jdbcTemplate, table, invoiceIdSecond, paymentIdSecond, false);
     }
 
     @Test

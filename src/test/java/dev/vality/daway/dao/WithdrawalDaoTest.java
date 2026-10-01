@@ -36,7 +36,7 @@ class WithdrawalDaoTest {
 
     @Test
     void withdrawalDaoTest() {
-        Withdrawal withdrawal = dev.vality.testcontainers.annotations.util.RandomBeans.random(Withdrawal.class);
+        Withdrawal withdrawal = dev.vality.daway.utils.RandomBeans.random(Withdrawal.class);
         withdrawal.setCurrent(true);
         withdrawal.setExchangeRate(new BigDecimal(1000000L).movePointLeft(4));
         Long id = withdrawalDao.save(withdrawal).get();

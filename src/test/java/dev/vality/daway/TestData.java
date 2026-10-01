@@ -35,9 +35,9 @@ import dev.vality.kafka.common.serialization.ThriftSerializer;
 import dev.vality.machinegun.eventsink.MachineEvent;
 import dev.vality.machinegun.msgpack.Value;
 import dev.vality.sink.common.serialization.impl.PaymentEventPayloadSerializer;
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import org.jetbrains.annotations.NotNull;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -51,7 +51,7 @@ public class TestData {
 
     public static InvoiceChange buildInvoiceChangeChargebackCreated() {
         InvoicePaymentChargeback invoicePaymentChargeback =
-                dev.vality.testcontainers.annotations.util.RandomBeans.random(InvoicePaymentChargeback.class, "context",
+                dev.vality.daway.utils.RandomBeans.random(InvoicePaymentChargeback.class, "context",
                         "status", "reason", "stage");
         invoicePaymentChargeback.setCreatedAt(TypeUtil.temporalToString(Instant.now()));
         InvoicePaymentChargebackStatus invoicePaymentChargebackStatus = buildChargebackStatus();
@@ -162,7 +162,7 @@ public class TestData {
 
     private static InvoiceChange buildInvoiceChangeChargeback(InvoicePaymentChargebackChangePayload payload) {
         InvoicePaymentChargeback invoicePaymentChargeback =
-                dev.vality.testcontainers.annotations.util.RandomBeans.random(InvoicePaymentChargeback.class, "context",
+                dev.vality.daway.utils.RandomBeans.random(InvoicePaymentChargeback.class, "context",
                         "status", "reason", "stage");
         invoicePaymentChargeback.setCreatedAt(TypeUtil.temporalToString(Instant.now()));
         InvoicePaymentChargebackStatus invoicePaymentChargebackStatus = buildChargebackStatus();

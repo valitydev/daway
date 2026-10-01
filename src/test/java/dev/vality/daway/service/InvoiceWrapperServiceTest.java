@@ -8,17 +8,17 @@ import dev.vality.daway.domain.tables.pojos.Invoice;
 import dev.vality.daway.domain.tables.pojos.InvoiceCart;
 import dev.vality.daway.domain.tables.pojos.InvoiceStatusInfo;
 import dev.vality.daway.model.InvoiceWrapper;
-import dev.vality.testcontainers.annotations.util.RandomBeans;
+import dev.vality.daway.utils.RandomBeans;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static dev.vality.daway.utils.JdbcUtil.countEntities;
 import static dev.vality.daway.utils.JdbcUtil.countInvoiceEntity;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -55,7 +55,7 @@ class InvoiceWrapperServiceTest {
 
         invoiceWrapperService.save(invoiceWrappers);
         invoiceWrappers.forEach(wrapper -> assertDuplication(wrapper.getInvoice().getInvoiceId()));
-        assertTotal();
+        assertTotal(invoiceWrappers);
     }
 
     private List<InvoiceWrapper> prepareInvoiceWrappers() {
@@ -67,6 +67,7 @@ class InvoiceWrapperServiceTest {
                 .collect(Collectors.toList());
 
         invoiceWrappers.forEach(iw -> {
+            iw.getInvoice().setInvoiceId(UUID.randomUUID().toString());
             iw.getInvoiceStatusInfo().setInvoiceId(iw.getInvoice().getInvoiceId());
             iw.getCarts().forEach(cart ->
                     cart.setInvoiceId(iw.getInvoice().getInvoiceId()));
@@ -111,9 +112,16 @@ class InvoiceWrapperServiceTest {
         assertEquals(3, countInvoiceEntity(jdbcTemplate, "invoice_cart", invoiceId, false));
     }
 
-    private void assertTotal() {
-        assertEquals(4, countEntities(jdbcTemplate, "invoice"));
-        assertEquals(4, countEntities(jdbcTemplate, "invoice_status_info"));
-        assertEquals(12, countEntities(jdbcTemplate, "invoice_cart"));
+    private void assertTotal(List<InvoiceWrapper> invoiceWrappers) {
+        assertEquals(4, countForInvoices("invoice", invoiceWrappers));
+        assertEquals(4, countForInvoices("invoice_status_info", invoiceWrappers));
+        assertEquals(12, countForInvoices("invoice_cart", invoiceWrappers));
+    }
+
+    private int countForInvoices(String table, List<InvoiceWrapper> invoiceWrappers) {
+        return invoiceWrappers.stream()
+                .map(InvoiceWrapper::getInvoice)
+                .mapToInt(invoice -> countInvoiceEntity(jdbcTemplate, table, invoice.getInvoiceId(), false))
+                .sum();
     }
 }

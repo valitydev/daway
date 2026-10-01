@@ -5,7 +5,7 @@ import dev.vality.daway.dao.invoicing.iface.*;
 import dev.vality.daway.dao.invoicing.impl.*;
 import dev.vality.daway.domain.tables.pojos.*;
 import dev.vality.daway.model.InvoicingKey;
-import dev.vality.testcontainers.annotations.util.RandomBeans;
+import dev.vality.daway.utils.RandomBeans;
 import org.jooq.DSLContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

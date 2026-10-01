@@ -4,31 +4,49 @@ import dev.vality.damsel.domain_config_v2.Author;
 import dev.vality.damsel.domain_config_v2.HistoricalCommit;
 import dev.vality.machinegun.eventsink.MachineEvent;
 import dev.vality.machinegun.eventsink.SinkEvent;
-import dev.vality.testcontainers.annotations.KafkaTestConfig;
-import dev.vality.testcontainers.annotations.kafka.config.KafkaProducerTestConfig;
+import dev.vality.kafka.common.serialization.ThriftSerializer;
+import jakarta.annotation.PreDestroy;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.thrift.TBase;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.boot.test.context.TestComponent;
-import org.springframework.context.annotation.Import;
+import org.springframework.kafka.test.EmbeddedKafkaBroker;
+import org.springframework.kafka.test.utils.KafkaTestUtils;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Collections;
+import java.util.concurrent.TimeUnit;
 
 @TestComponent
-@Import(KafkaProducerTestConfig.class)
 @Slf4j
 public class KafkaProducer {
 
-    @Autowired
-    private dev.vality.testcontainers.annotations.kafka.config.KafkaProducer<TBase<?, ?>> testThriftKafkaProducer;
+    private final org.apache.kafka.clients.producer.KafkaProducer<String, TBase<?, ?>> producer;
+
+    public KafkaProducer(EmbeddedKafkaBroker broker) {
+        producer = new org.apache.kafka.clients.producer.KafkaProducer<>(
+                KafkaTestUtils.producerProps(broker), new StringSerializer(), new ThriftSerializer<>());
+    }
+
+    @SneakyThrows
+    public void send(String topic, TBase<?, ?> payload) {
+        producer.send(new ProducerRecord<>(topic, payload)).get(10, TimeUnit.SECONDS);
+    }
+
+    @PreDestroy
+    public void close() {
+        producer.close(Duration.ofSeconds(5));
+    }
 
     public void sendMessage(String topic) {
         SinkEvent sinkEvent = new SinkEvent();
         sinkEvent.setEvent(createMessage());
-        testThriftKafkaProducer.send(topic, sinkEvent);
+        send(topic, sinkEvent);
     }
 
     private MachineEvent createMessage() {
@@ -46,7 +64,7 @@ public class KafkaProducer {
     public void sendMessage(String topic, MachineEvent message) {
         SinkEvent sinkEvent = new SinkEvent();
         sinkEvent.setEvent(message);
-        testThriftKafkaProducer.send(topic, sinkEvent);
+        send(topic, sinkEvent);
     }
 
     public void sendDominantMessage(String topic) {
@@ -58,6 +76,6 @@ public class KafkaProducer {
                 .setId("id")
                 .setName("name"));
         commit.setOps(Collections.emptyList());
-        testThriftKafkaProducer.send(topic, commit);
+        send(topic, commit);
     }
 }
