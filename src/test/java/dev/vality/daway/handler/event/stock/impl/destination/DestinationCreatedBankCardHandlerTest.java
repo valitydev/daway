@@ -1,13 +1,13 @@
 package dev.vality.daway.handler.event.stock.impl.destination;
 
 import dev.vality.daway.integration.base.AbstractPostgresqlIntegrationTest;
-import dev.vality.daway.config.PostgresqlSpringBootITest;
 import dev.vality.daway.domain.tables.pojos.Destination;
 import dev.vality.daway.utils.DestinationHandlerTestUtils;
 import dev.vality.mapper.RecordRowMapper;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.util.Objects;
@@ -15,7 +15,7 @@ import java.util.UUID;
 
 import static dev.vality.daway.domain.tables.Destination.DESTINATION;
 
-@PostgresqlSpringBootITest
+@SpringBootTest
 public class DestinationCreatedBankCardHandlerTest extends AbstractPostgresqlIntegrationTest {
 
     @Autowired

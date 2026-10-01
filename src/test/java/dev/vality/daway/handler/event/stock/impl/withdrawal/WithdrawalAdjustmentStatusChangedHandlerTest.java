@@ -2,7 +2,6 @@ package dev.vality.daway.handler.event.stock.impl.withdrawal;
 
 import dev.vality.daway.integration.base.AbstractPostgresqlIntegrationTest;
 import dev.vality.daway.TestData;
-import dev.vality.daway.config.PostgresqlJooqSpringBootITest;
 import dev.vality.daway.dao.withdrawal.impl.WithdrawalAdjustmentDaoImpl;
 import dev.vality.daway.domain.enums.WithdrawalAdjustmentStatus;
 import dev.vality.daway.domain.tables.pojos.WithdrawalAdjustment;
@@ -15,12 +14,13 @@ import org.jooq.Result;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.jooq.test.autoconfigure.JooqTest;
 import org.springframework.test.context.ContextConfiguration;
 
 import static dev.vality.daway.domain.tables.WithdrawalAdjustment.WITHDRAWAL_ADJUSTMENT;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@PostgresqlJooqSpringBootITest
+@JooqTest
 @ContextConfiguration(classes = {WithdrawalAdjustmentDaoImpl.class, WithdrawalAdjustmentStatusChangedHandler.class,
         WithdrawalAdjustmentMachineEventCopyFactoryImpl.class,})
 class WithdrawalAdjustmentStatusChangedHandlerTest extends AbstractPostgresqlIntegrationTest {

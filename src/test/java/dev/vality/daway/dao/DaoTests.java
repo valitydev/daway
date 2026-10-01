@@ -1,7 +1,6 @@
 package dev.vality.daway.dao;
 
 import dev.vality.daway.integration.base.AbstractPostgresqlIntegrationTest;
-import dev.vality.daway.config.PostgresqlSpringBootITest;
 import dev.vality.daway.dao.dominant.impl.*;
 import dev.vality.daway.dao.invoicing.iface.*;
 import dev.vality.daway.dao.invoicing.impl.CashFlowLinkIdsGeneratorDaoImpl;
@@ -20,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -30,7 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @Slf4j
-@PostgresqlSpringBootITest
+@SpringBootTest
 class DaoTests extends AbstractPostgresqlIntegrationTest {
 
     @Autowired

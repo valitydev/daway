@@ -1,7 +1,6 @@
 package dev.vality.daway.service;
 
 import dev.vality.daway.integration.base.AbstractPostgresqlIntegrationTest;
-import dev.vality.daway.config.PostgresqlSpringBootITest;
 import dev.vality.daway.dao.invoicing.iface.InvoiceCartDao;
 import dev.vality.daway.dao.invoicing.iface.InvoiceDao;
 import dev.vality.daway.dao.invoicing.iface.InvoiceStatusInfoDao;
@@ -12,6 +11,7 @@ import dev.vality.daway.model.InvoiceWrapper;
 import dev.vality.daway.utils.RandomBeans;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
 
@@ -23,7 +23,7 @@ import java.util.stream.IntStream;
 import static dev.vality.daway.utils.JdbcUtil.countInvoiceEntity;
 import static org.junit.jupiter.api.Assertions.*;
 
-@PostgresqlSpringBootITest
+@SpringBootTest
 @Sql(scripts = {"classpath:sql/partition_idx.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 class InvoiceWrapperServiceTest extends AbstractPostgresqlIntegrationTest {
 

@@ -2,7 +2,6 @@ package dev.vality.daway.service;
 
 import dev.vality.daway.integration.base.AbstractPostgresqlIntegrationTest;
 import dev.vality.daway.TestData;
-import dev.vality.daway.config.PostgresqlSpringBootITest;
 import dev.vality.daway.dao.invoicing.iface.*;
 import dev.vality.daway.dao.invoicing.impl.PaymentDaoImpl;
 import dev.vality.daway.domain.enums.PaymentChangeType;
@@ -16,6 +15,7 @@ import dev.vality.daway.utils.PaymentWrapperTestUtil;
 import dev.vality.daway.utils.RandomBeans;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
 
@@ -30,7 +30,7 @@ import static dev.vality.daway.utils.JdbcUtil.countPaymentEntity;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@PostgresqlSpringBootITest
+@SpringBootTest
 @Sql(scripts = {"classpath:sql/partition_idx.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 class PaymentWrapperServiceTest extends AbstractPostgresqlIntegrationTest {
 

@@ -1,15 +1,15 @@
 package dev.vality.daway.integration;
 
-import dev.vality.daway.config.PostgresqlSpringBootITest;
 import dev.vality.daway.integration.base.AbstractPostgresqlIntegrationTest;
 import org.junit.jupiter.api.RepeatedTest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@PostgresqlSpringBootITest
+@SpringBootTest
 class PostgresqlTestInfrastructureTest extends AbstractPostgresqlIntegrationTest {
 
     @Autowired

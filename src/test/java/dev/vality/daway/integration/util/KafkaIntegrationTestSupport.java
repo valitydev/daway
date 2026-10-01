@@ -6,9 +6,14 @@ import dev.vality.kafka.common.serialization.ThriftSerializer;
 import dev.vality.machinegun.eventsink.MachineEvent;
 import dev.vality.machinegun.eventsink.SinkEvent;
 import lombok.SneakyThrows;
+import org.apache.kafka.clients.admin.Admin;
+import org.apache.kafka.clients.admin.AdminClientConfig;
+import org.apache.kafka.clients.admin.ListConsumerGroupOffsetsSpec;
+import org.apache.kafka.clients.admin.OffsetSpec;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.serialization.ByteArraySerializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.apache.thrift.TBase;
@@ -21,8 +26,16 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Properties;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.awaitility.Awaitility.await;
 
 public final class KafkaIntegrationTestSupport {
 
@@ -32,6 +45,72 @@ public final class KafkaIntegrationTestSupport {
     public static void waitForAssignments(KafkaListenerEndpointRegistry registry, EmbeddedKafkaBroker broker) {
         registry.getListenerContainers().stream().filter(container -> container.isRunning()).forEach(container ->
                 ContainerTestUtils.waitForAssignment(container, broker.getPartitionsPerTopic()));
+    }
+
+    @SneakyThrows
+    public static void waitForCommittedOffsets(KafkaListenerEndpointRegistry registry, EmbeddedKafkaBroker broker) {
+        var partitionsByGroup = listenerPartitionsByGroup(registry, broker);
+        if (partitionsByGroup.isEmpty()) {
+            return;
+        }
+        var admin = Admin.create(Map.of(
+                AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, broker.getBrokersAsString(),
+                AdminClientConfig.REQUEST_TIMEOUT_MS_CONFIG, 5000,
+                AdminClientConfig.DEFAULT_API_TIMEOUT_MS_CONFIG, 5000));
+        try {
+            var offsetSpecs = new LinkedHashMap<TopicPartition, OffsetSpec>();
+            partitionsByGroup.values().forEach(partitions ->
+                    partitions.forEach(partition -> offsetSpecs.put(partition, OffsetSpec.latest())));
+            var endOffsets = admin.listOffsets(offsetSpecs).all().get(5, TimeUnit.SECONDS);
+            var groupSpecs = new LinkedHashMap<String, ListConsumerGroupOffsetsSpec>();
+            partitionsByGroup.forEach((group, partitions) -> {
+                partitions.removeIf(partition -> endOffsets.get(partition).offset() == 0);
+                if (!partitions.isEmpty()) {
+                    groupSpecs.put(group, new ListConsumerGroupOffsetsSpec().topicPartitions(partitions));
+                }
+            });
+            if (groupSpecs.isEmpty()) {
+                return;
+            }
+            await().alias("Kafka listeners committed all published messages")
+                    .pollDelay(Duration.ZERO)
+                    .pollInterval(Duration.ofMillis(100))
+                    .atMost(Duration.ofSeconds(30))
+                    .untilAsserted(() -> {
+                        var committedOffsets = admin.listConsumerGroupOffsets(groupSpecs)
+                                .all().get(5, TimeUnit.SECONDS);
+                        groupSpecs.forEach((group, spec) -> spec.topicPartitions().forEach(partition -> {
+                            var committedOffset = committedOffsets.get(group).get(partition);
+                            long endOffset = endOffsets.get(partition).offset();
+                            assertThat(committedOffset)
+                                    .as("Committed offset for group %s, partition %s; required %s",
+                                            group, partition, endOffset)
+                                    .isNotNull();
+                            assertThat(committedOffset.offset())
+                                    .as("Committed offset for group %s, partition %s", group, partition)
+                                    .isGreaterThanOrEqualTo(endOffset);
+                        }));
+                    });
+        } finally {
+            admin.close(Duration.ofSeconds(5));
+        }
+    }
+
+    private static Map<String, Set<TopicPartition>> listenerPartitionsByGroup(
+            KafkaListenerEndpointRegistry registry, EmbeddedKafkaBroker broker) {
+        var partitionsByGroup = new LinkedHashMap<String, Set<TopicPartition>>();
+        registry.getListenerContainers().stream().filter(container -> container.isRunning()).forEach(container -> {
+            String group = Objects.requireNonNull(container.getGroupId(), "Kafka listener group ID is required");
+            String[] topics = Objects.requireNonNull(container.getContainerProperties().getTopics(),
+                    "Kafka integration tests require explicit listener topics");
+            var partitions = partitionsByGroup.computeIfAbsent(group, ignored -> new HashSet<>());
+            for (String topic : topics) {
+                for (int partition = 0; partition < broker.getPartitionsPerTopic(); partition++) {
+                    partitions.add(new TopicPartition(topic, partition));
+                }
+            }
+        });
+        return partitionsByGroup;
     }
 
     @SneakyThrows

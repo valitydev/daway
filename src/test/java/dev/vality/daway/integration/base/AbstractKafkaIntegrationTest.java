@@ -1,6 +1,7 @@
 package dev.vality.daway.integration.base;
 
 import dev.vality.daway.integration.util.KafkaIntegrationTestSupport;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.config.KafkaListenerEndpointRegistry;
@@ -17,5 +18,10 @@ public abstract class AbstractKafkaIntegrationTest extends AbstractPostgresqlInt
     @BeforeEach
     void waitForKafkaListenersAssignment() {
         KafkaIntegrationTestSupport.waitForAssignments(kafkaListenerEndpointRegistry, embeddedKafkaBroker);
+    }
+
+    @AfterEach
+    void waitForKafkaListenersProcessing() {
+        KafkaIntegrationTestSupport.waitForCommittedOffsets(kafkaListenerEndpointRegistry, embeddedKafkaBroker);
     }
 }

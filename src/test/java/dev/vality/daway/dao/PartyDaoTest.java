@@ -1,7 +1,6 @@
 package dev.vality.daway.dao;
 
 import dev.vality.daway.integration.base.AbstractPostgresqlIntegrationTest;
-import dev.vality.daway.config.PostgresqlJooqSpringBootITest;
 import dev.vality.daway.dao.dominant.impl.PartyDaoImpl;
 import dev.vality.daway.domain.tables.pojos.Party;
 import dev.vality.daway.domain.tables.records.PartyRecord;
@@ -10,13 +9,14 @@ import org.jooq.DSLContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.jooq.test.autoconfigure.JooqTest;
 import org.springframework.test.context.ContextConfiguration;
 
 import static dev.vality.daway.domain.tables.Party.PARTY;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@PostgresqlJooqSpringBootITest
+@JooqTest
 @ContextConfiguration(classes = {PartyDaoImpl.class})
 class PartyDaoTest extends AbstractPostgresqlIntegrationTest {
 

@@ -1,18 +1,19 @@
 package dev.vality.daway.dao;
 
 import dev.vality.daway.integration.base.AbstractPostgresqlIntegrationTest;
-import dev.vality.daway.config.PostgresqlSpringBootITest;
 import dev.vality.daway.dao.source.iface.SourceDao;
 import dev.vality.daway.domain.tables.pojos.Source;
 import dev.vality.daway.exception.NotFoundException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 
+import static dev.vality.daway.utils.RandomBeans.random;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@PostgresqlSpringBootITest
+@SpringBootTest
 public class SourceDaoTest extends AbstractPostgresqlIntegrationTest {
 
     @Autowired
@@ -24,7 +25,7 @@ public class SourceDaoTest extends AbstractPostgresqlIntegrationTest {
     @Test
     public void sourceDaoTest() {
         jdbcTemplate.execute("truncate table dw.source cascade");
-        Source source = dev.vality.daway.utils.RandomBeans.random(Source.class);
+        Source source = random(Source.class);
         source.setCurrent(true);
         Long id = sourceDao.save(source).get();
         source.setId(id);

@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
+import static dev.vality.machinegun.msgpack.Value.bin;
 import static org.mockito.ArgumentMatchers.*;
 
 @KafkaPostgresqlSpringBootITest
@@ -49,7 +50,7 @@ class WithdrawalKafkaListenerAdjustmentTransferTest extends AbstractKafkaIntegra
         message.setEventId(1L);
         message.setSourceNs("sourceNs");
         message.setSourceId("sourceId");
-        message.setData(dev.vality.machinegun.msgpack.Value.bin(new ThriftSerializer<>().serialize("", timestampedChange)));
+        message.setData(bin(new ThriftSerializer<>().serialize("", timestampedChange)));
         WithdrawalAdjustment withdrawalAdjustment = TestData.createWithdrawalAdjustment(adjustmentId);
         withdrawalAdjustment.setId(1L);
         Mockito.when(withdrawalAdjustmentDao.getByIds(anyString(), anyString())).thenReturn(withdrawalAdjustment);
@@ -75,7 +76,7 @@ class WithdrawalKafkaListenerAdjustmentTransferTest extends AbstractKafkaIntegra
         message.setEventId(1L);
         message.setSourceNs("sourceNs");
         message.setSourceId("sourceId");
-        message.setData(dev.vality.machinegun.msgpack.Value.bin(new ThriftSerializer<>().serialize("", timestampedChange)));
+        message.setData(bin(new ThriftSerializer<>().serialize("", timestampedChange)));
         WithdrawalAdjustment withdrawalAdjustment = TestData.createWithdrawalAdjustment(adjustmentId);
         withdrawalAdjustment.setId(1L);
         Mockito.when(withdrawalAdjustmentDao.getByIds(anyString(), anyString())).thenReturn(withdrawalAdjustment);

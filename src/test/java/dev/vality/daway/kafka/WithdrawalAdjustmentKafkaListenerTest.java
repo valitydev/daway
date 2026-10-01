@@ -18,6 +18,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.util.concurrent.TimeUnit;
 
+import static dev.vality.machinegun.msgpack.Value.bin;
 import static org.mockito.ArgumentMatchers.any;
 
 @KafkaPostgresqlSpringBootITest
@@ -47,7 +48,7 @@ class WithdrawalAdjustmentKafkaListenerTest extends AbstractKafkaIntegrationTest
         message.setEventId(1L);
         message.setSourceNs("sourceNs");
         message.setSourceId("sourceId");
-        message.setData(dev.vality.machinegun.msgpack.Value.bin(new ThriftSerializer<>().serialize("", timestampedChange)));
+        message.setData(bin(new ThriftSerializer<>().serialize("", timestampedChange)));
 
         KafkaIntegrationTestSupport.sendMessage(embeddedKafkaBroker, topic, message);
 
@@ -63,7 +64,7 @@ class WithdrawalAdjustmentKafkaListenerTest extends AbstractKafkaIntegrationTest
         message.setEventId(1L);
         message.setSourceNs("sourceNs");
         message.setSourceId("sourceId");
-        message.setData(dev.vality.machinegun.msgpack.Value.bin(new ThriftSerializer<>().serialize("", timestampedChange)));
+        message.setData(bin(new ThriftSerializer<>().serialize("", timestampedChange)));
 
         KafkaIntegrationTestSupport.sendMessage(embeddedKafkaBroker, topic, message);
         Mockito.verify(withdrawalDao, Mockito.after(TimeUnit.MINUTES.toMillis(1)).only()).save(any());

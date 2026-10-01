@@ -44,6 +44,8 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
+import static dev.vality.daway.utils.RandomBeans.random;
+
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class TestData {
 
@@ -51,8 +53,7 @@ public class TestData {
 
     public static InvoiceChange buildInvoiceChangeChargebackCreated() {
         InvoicePaymentChargeback invoicePaymentChargeback =
-                dev.vality.daway.utils.RandomBeans.random(InvoicePaymentChargeback.class, "context",
-                        "status", "reason", "stage");
+                random(InvoicePaymentChargeback.class, "context", "status", "reason", "stage");
         invoicePaymentChargeback.setCreatedAt(TypeUtil.temporalToString(Instant.now()));
         InvoicePaymentChargebackStatus invoicePaymentChargebackStatus = buildChargebackStatus();
         invoicePaymentChargeback.setStatus(invoicePaymentChargebackStatus);
@@ -162,8 +163,7 @@ public class TestData {
 
     private static InvoiceChange buildInvoiceChangeChargeback(InvoicePaymentChargebackChangePayload payload) {
         InvoicePaymentChargeback invoicePaymentChargeback =
-                dev.vality.daway.utils.RandomBeans.random(InvoicePaymentChargeback.class, "context",
-                        "status", "reason", "stage");
+                random(InvoicePaymentChargeback.class, "context", "status", "reason", "stage");
         invoicePaymentChargeback.setCreatedAt(TypeUtil.temporalToString(Instant.now()));
         InvoicePaymentChargebackStatus invoicePaymentChargebackStatus = buildChargebackStatus();
         invoicePaymentChargeback.setStatus(invoicePaymentChargebackStatus);

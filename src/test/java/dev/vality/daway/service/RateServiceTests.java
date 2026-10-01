@@ -1,19 +1,19 @@
 package dev.vality.daway.service;
 
 import dev.vality.daway.integration.base.AbstractPostgresqlIntegrationTest;
-import dev.vality.daway.config.PostgresqlSpringBootITest;
 import dev.vality.daway.domain.tables.pojos.Rate;
 import dev.vality.daway.utils.RateSinkEventTestUtils;
 import dev.vality.machinegun.eventsink.SinkEvent;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.util.List;
 
-@PostgresqlSpringBootITest
+@SpringBootTest
 public class RateServiceTests extends AbstractPostgresqlIntegrationTest {
 
     @Autowired

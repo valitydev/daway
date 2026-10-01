@@ -1,18 +1,19 @@
 package dev.vality.daway.dao;
 
 import dev.vality.daway.integration.base.AbstractPostgresqlIntegrationTest;
-import dev.vality.daway.config.PostgresqlSpringBootITest;
 import dev.vality.daway.dao.dominant.impl.WalletDaoImpl;
 import dev.vality.daway.domain.tables.pojos.Wallet;
 import dev.vality.daway.exception.NotFoundException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 
+import static dev.vality.daway.utils.RandomBeans.random;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@PostgresqlSpringBootITest
+@SpringBootTest
 public class WalletDaoTest extends AbstractPostgresqlIntegrationTest {
 
     @Autowired
@@ -24,7 +25,7 @@ public class WalletDaoTest extends AbstractPostgresqlIntegrationTest {
     @Test
     public void walletDaoTest() {
         jdbcTemplate.execute("truncate table dw.wallet cascade");
-        Wallet wallet = dev.vality.daway.utils.RandomBeans.random(Wallet.class);
+        Wallet wallet = random(Wallet.class);
         wallet.setCurrent(true);
         Long id = walletDao.save(wallet);
         wallet.setId(id);

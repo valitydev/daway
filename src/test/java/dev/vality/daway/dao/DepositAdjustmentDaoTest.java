@@ -1,15 +1,17 @@
 package dev.vality.daway.dao;
 
 import dev.vality.daway.integration.base.AbstractPostgresqlIntegrationTest;
-import dev.vality.daway.config.PostgresqlSpringBootITest;
 import dev.vality.daway.dao.deposit.adjustment.iface.DepositAdjustmentDao;
 import dev.vality.daway.domain.tables.pojos.DepositAdjustment;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 
-@PostgresqlSpringBootITest
+import static dev.vality.daway.utils.RandomBeans.random;
+
+@SpringBootTest
 public class DepositAdjustmentDaoTest extends AbstractPostgresqlIntegrationTest {
 
     @Autowired
@@ -20,7 +22,7 @@ public class DepositAdjustmentDaoTest extends AbstractPostgresqlIntegrationTest 
 
     @Test
     public void depositAdjustmentTest() {
-        DepositAdjustment deposit = dev.vality.daway.utils.RandomBeans.random(DepositAdjustment.class);
+        DepositAdjustment deposit = random(DepositAdjustment.class);
         deposit.setAmount(null);
         deposit.setCurrencyCode(null);
         deposit.setCurrent(true);
