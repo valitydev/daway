@@ -1,5 +1,7 @@
 package dev.vality.daway.kafka;
 
+import dev.vality.daway.integration.base.AbstractKafkaIntegrationTest;
+import dev.vality.daway.integration.util.KafkaIntegrationTestSupport;
 import dev.vality.daway.TestData;
 import dev.vality.daway.config.KafkaPostgresqlSpringBootITest;
 import dev.vality.daway.dao.withdrawal.iface.FistfulCashFlowDao;
@@ -11,7 +13,6 @@ import dev.vality.machinegun.eventsink.MachineEvent;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
@@ -19,16 +20,14 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
+import static dev.vality.machinegun.msgpack.Value.bin;
 import static org.mockito.ArgumentMatchers.*;
 
 @KafkaPostgresqlSpringBootITest
-class WithdrawalKafkaListenerAdjustmentTransferTest {
+class WithdrawalKafkaListenerAdjustmentTransferTest extends AbstractKafkaIntegrationTest {
 
     @Value("${kafka.topics.withdrawal.id}")
     public String topic;
-
-    @Autowired
-    private KafkaProducer kafkaProducer;
 
     @MockitoBean
     private WithdrawalAdjustmentDao withdrawalAdjustmentDao;
@@ -51,14 +50,14 @@ class WithdrawalKafkaListenerAdjustmentTransferTest {
         message.setEventId(1L);
         message.setSourceNs("sourceNs");
         message.setSourceId("sourceId");
-        message.setData(dev.vality.machinegun.msgpack.Value.bin(new ThriftSerializer<>().serialize("", timestampedChange)));
+        message.setData(bin(new ThriftSerializer<>().serialize("", timestampedChange)));
         WithdrawalAdjustment withdrawalAdjustment = TestData.createWithdrawalAdjustment(adjustmentId);
         withdrawalAdjustment.setId(1L);
         Mockito.when(withdrawalAdjustmentDao.getByIds(anyString(), anyString())).thenReturn(withdrawalAdjustment);
         Mockito.when(withdrawalAdjustmentDao.save(any(WithdrawalAdjustment.class))).thenReturn(Optional.of(1L));
         Mockito.doNothing().when(withdrawalAdjustmentDao).updateNotCurrent(anyLong());
 
-        kafkaProducer.sendMessage(topic, message);
+        KafkaIntegrationTestSupport.sendMessage(embeddedKafkaBroker, topic, message);
 
         Mockito.verify(withdrawalAdjustmentDao, Mockito.timeout(TimeUnit.MINUTES.toMillis(2)).times(1))
                 .getByIds(anyString(), anyString());
@@ -77,7 +76,7 @@ class WithdrawalKafkaListenerAdjustmentTransferTest {
         message.setEventId(1L);
         message.setSourceNs("sourceNs");
         message.setSourceId("sourceId");
-        message.setData(dev.vality.machinegun.msgpack.Value.bin(new ThriftSerializer<>().serialize("", timestampedChange)));
+        message.setData(bin(new ThriftSerializer<>().serialize("", timestampedChange)));
         WithdrawalAdjustment withdrawalAdjustment = TestData.createWithdrawalAdjustment(adjustmentId);
         withdrawalAdjustment.setId(1L);
         Mockito.when(withdrawalAdjustmentDao.getByIds(anyString(), anyString())).thenReturn(withdrawalAdjustment);
@@ -85,7 +84,7 @@ class WithdrawalKafkaListenerAdjustmentTransferTest {
         Mockito.doNothing().when(withdrawalAdjustmentDao).updateNotCurrent(anyLong());
         Mockito.when(fistfulCashFlowDao.getByObjId(anyLong(), any())).thenReturn(List.of(TestData.createFistfulCashFlow()));
 
-        kafkaProducer.sendMessage(topic, message);
+        KafkaIntegrationTestSupport.sendMessage(embeddedKafkaBroker, topic, message);
 
         Mockito.verify(withdrawalAdjustmentDao, Mockito.timeout(TimeUnit.MINUTES.toMillis(2)).times(1))
                 .getByIds(anyString(), anyString());

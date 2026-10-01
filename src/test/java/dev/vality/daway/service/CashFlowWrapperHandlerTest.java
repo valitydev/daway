@@ -1,6 +1,6 @@
 package dev.vality.daway.service;
 
-import dev.vality.daway.config.PostgresqlSpringBootITest;
+import dev.vality.daway.integration.base.AbstractPostgresqlIntegrationTest;
 import dev.vality.daway.dao.invoicing.iface.CashFlowDao;
 import dev.vality.daway.dao.invoicing.iface.CashFlowLinkDao;
 import dev.vality.daway.domain.enums.PaymentChangeType;
@@ -13,6 +13,7 @@ import dev.vality.daway.utils.MockUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.util.ArrayList;
@@ -24,8 +25,8 @@ import static dev.vality.daway.utils.JdbcUtil.countEntities;
 import static dev.vality.daway.utils.JdbcUtil.countPaymentEntity;
 import static org.junit.jupiter.api.Assertions.*;
 
-@PostgresqlSpringBootITest
-public class CashFlowWrapperHandlerTest {
+@SpringBootTest
+public class CashFlowWrapperHandlerTest extends AbstractPostgresqlIntegrationTest {
 
     @Autowired
     private CashFlowWrapperHandler service;

@@ -1,7 +1,7 @@
 package dev.vality.daway.handler.event.stock.impl.withdrawal;
 
+import dev.vality.daway.integration.base.AbstractPostgresqlIntegrationTest;
 import dev.vality.daway.TestData;
-import dev.vality.daway.config.PostgresqlJooqSpringBootITest;
 import dev.vality.daway.dao.withdrawal.impl.WithdrawalCashChangeDaoImpl;
 import dev.vality.daway.domain.tables.records.WithdrawalCashChangeRecord;
 import dev.vality.fistful.withdrawal.TimestampedChange;
@@ -10,6 +10,7 @@ import org.jooq.DSLContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.jooq.test.autoconfigure.JooqTest;
 import org.springframework.test.context.ContextConfiguration;
 
 import static dev.vality.daway.domain.tables.WithdrawalCashChange.WITHDRAWAL_CASH_CHANGE;
@@ -17,9 +18,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@PostgresqlJooqSpringBootITest
+@JooqTest
 @ContextConfiguration(classes = {WithdrawalCashChangeDaoImpl.class, WithdrawalBodyChangedHandler.class})
-class WithdrawalBodyChangedHandlerTest {
+class WithdrawalBodyChangedHandlerTest extends AbstractPostgresqlIntegrationTest {
 
     @Autowired
     private WithdrawalBodyChangedHandler handler;

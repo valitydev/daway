@@ -1,10 +1,10 @@
 package dev.vality.daway.handler.event.stock.impl.invoicing.chargeback;
 
+import dev.vality.daway.integration.base.AbstractPostgresqlIntegrationTest;
 import dev.vality.damsel.domain.FinalCashFlowPosting;
 import dev.vality.damsel.payment_processing.EventPayload;
 import dev.vality.damsel.payment_processing.InvoiceChange;
 import dev.vality.daway.TestData;
-import dev.vality.daway.config.PostgresqlJooqSpringBootITest;
 import dev.vality.daway.dao.invoicing.impl.CashFlowDaoImpl;
 import dev.vality.daway.dao.invoicing.impl.ChargebackDaoImpl;
 import dev.vality.daway.domain.tables.pojos.Chargeback;
@@ -17,6 +17,7 @@ import org.jooq.Result;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.jooq.test.autoconfigure.JooqTest;
 import org.springframework.test.context.ContextConfiguration;
 
 import java.util.List;
@@ -25,10 +26,10 @@ import static dev.vality.daway.domain.tables.CashFlow.CASH_FLOW;
 import static dev.vality.daway.domain.tables.Chargeback.CHARGEBACK;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@PostgresqlJooqSpringBootITest
+@JooqTest
 @ContextConfiguration(classes = {InvoicePaymentChargebackCashFlowChangedHandler.class, ChargebackDaoImpl.class,
         CashFlowService.class, CashFlowDaoImpl.class, ChargebackMachineEventCopyFactoryImpl.class,})
-class InvoicePaymentChargebackCashFlowChangedHandlerTest {
+class InvoicePaymentChargebackCashFlowChangedHandlerTest extends AbstractPostgresqlIntegrationTest {
 
     @Autowired
     InvoicePaymentChargebackCashFlowChangedHandler handler;

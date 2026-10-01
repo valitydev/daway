@@ -1,15 +1,16 @@
 package dev.vality.daway.dao.partition;
 
-import dev.vality.daway.config.PostgresqlJooqSpringBootITest;
+import dev.vality.daway.integration.base.AbstractPostgresqlIntegrationTest;
 import dev.vality.daway.dao.invoicing.iface.*;
 import dev.vality.daway.dao.invoicing.impl.*;
 import dev.vality.daway.domain.tables.pojos.*;
 import dev.vality.daway.model.InvoicingKey;
-import dev.vality.testcontainers.annotations.util.RandomBeans;
+import dev.vality.daway.utils.RandomBeans;
 import org.jooq.DSLContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.jooq.test.autoconfigure.JooqTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 
@@ -35,9 +36,9 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
         PaymentDaoImpl.class, PaymentStatusInfoDaoImpl.class, PaymentPayerInfoDaoImpl.class,
         PaymentAdditionalInfoDaoImpl.class, PaymentRiskDataDaoImpl.class, PaymentFeeDaoImpl.class,
         PaymentRouteDaoImpl.class, InvoiceDaoImpl.class, InvoiceStatusInfoDaoImpl.class})
-@PostgresqlJooqSpringBootITest
+@JooqTest
 @Sql(scripts = {"classpath:sql/partition_idx.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_CLASS)
-class DaoTests {
+class DaoTests extends AbstractPostgresqlIntegrationTest {
 
     @Autowired
     private DSLContext dslContext;

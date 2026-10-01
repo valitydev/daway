@@ -1,18 +1,20 @@
 package dev.vality.daway.dao;
 
-import dev.vality.daway.config.PostgresqlSpringBootITest;
+import dev.vality.daway.integration.base.AbstractPostgresqlIntegrationTest;
 import dev.vality.daway.dao.deposit.iface.DepositDao;
 import dev.vality.daway.domain.tables.pojos.Deposit;
 import dev.vality.daway.exception.NotFoundException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 
+import static dev.vality.daway.utils.RandomBeans.random;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@PostgresqlSpringBootITest
-public class DepositDaoTest {
+@SpringBootTest
+public class DepositDaoTest extends AbstractPostgresqlIntegrationTest {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -23,7 +25,7 @@ public class DepositDaoTest {
     @Test
     public void depositDaoTest() {
         jdbcTemplate.execute("truncate table dw.deposit cascade");
-        Deposit deposit = dev.vality.testcontainers.annotations.util.RandomBeans.random(Deposit.class);
+        Deposit deposit = random(Deposit.class);
         deposit.setCurrent(true);
         Long id = depositDao.save(deposit).get();
         deposit.setId(id);

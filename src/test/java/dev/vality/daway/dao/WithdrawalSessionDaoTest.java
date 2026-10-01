@@ -1,6 +1,6 @@
 package dev.vality.daway.dao;
 
-import dev.vality.daway.config.PostgresqlJooqSpringBootITest;
+import dev.vality.daway.integration.base.AbstractPostgresqlIntegrationTest;
 import dev.vality.daway.dao.withdrawal.session.iface.WithdrawalSessionDao;
 import dev.vality.daway.dao.withdrawal.session.impl.WithdrawalSessionDaoImpl;
 import dev.vality.daway.domain.tables.pojos.WithdrawalSession;
@@ -9,18 +9,20 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.jooq.test.autoconfigure.JooqTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 
 import java.time.LocalDateTime;
 
 import static dev.vality.daway.domain.tables.WithdrawalSession.WITHDRAWAL_SESSION;
+import static dev.vality.daway.utils.RandomBeans.random;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 @ContextConfiguration(classes = {WithdrawalSessionDaoImpl.class})
-@PostgresqlJooqSpringBootITest
+@JooqTest
 @Sql(scripts = {"classpath:sql/partition_idx.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_CLASS)
-class WithdrawalSessionDaoTest {
+class WithdrawalSessionDaoTest extends AbstractPostgresqlIntegrationTest {
     @Autowired
     private DSLContext dslContext;
 
@@ -34,7 +36,7 @@ class WithdrawalSessionDaoTest {
 
     @Test
     void withdrawalSessionDao() {
-        WithdrawalSession withdrawalSession = dev.vality.testcontainers.annotations.util.RandomBeans.random(WithdrawalSession.class);
+        WithdrawalSession withdrawalSession = random(WithdrawalSession.class);
         withdrawalSession.setCurrent(true);
         Long id = withdrawalSessionDao.save(withdrawalSession).get();
         withdrawalSession.setId(id);

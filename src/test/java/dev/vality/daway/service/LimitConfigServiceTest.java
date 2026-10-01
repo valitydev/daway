@@ -1,13 +1,13 @@
 package dev.vality.daway.service;
 
-import dev.vality.daway.config.PostgresqlSpringBootITest;
+import dev.vality.daway.integration.base.AbstractPostgresqlIntegrationTest;
 import dev.vality.limiter.config.LimitConfig;
 import dev.vality.machinegun.eventsink.MachineEvent;
 import dev.vality.mapper.RecordRowMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.test.jdbc.JdbcTestUtils;
 
 import java.util.List;
 import java.util.Set;
@@ -18,8 +18,8 @@ import static dev.vality.daway.domain.tables.LimitConfig.LIMIT_CONFIG;
 import static dev.vality.daway.utils.LimitConfigGenerator.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@PostgresqlSpringBootITest
-public class LimitConfigServiceTest {
+@SpringBootTest
+public class LimitConfigServiceTest extends AbstractPostgresqlIntegrationTest {
 
     private static final String TABLE_NAME = LIMIT_CONFIG.getSchema().getName() + "." + LIMIT_CONFIG.getName();
 
@@ -32,11 +32,12 @@ public class LimitConfigServiceTest {
     @Test
     public void shouldHandleAndSave() {
         var limitConfigId = UUID.randomUUID().toString();
+        var secondLimitConfigId = UUID.randomUUID().toString();
         var limitConfig = getLimitConfig(limitConfigId);
         limitConfigService.handleEvents(List.of(
-                getMachineEvent(limitConfigId, limitConfig), getMachineEvent(UUID.randomUUID().toString())));
-        assertThat(JdbcTestUtils.countRowsInTable(jdbcTemplate, TABLE_NAME))
-                .isEqualTo(2);
+                getMachineEvent(limitConfigId, limitConfig), getMachineEvent(secondLimitConfigId)));
+        assertThat(countForLimitConfig(limitConfigId)).isEqualTo(1);
+        assertThat(countForLimitConfig(secondLimitConfigId)).isEqualTo(1);
         var saved = selectCurrent(limitConfigId);
         assertThat(saved.getShardSize())
                 .isEqualTo(limitConfig.getShardSize());
@@ -48,11 +49,16 @@ public class LimitConfigServiceTest {
         var limitConfig = getLimitConfig(limitConfigId);
         limitConfig.getScope().setMulti(Set.of());
         limitConfigService.handleEvents(List.of(getMachineEvent(limitConfigId, limitConfig)));
-        assertThat(JdbcTestUtils.countRowsInTable(jdbcTemplate, TABLE_NAME))
+        assertThat(countForLimitConfig(limitConfigId))
                 .isEqualTo(1);
         var saved = selectCurrent(limitConfigId);
         assertThat(saved.getShardSize())
                 .isEqualTo(limitConfig.getShardSize());
+    }
+
+    private int countForLimitConfig(String limitConfigId) {
+        return jdbcTemplate.queryForObject(
+                "SELECT count(*) FROM " + TABLE_NAME + " WHERE limit_config_id = ?", Integer.class, limitConfigId);
     }
 
     private dev.vality.daway.domain.tables.pojos.LimitConfig selectCurrent(String limitConfigId) {

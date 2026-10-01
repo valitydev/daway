@@ -1,9 +1,9 @@
 package dev.vality.daway;
 
+import dev.vality.daway.integration.base.AbstractPostgresqlIntegrationTest;
 import dev.vality.damsel.domain.*;
 import dev.vality.damsel.domain.PaymentRoute;
 import dev.vality.damsel.payment_processing.*;
-import dev.vality.daway.config.PostgresqlSpringBootITest;
 import dev.vality.daway.dao.invoicing.iface.*;
 import dev.vality.daway.domain.enums.PayerType;
 import dev.vality.daway.domain.enums.PaymentChangeType;
@@ -18,10 +18,11 @@ import dev.vality.geck.common.util.TypeUtil;
 import dev.vality.machinegun.eventsink.MachineEvent;
 import dev.vality.machinegun.msgpack.Value;
 import dev.vality.sink.common.serialization.impl.PaymentEventPayloadSerializer;
+import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
 
@@ -35,9 +36,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 @Slf4j
-@PostgresqlSpringBootITest
+@SpringBootTest
 @Sql(scripts = {"classpath:sql/partition_idx.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-class IntegrationTest {
+class IntegrationTest extends AbstractPostgresqlIntegrationTest {
 
     @Autowired
     private InvoicingService invoicingService;

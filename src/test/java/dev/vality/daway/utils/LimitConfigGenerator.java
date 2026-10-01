@@ -12,7 +12,8 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Set;
 
-import static dev.vality.testcontainers.annotations.util.RandomBeans.randomThriftOnlyRequiredFields;
+import static dev.vality.daway.utils.RandomBeans.randomThriftOnlyRequiredFields;
+import static dev.vality.machinegun.msgpack.Value.bin;
 
 public class LimitConfigGenerator {
 
@@ -56,7 +57,7 @@ public class LimitConfigGenerator {
 
     @SneakyThrows
     private static dev.vality.machinegun.msgpack.Value toByteArray(TBase<?, ?> thrift) {
-        return dev.vality.machinegun.msgpack.Value.bin(
+        return bin(
                 new TSerializer(new TBinaryProtocol.Factory())
                         .serialize(thrift));
     }

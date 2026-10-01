@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static dev.vality.daway.utils.RandomBeans.random;
 import static dev.vality.geck.common.util.TypeUtil.temporalToString;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -65,14 +66,11 @@ class ProviderHandlerTest {
         return new ProviderObject()
                 .setRef(new ProviderRef(1))
                 .setData(new Provider()
-                        .setName(dev.vality.testcontainers.annotations.util.RandomBeans.random(String.class))
-                        .setDescription(dev.vality.testcontainers.annotations.util.RandomBeans.random(String.class))
+                        .setName(random(String.class))
+                        .setDescription(random(String.class))
                         .setProxy(new Proxy()
-                                .setRef(new ProxyRef(
-                                        dev.vality.testcontainers.annotations.util.RandomBeans.random(Integer.class)))
-                                .setAdditional(Map.of(dev.vality.testcontainers.annotations.util.RandomBeans.random(
-                                                String.class),
-                                        dev.vality.testcontainers.annotations.util.RandomBeans.random(String.class)))
+                                .setRef(new ProxyRef(random(Integer.class)))
+                                .setAdditional(Map.of(random(String.class), random(String.class)))
                         )
                         .setAccounts(
                                 Map.of(new CurrencyRef(PROVIDER_ACCOUNT_CURRENCY),
@@ -116,8 +114,8 @@ class ProviderHandlerTest {
 
     private ProviderParameter buildProviderParameter() {
         ProviderParameter providerParameter = new ProviderParameter();
-        providerParameter.setId(dev.vality.testcontainers.annotations.util.RandomBeans.random(String.class));
-        providerParameter.setDescription(dev.vality.testcontainers.annotations.util.RandomBeans.random(String.class));
+        providerParameter.setId(random(String.class));
+        providerParameter.setDescription(random(String.class));
         providerParameter.setType(ProviderParameterType.string_type(new ProviderParameterString()));
         providerParameter.setIsRequired(true);
         return providerParameter;
