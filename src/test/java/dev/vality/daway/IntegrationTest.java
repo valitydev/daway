@@ -1,5 +1,6 @@
 package dev.vality.daway;
 
+import dev.vality.daway.integration.base.AbstractPostgresqlIntegrationTest;
 import dev.vality.damsel.domain.*;
 import dev.vality.damsel.domain.PaymentRoute;
 import dev.vality.damsel.payment_processing.*;
@@ -37,7 +38,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 @Slf4j
 @PostgresqlSpringBootITest
 @Sql(scripts = {"classpath:sql/partition_idx.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-class IntegrationTest {
+class IntegrationTest extends AbstractPostgresqlIntegrationTest {
 
     @Autowired
     private InvoicingService invoicingService;

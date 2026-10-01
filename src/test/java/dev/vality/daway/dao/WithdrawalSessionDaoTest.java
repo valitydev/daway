@@ -1,5 +1,6 @@
 package dev.vality.daway.dao;
 
+import dev.vality.daway.integration.base.AbstractPostgresqlIntegrationTest;
 import dev.vality.daway.config.PostgresqlJooqSpringBootITest;
 import dev.vality.daway.dao.withdrawal.session.iface.WithdrawalSessionDao;
 import dev.vality.daway.dao.withdrawal.session.impl.WithdrawalSessionDaoImpl;
@@ -20,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 @ContextConfiguration(classes = {WithdrawalSessionDaoImpl.class})
 @PostgresqlJooqSpringBootITest
 @Sql(scripts = {"classpath:sql/partition_idx.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_CLASS)
-class WithdrawalSessionDaoTest {
+class WithdrawalSessionDaoTest extends AbstractPostgresqlIntegrationTest {
     @Autowired
     private DSLContext dslContext;
 

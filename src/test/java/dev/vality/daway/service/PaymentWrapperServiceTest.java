@@ -1,5 +1,6 @@
 package dev.vality.daway.service;
 
+import dev.vality.daway.integration.base.AbstractPostgresqlIntegrationTest;
 import dev.vality.daway.TestData;
 import dev.vality.daway.config.PostgresqlSpringBootITest;
 import dev.vality.daway.dao.invoicing.iface.*;
@@ -31,7 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @PostgresqlSpringBootITest
 @Sql(scripts = {"classpath:sql/partition_idx.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-class PaymentWrapperServiceTest {
+class PaymentWrapperServiceTest extends AbstractPostgresqlIntegrationTest {
 
     @Autowired
     private PaymentWrapperService paymentWrapperService;

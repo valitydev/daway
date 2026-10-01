@@ -1,5 +1,6 @@
 package dev.vality.daway.dao;
 
+import dev.vality.daway.integration.base.AbstractPostgresqlIntegrationTest;
 import dev.vality.daway.config.PostgresqlSpringBootITest;
 import dev.vality.daway.dao.deposit.adjustment.iface.DepositAdjustmentDao;
 import dev.vality.daway.domain.tables.pojos.DepositAdjustment;
@@ -9,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 @PostgresqlSpringBootITest
-public class DepositAdjustmentDaoTest {
+public class DepositAdjustmentDaoTest extends AbstractPostgresqlIntegrationTest {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;

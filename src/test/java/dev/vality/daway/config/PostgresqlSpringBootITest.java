@@ -1,7 +1,6 @@
 package dev.vality.daway.config;
 
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -11,6 +10,5 @@ import java.lang.annotation.Target;
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @SpringBootTest
-@Import(EmbeddedPostgresqlTestConfiguration.class)
 public @interface PostgresqlSpringBootITest {
 }

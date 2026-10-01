@@ -1,5 +1,6 @@
 package dev.vality.daway.service;
 
+import dev.vality.daway.integration.base.AbstractPostgresqlIntegrationTest;
 import dev.vality.daway.config.PostgresqlSpringBootITest;
 import dev.vality.limiter.config.LimitConfig;
 import dev.vality.machinegun.eventsink.MachineEvent;
@@ -18,7 +19,7 @@ import static dev.vality.daway.utils.LimitConfigGenerator.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @PostgresqlSpringBootITest
-public class LimitConfigServiceTest {
+public class LimitConfigServiceTest extends AbstractPostgresqlIntegrationTest {
 
     private static final String TABLE_NAME = LIMIT_CONFIG.getSchema().getName() + "." + LIMIT_CONFIG.getName();
 

@@ -1,5 +1,7 @@
 package dev.vality.daway.kafka;
 
+import dev.vality.daway.integration.base.AbstractKafkaIntegrationTest;
+import dev.vality.daway.integration.util.KafkaIntegrationTestSupport;
 import dev.vality.daway.TestData;
 import dev.vality.daway.config.KafkaPostgresqlSpringBootITest;
 import dev.vality.daway.dao.withdrawal.iface.WithdrawalAdjustmentDao;
@@ -10,7 +12,6 @@ import dev.vality.machinegun.eventsink.MachineEvent;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -21,13 +22,10 @@ import static org.mockito.ArgumentMatchers.any;
 
 @KafkaPostgresqlSpringBootITest
 @TestPropertySource(properties = {"kafka.topics.withdrawal-adjustment.enabled=true"})
-class WithdrawalAdjustmentKafkaListenerTest {
+class WithdrawalAdjustmentKafkaListenerTest extends AbstractKafkaIntegrationTest {
 
     @Value("${kafka.topics.withdrawal.id}")
     public String topic;
-
-    @Autowired
-    private KafkaProducer kafkaProducer;
 
     @MockitoBean
     private WithdrawalAdjustmentDao withdrawalAdjustmentDao;
@@ -51,7 +49,7 @@ class WithdrawalAdjustmentKafkaListenerTest {
         message.setSourceId("sourceId");
         message.setData(dev.vality.machinegun.msgpack.Value.bin(new ThriftSerializer<>().serialize("", timestampedChange)));
 
-        kafkaProducer.sendMessage(topic, message);
+        KafkaIntegrationTestSupport.sendMessage(embeddedKafkaBroker, topic, message);
 
         Mockito.verify(withdrawalAdjustmentDao, Mockito.timeout(TimeUnit.MINUTES.toMillis(1)).atLeastOnce())
                 .save(any());
@@ -67,7 +65,7 @@ class WithdrawalAdjustmentKafkaListenerTest {
         message.setSourceId("sourceId");
         message.setData(dev.vality.machinegun.msgpack.Value.bin(new ThriftSerializer<>().serialize("", timestampedChange)));
 
-        kafkaProducer.sendMessage(topic, message);
+        KafkaIntegrationTestSupport.sendMessage(embeddedKafkaBroker, topic, message);
         Mockito.verify(withdrawalDao, Mockito.after(TimeUnit.MINUTES.toMillis(1)).only()).save(any());
     }
 }

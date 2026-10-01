@@ -1,5 +1,6 @@
 package dev.vality.daway.dao;
 
+import dev.vality.daway.integration.base.AbstractPostgresqlIntegrationTest;
 import dev.vality.daway.config.PostgresqlSpringBootITest;
 import dev.vality.daway.dao.source.iface.SourceDao;
 import dev.vality.daway.domain.tables.pojos.Source;
@@ -12,7 +13,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @PostgresqlSpringBootITest
-public class SourceDaoTest {
+public class SourceDaoTest extends AbstractPostgresqlIntegrationTest {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;

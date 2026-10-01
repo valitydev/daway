@@ -1,5 +1,6 @@
 package dev.vality.daway.dao;
 
+import dev.vality.daway.integration.base.AbstractPostgresqlIntegrationTest;
 import dev.vality.daway.config.PostgresqlSpringBootITest;
 import dev.vality.daway.dao.dominant.impl.*;
 import dev.vality.daway.dao.invoicing.iface.*;
@@ -30,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @Slf4j
 @PostgresqlSpringBootITest
-class DaoTests {
+class DaoTests extends AbstractPostgresqlIntegrationTest {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;

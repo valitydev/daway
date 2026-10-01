@@ -1,5 +1,7 @@
 package dev.vality.daway.kafka;
 
+import dev.vality.daway.integration.base.AbstractKafkaIntegrationTest;
+import dev.vality.daway.integration.util.KafkaIntegrationTestSupport;
 import dev.vality.daway.config.KafkaPostgresqlSpringBootITest;
 import dev.vality.daway.dao.exrate.iface.ExchangeRateDao;
 import dev.vality.daway.domain.tables.pojos.ExRate;
@@ -28,13 +30,10 @@ import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
 
 @KafkaPostgresqlSpringBootITest
-public class ExchangeRateKafkaListenerTest {
+public class ExchangeRateKafkaListenerTest extends AbstractKafkaIntegrationTest {
 
     @Value("${kafka.topics.exrate.id}")
     public String topic;
-
-    @Autowired
-    private KafkaProducer kafkaProducer;
 
     @MockitoSpyBean
     private ExchangeRateService exchangeRateService;
@@ -49,7 +48,7 @@ public class ExchangeRateKafkaListenerTest {
         CurrencyExchangeRate exchangeRate = currencyEvent.payload.getExchangeRate();
 
         // When
-        kafkaProducer.send(topic, currencyEvent);
+        KafkaIntegrationTestSupport.send(embeddedKafkaBroker, topic, currencyEvent);
         await().atMost(30, TimeUnit.SECONDS).pollInterval(1, TimeUnit.SECONDS).until(() -> {
             return exchangeRateDao.findBySourceSymbolicCode(exchangeRate.getSourceCurrency().getSymbolicCode()) != null;
         });

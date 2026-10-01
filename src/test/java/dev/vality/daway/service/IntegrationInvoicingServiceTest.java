@@ -1,5 +1,6 @@
 package dev.vality.daway.service;
 
+import dev.vality.daway.integration.base.AbstractPostgresqlIntegrationTest;
 import dev.vality.damsel.user_interaction.UserInteraction;
 import dev.vality.daway.TestData;
 import dev.vality.daway.config.PostgresqlSpringBootITest;
@@ -17,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @PostgresqlSpringBootITest
 @Sql(scripts = {"classpath:sql/partition_idx.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-class IntegrationInvoicingServiceTest {
+class IntegrationInvoicingServiceTest extends AbstractPostgresqlIntegrationTest {
 
     @Autowired
     private InvoicingService invoicingService;

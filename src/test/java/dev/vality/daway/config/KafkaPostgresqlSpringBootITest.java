@@ -1,11 +1,8 @@
 package dev.vality.daway.config;
 
-import dev.vality.daway.kafka.KafkaProducer;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.Import;
 import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.TestExecutionListeners;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -14,8 +11,6 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@TestExecutionListeners(listeners = KafkaListenerTestExecutionListener.class,
-        mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)
 @EmbeddedKafka(partitions = 1, topics = {
         "${kafka.topics.invoice.id}",
         "${kafka.topics.recurrent-payment-tool.id}",
@@ -29,8 +24,9 @@ import java.lang.annotation.Target;
         "${kafka.topics.destination.id}",
         "${kafka.topics.limit-config.id}",
         "${kafka.topics.exrate.id}"
-}, bootstrapServersProperty = "spring.kafka.bootstrap-servers")
+})
 @SpringBootTest(properties = {
+        "spring.kafka.bootstrap-servers=${spring.embedded.kafka.brokers}",
         "kafka.topics.invoice.enabled=true",
         "kafka.topics.recurrent-payment-tool.enabled=true",
         "kafka.topics.party-management.enabled=true",
@@ -58,6 +54,5 @@ import java.lang.annotation.Target;
         "kafka.consumer.withdrawal-adjustment-concurrency=1"
 })
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
-@Import({EmbeddedPostgresqlTestConfiguration.class, KafkaProducer.class})
 public @interface KafkaPostgresqlSpringBootITest {
 }

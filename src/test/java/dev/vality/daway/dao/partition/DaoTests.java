@@ -1,5 +1,6 @@
 package dev.vality.daway.dao.partition;
 
+import dev.vality.daway.integration.base.AbstractPostgresqlIntegrationTest;
 import dev.vality.daway.config.PostgresqlJooqSpringBootITest;
 import dev.vality.daway.dao.invoicing.iface.*;
 import dev.vality.daway.dao.invoicing.impl.*;
@@ -37,7 +38,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
         PaymentRouteDaoImpl.class, InvoiceDaoImpl.class, InvoiceStatusInfoDaoImpl.class})
 @PostgresqlJooqSpringBootITest
 @Sql(scripts = {"classpath:sql/partition_idx.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_CLASS)
-class DaoTests {
+class DaoTests extends AbstractPostgresqlIntegrationTest {
 
     @Autowired
     private DSLContext dslContext;

@@ -1,5 +1,6 @@
 package dev.vality.daway.handler.event.stock.impl.withdrawal;
 
+import dev.vality.daway.integration.base.AbstractPostgresqlIntegrationTest;
 import dev.vality.daway.TestData;
 import dev.vality.daway.config.PostgresqlJooqSpringBootITest;
 import dev.vality.daway.dao.withdrawal.impl.WithdrawalValidationDaoImpl;
@@ -25,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @PostgresqlJooqSpringBootITest
 @ContextConfiguration(classes = {WithdrawalValidationDaoImpl.class, WithdrawalValidationChangedHandler.class,
         WithdrawalValidationMachineEventCopyFactoryImpl.class})
-class WithdrawalValidationChangedHandlerTest {
+class WithdrawalValidationChangedHandlerTest extends AbstractPostgresqlIntegrationTest {
 
     @Autowired
     private WithdrawalValidationChangedHandler handler;

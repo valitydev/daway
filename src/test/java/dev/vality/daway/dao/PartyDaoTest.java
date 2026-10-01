@@ -1,5 +1,6 @@
 package dev.vality.daway.dao;
 
+import dev.vality.daway.integration.base.AbstractPostgresqlIntegrationTest;
 import dev.vality.daway.config.PostgresqlJooqSpringBootITest;
 import dev.vality.daway.dao.dominant.impl.PartyDaoImpl;
 import dev.vality.daway.domain.tables.pojos.Party;
@@ -17,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @PostgresqlJooqSpringBootITest
 @ContextConfiguration(classes = {PartyDaoImpl.class})
-class PartyDaoTest {
+class PartyDaoTest extends AbstractPostgresqlIntegrationTest {
 
     @Autowired
     PartyDaoImpl partyDao;

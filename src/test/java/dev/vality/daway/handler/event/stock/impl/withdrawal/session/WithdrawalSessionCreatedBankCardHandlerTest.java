@@ -1,5 +1,6 @@
 package dev.vality.daway.handler.event.stock.impl.withdrawal.session;
 
+import dev.vality.daway.integration.base.AbstractKafkaIntegrationTest;
 import dev.vality.daway.config.KafkaPostgresqlSpringBootITest;
 import dev.vality.daway.domain.tables.pojos.WithdrawalSession;
 import dev.vality.daway.utils.WithdrawalSessionCreatedHandlerUtils;
@@ -18,7 +19,7 @@ import static dev.vality.daway.utils.WithdrawalSessionCreatedHandlerUtils.create
 
 @KafkaPostgresqlSpringBootITest
 @Sql(scripts = {"classpath:sql/partition_idx.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_CLASS)
-class WithdrawalSessionCreatedBankCardHandlerTest {
+class WithdrawalSessionCreatedBankCardHandlerTest extends AbstractKafkaIntegrationTest {
 
     @Autowired
     private WithdrawalSessionCreatedHandler withdrawalSessionCreatedHandler;

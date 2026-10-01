@@ -1,5 +1,6 @@
 package dev.vality.daway.dao;
 
+import dev.vality.daway.integration.base.AbstractPostgresqlIntegrationTest;
 import dev.vality.daway.config.PostgresqlSpringBootITest;
 import dev.vality.daway.dao.limiter.LimitConfigDao;
 import dev.vality.daway.domain.tables.pojos.LimitConfig;
@@ -20,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @PostgresqlSpringBootITest
-public class LimitConfigDaoTest {
+public class LimitConfigDaoTest extends AbstractPostgresqlIntegrationTest {
 
     public static final String SELECT_CURRENT = "select * from dw.limit_config where limit_config_id = ? and current = true;";
 

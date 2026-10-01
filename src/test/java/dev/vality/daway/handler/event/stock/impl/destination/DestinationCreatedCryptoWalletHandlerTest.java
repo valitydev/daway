@@ -1,5 +1,6 @@
 package dev.vality.daway.handler.event.stock.impl.destination;
 
+import dev.vality.daway.integration.base.AbstractPostgresqlIntegrationTest;
 import dev.vality.daway.config.PostgresqlSpringBootITest;
 import dev.vality.daway.domain.tables.pojos.Destination;
 import dev.vality.daway.utils.DestinationHandlerTestUtils;
@@ -15,7 +16,7 @@ import java.util.UUID;
 import static dev.vality.daway.domain.tables.Destination.DESTINATION;
 
 @PostgresqlSpringBootITest
-public class DestinationCreatedCryptoWalletHandlerTest {
+public class DestinationCreatedCryptoWalletHandlerTest extends AbstractPostgresqlIntegrationTest {
 
     @Autowired
     private DestinationCreatedHandler destinationCreatedHandler;

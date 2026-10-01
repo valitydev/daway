@@ -1,5 +1,6 @@
 package dev.vality.daway.service;
 
+import dev.vality.daway.integration.base.AbstractPostgresqlIntegrationTest;
 import dev.vality.daway.config.PostgresqlSpringBootITest;
 import dev.vality.daway.domain.tables.pojos.Rate;
 import dev.vality.daway.utils.RateSinkEventTestUtils;
@@ -13,7 +14,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import java.util.List;
 
 @PostgresqlSpringBootITest
-public class RateServiceTests {
+public class RateServiceTests extends AbstractPostgresqlIntegrationTest {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;

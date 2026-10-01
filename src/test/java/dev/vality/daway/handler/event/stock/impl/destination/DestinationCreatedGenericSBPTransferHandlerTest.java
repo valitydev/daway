@@ -1,5 +1,6 @@
 package dev.vality.daway.handler.event.stock.impl.destination;
 
+import dev.vality.daway.integration.base.AbstractPostgresqlIntegrationTest;
 import dev.vality.daway.config.PostgresqlSpringBootITest;
 import dev.vality.daway.domain.tables.pojos.Destination;
 import dev.vality.daway.utils.DestinationHandlerTestUtils;
@@ -16,7 +17,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 
 @PostgresqlSpringBootITest
-class DestinationCreatedGenericSBPTransferHandlerTest {
+class DestinationCreatedGenericSBPTransferHandlerTest extends AbstractPostgresqlIntegrationTest {
 
     @Autowired
     private DestinationCreatedHandler destinationCreatedHandler;

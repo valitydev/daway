@@ -1,5 +1,6 @@
 package dev.vality.daway.dao;
 
+import dev.vality.daway.integration.base.AbstractPostgresqlIntegrationTest;
 import dev.vality.daway.config.PostgresqlSpringBootITest;
 import dev.vality.daway.dao.deposit.revert.iface.DepositRevertDao;
 import dev.vality.daway.domain.tables.pojos.DepositRevert;
@@ -8,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @PostgresqlSpringBootITest
-public class DepositRevertDaoTest {
+public class DepositRevertDaoTest extends AbstractPostgresqlIntegrationTest {
 
     @Autowired
     private DepositRevertDao depositRevertDao;
