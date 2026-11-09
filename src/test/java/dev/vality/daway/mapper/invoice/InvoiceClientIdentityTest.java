@@ -82,7 +82,7 @@ class InvoiceClientIdentityTest {
                 .setPayload(InvoicePaymentChangePayload.invoice_payment_started(
                         new InvoicePaymentStarted().setPayment(payment))));
         var result = new InvoicePaymentCreatedMapper(service).map(
-                change, TestData.createInvoiceEvent("invoice", 2L, LocalDateTime.now()), 0).getPayment();
+                change, TestData.createInvoiceEvent("invoice", 2L, LocalDateTime.now()), 0).getPaymentPayerInfo();
         assertEquals(customerId, result.getCustomerId());
         assertEquals(userId, result.getUserId());
     }

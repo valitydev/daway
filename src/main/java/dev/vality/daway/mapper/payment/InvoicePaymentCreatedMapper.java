@@ -91,6 +91,7 @@ public class InvoicePaymentCreatedMapper implements Mapper<PaymentWrapper> {
                 invoicePayment,
                 invoiceId,
                 paymentId,
+                partyShop,
                 eventCreatedAt,
                 changeId,
                 sequenceId
@@ -138,9 +139,6 @@ public class InvoicePaymentCreatedMapper implements Mapper<PaymentWrapper> {
         payment.setCreatedAt(TypeUtil.stringToLocalDateTime(invoicePayment.getCreatedAt()));
         payment.setPartyId(partyShop.getPartyId());
         payment.setShopId(partyShop.getShopId());
-        payment.setCustomerId(partyShop.getCustomerId() != null
-                ? partyShop.getCustomerId() : invoicePayment.getCustomerId());
-        payment.setUserId(partyShop.getUserId());
         payment.setDomainRevision(invoicePayment.getDomainRevision());
         if (invoicePayment.isSetDomainRevision()) {
             payment.setPartyRevision(invoicePayment.getDomainRevision());
@@ -165,6 +163,7 @@ public class InvoicePaymentCreatedMapper implements Mapper<PaymentWrapper> {
     private PaymentPayerInfo getPayerPaymentInfo(InvoicePayment invoicePayment,
                                                  String invoiceId,
                                                  String paymentId,
+                                                 PartyShop partyShop,
                                                  LocalDateTime eventCreatedAt,
                                                  Integer changeId,
                                                  Long sequenceId) {
@@ -172,6 +171,9 @@ public class InvoicePaymentCreatedMapper implements Mapper<PaymentWrapper> {
         PaymentPayerInfo payerInfo = new PaymentPayerInfo();
         payerInfo.setInvoiceId(invoiceId);
         payerInfo.setPaymentId(paymentId);
+        payerInfo.setCustomerId(partyShop.getCustomerId() != null
+                ? partyShop.getCustomerId() : invoicePayment.getCustomerId());
+        payerInfo.setUserId(partyShop.getUserId());
         payerInfo.setEventCreatedAt(eventCreatedAt);
         payerInfo.setPayerType(TBaseUtil.unionFieldToEnum(payer, PayerType.class));
         if (payer.isSetPaymentResource()) {
