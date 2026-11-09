@@ -138,6 +138,9 @@ public class InvoicePaymentCreatedMapper implements Mapper<PaymentWrapper> {
         payment.setCreatedAt(TypeUtil.stringToLocalDateTime(invoicePayment.getCreatedAt()));
         payment.setPartyId(partyShop.getPartyId());
         payment.setShopId(partyShop.getShopId());
+        payment.setCustomerId(partyShop.getCustomerId() != null
+                ? partyShop.getCustomerId() : invoicePayment.getCustomerId());
+        payment.setUserId(partyShop.getUserId());
         payment.setDomainRevision(invoicePayment.getDomainRevision());
         if (invoicePayment.isSetDomainRevision()) {
             payment.setPartyRevision(invoicePayment.getDomainRevision());

@@ -52,7 +52,11 @@ public class WithdrawalCreatedHandler implements WithdrawalHandler {
         withdrawal.setCurrencyCode(cash.getCurrency().getSymbolicCode());
         withdrawal.setWithdrawalStatus(WithdrawalStatus.pending);
         if (withdrawalDamsel.isSetContactInfo() && withdrawalDamsel.getContactInfo().isSetEmail()) {
-            withdrawal.setCustomerId(withdrawalDamsel.getContactInfo().email);
+            withdrawal.setEmail(withdrawalDamsel.getContactInfo().getEmail());
+        }
+        if (withdrawalDamsel.isSetClientIdentity()) {
+            withdrawal.setCustomerId(withdrawalDamsel.getClientIdentity().getCustomerId());
+            withdrawal.setUserId(withdrawalDamsel.getClientIdentity().getUserId());
         }
         if (withdrawalDamsel.getRoute() != null && withdrawalDamsel.getRoute().isSetTerminalId()) {
             withdrawal.setTerminalId(String.valueOf(withdrawalDamsel.getRoute().getTerminalId()));

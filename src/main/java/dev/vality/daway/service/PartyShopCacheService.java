@@ -25,7 +25,9 @@ public class PartyShopCacheService {
                 invoiceWrapper.getInvoice().getInvoiceId(),
                 new PartyShop(
                         invoiceWrapper.getInvoice().getPartyId(),
-                        invoiceWrapper.getInvoice().getShopId()
+                        invoiceWrapper.getInvoice().getShopId(),
+                        invoiceWrapper.getInvoice().getCustomerId(),
+                        invoiceWrapper.getInvoice().getUserId()
                 )
         );
     }
@@ -33,7 +35,8 @@ public class PartyShopCacheService {
     public PartyShop get(String invoiceId) {
         PartyShop partyShop = partyShopDataCache.getIfPresent(invoiceId);
         if (partyShop != null) {
-            return new PartyShop(partyShop.getPartyId(), partyShop.getShopId());
+            return new PartyShop(partyShop.getPartyId(), partyShop.getShopId(),
+                    partyShop.getCustomerId(), partyShop.getUserId());
         }
         log.info("Cache miss for invoiceId: {}", invoiceId);
         Invoice invoice = invoiceDao.get(invoiceId);
@@ -41,7 +44,8 @@ public class PartyShopCacheService {
             log.warn("Invoice was not found for invoiceId: {}", invoiceId);
             return null;
         }
-        partyShop = new PartyShop(invoice.getPartyId(), invoice.getShopId());
+        partyShop = new PartyShop(invoice.getPartyId(), invoice.getShopId(),
+                invoice.getCustomerId(), invoice.getUserId());
         partyShopDataCache.put(invoiceId, partyShop);
         return partyShop;
     }

@@ -176,12 +176,12 @@
         <dependency>
             <groupId>dev.vality</groupId>
             <artifactId>damsel</artifactId>
-            <version>1.703-8d6174b</version>
+            <version>1.714-09f693a</version>
         </dependency>
         <dependency>
             <groupId>dev.vality</groupId>
             <artifactId>fistful-proto</artifactId>
-            <version>1.191-94b75ce</version>
+            <version>1.202-49fa493</version>
         </dependency>
         <dependency>
             <groupId>dev.vality</groupId>
