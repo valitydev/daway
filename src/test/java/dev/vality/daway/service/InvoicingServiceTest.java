@@ -47,7 +47,7 @@ public class InvoicingServiceTest {
     @Mock
     private PaymentWrapperService paymentWrapperService;
     @Mock
-    private InvoiceContextCacheService invoiceContextCacheService;
+    private PartyShopCacheService partyShopCacheService;
     @Mock
     private PaymentRouteDao paymentRouteDao;
     @Mock
@@ -81,7 +81,7 @@ public class InvoicingServiceTest {
                 new ArrayList<>(),
                 rightHandlers,
                 new ArrayList<>(),
-                invoiceContextCacheService,
+                partyShopCacheService,
                 invoiceWrapperService,
                 paymentWrapperService,
                 parser
@@ -101,7 +101,7 @@ public class InvoicingServiceTest {
                 new ArrayList<>(),
                 rightHandlers,
                 new ArrayList<>(),
-                invoiceContextCacheService,
+                partyShopCacheService,
                 invoiceWrapperService,
                 paymentWrapperService,
                 parser
@@ -126,7 +126,7 @@ public class InvoicingServiceTest {
                 rightHandlers,
                 List.of(new InvoicePaymentRouteChangedMapper(),
                         new InvoicePaymentSessionChangeFinishedMapper(paymentRouteDao)),
-                invoiceContextCacheService,
+                partyShopCacheService,
                 invoiceWrapperService,
                 paymentWrapperService,
                 new MachineEventParser<>(new PaymentEventPayloadDeserializer())
@@ -151,7 +151,7 @@ public class InvoicingServiceTest {
                 new ArrayList<>(),
                 wrongHandlers,
                 new ArrayList<>(),
-                invoiceContextCacheService,
+                partyShopCacheService,
                 invoiceWrapperService,
                 paymentWrapperService,
                 parser
@@ -182,7 +182,7 @@ public class InvoicingServiceTest {
                 handlers,
                 wrongHandlers,
                 new ArrayList<>(),
-                invoiceContextCacheService,
+                partyShopCacheService,
                 invoiceWrapperService,
                 paymentWrapperService,
                 parser);
@@ -207,7 +207,7 @@ public class InvoicingServiceTest {
                 handlers,
                 wrongHandlers,
                 new ArrayList<>(),
-                invoiceContextCacheService,
+                partyShopCacheService,
                 invoiceWrapperService,
                 paymentWrapperService,
                 parser);
@@ -235,7 +235,7 @@ public class InvoicingServiceTest {
                 handlers,
                 wrongHandlers,
                 new ArrayList<>(),
-                invoiceContextCacheService,
+                partyShopCacheService,
                 invoiceWrapperService,
                 paymentWrapperService,
                 parser);
@@ -262,7 +262,7 @@ public class InvoicingServiceTest {
                 handlers,
                 wrongHandlers,
                 new ArrayList<>(),
-                invoiceContextCacheService,
+                partyShopCacheService,
                 invoiceWrapperService,
                 paymentWrapperService,
                 parser);
@@ -289,7 +289,7 @@ public class InvoicingServiceTest {
                 handlers,
                 wrongHandlers,
                 new ArrayList<>(),
-                invoiceContextCacheService,
+                partyShopCacheService,
                 invoiceWrapperService,
                 paymentWrapperService,
                 parser);
@@ -317,7 +317,7 @@ public class InvoicingServiceTest {
                 handlers,
                 wrongHandlers,
                 new ArrayList<>(),
-                invoiceContextCacheService,
+                partyShopCacheService,
                 invoiceWrapperService,
                 paymentWrapperService,
                 parser);

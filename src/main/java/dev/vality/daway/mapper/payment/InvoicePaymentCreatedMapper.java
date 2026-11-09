@@ -16,11 +16,10 @@ import dev.vality.daway.factory.invoice.payment.PaymentRouteFactory;
 import dev.vality.daway.factory.invoice.payment.PaymentStatusInfoFactory;
 import dev.vality.daway.mapper.Mapper;
 import dev.vality.daway.model.CashFlowWrapper;
-import dev.vality.daway.model.InvoiceContext;
 import dev.vality.daway.model.InvoicingKey;
 import dev.vality.daway.model.PartyShop;
 import dev.vality.daway.model.PaymentWrapper;
-import dev.vality.daway.service.InvoiceContextCacheService;
+import dev.vality.daway.service.PartyShopCacheService;
 import dev.vality.daway.util.JsonUtil;
 import dev.vality.geck.common.util.TBaseUtil;
 import dev.vality.geck.common.util.TypeUtil;
@@ -41,7 +40,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class InvoicePaymentCreatedMapper implements Mapper<PaymentWrapper> {
 
-    private final InvoiceContextCacheService invoiceContextCacheService;
+    private final PartyShopCacheService partyShopCacheService;
 
     private Filter filter = new PathConditionFilter(new PathConditionRule(
             "invoice_payment_change.payload.invoice_payment_started",
@@ -62,9 +61,9 @@ public class InvoicePaymentCreatedMapper implements Mapper<PaymentWrapper> {
         log.info("Start payment created mapping, sequenceId={}, changeId={}, invoiceId={}, paymentId={}",
                 sequenceId, changeId, invoiceId, paymentId);
 
-        InvoiceContext invoiceContext = invoiceContextCacheService.get(invoiceId);
-        if (invoiceContext == null) {
-            log.info("Invoice context not found for invoiceId = {}", invoiceId);
+        PartyShop partyShop = partyShopCacheService.get(invoiceId);
+        if (partyShop == null) {
+            log.info("PartyShop not found for invoiceId = {}", invoiceId);
             return null;
         }
 
@@ -75,7 +74,7 @@ public class InvoicePaymentCreatedMapper implements Mapper<PaymentWrapper> {
                 invoicePayment,
                 invoiceId,
                 paymentId,
-                invoiceContext.getPartyShop(),
+                partyShop,
                 eventCreatedAt,
                 changeId,
                 sequenceId
@@ -92,7 +91,6 @@ public class InvoicePaymentCreatedMapper implements Mapper<PaymentWrapper> {
                 invoicePayment,
                 invoiceId,
                 paymentId,
-                invoiceContext,
                 eventCreatedAt,
                 changeId,
                 sequenceId
@@ -164,7 +162,6 @@ public class InvoicePaymentCreatedMapper implements Mapper<PaymentWrapper> {
     private PaymentPayerInfo getPayerPaymentInfo(InvoicePayment invoicePayment,
                                                  String invoiceId,
                                                  String paymentId,
-                                                 InvoiceContext invoiceContext,
                                                  LocalDateTime eventCreatedAt,
                                                  Integer changeId,
                                                  Long sequenceId) {
@@ -172,9 +169,6 @@ public class InvoicePaymentCreatedMapper implements Mapper<PaymentWrapper> {
         PaymentPayerInfo payerInfo = new PaymentPayerInfo();
         payerInfo.setInvoiceId(invoiceId);
         payerInfo.setPaymentId(paymentId);
-        payerInfo.setCustomerId(invoiceContext.getCustomerId() != null
-                ? invoiceContext.getCustomerId() : invoicePayment.getCustomerId());
-        payerInfo.setUserId(invoiceContext.getUserId());
         payerInfo.setEventCreatedAt(eventCreatedAt);
         payerInfo.setPayerType(TBaseUtil.unionFieldToEnum(payer, PayerType.class));
         if (payer.isSetPaymentResource()) {
