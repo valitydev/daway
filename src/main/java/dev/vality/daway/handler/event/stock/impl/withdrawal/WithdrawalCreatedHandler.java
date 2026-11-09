@@ -52,6 +52,7 @@ public class WithdrawalCreatedHandler implements WithdrawalHandler {
         withdrawal.setCurrencyCode(cash.getCurrency().getSymbolicCode());
         withdrawal.setWithdrawalStatus(WithdrawalStatus.pending);
         if (withdrawalDamsel.isSetContactInfo() && withdrawalDamsel.getContactInfo().isSetEmail()) {
+            withdrawal.setCustomerId(withdrawalDamsel.getContactInfo().getEmail());
             withdrawal.setEmail(withdrawalDamsel.getContactInfo().getEmail());
         }
         if (withdrawalDamsel.isSetClientIdentity()) {
