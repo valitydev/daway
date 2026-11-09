@@ -78,6 +78,10 @@ public class InvoiceCreatedMapper implements Mapper<InvoiceWrapper> {
         invoiceRecord.setCurrencyCode(invoice.getCost().getCurrency().getSymbolicCode());
         invoiceRecord.setContext(invoice.getContext().getData());
         invoiceRecord.setTemplateId(invoice.getTemplateId());
+        if (invoice.isSetClientIdentity()) {
+            invoiceRecord.setCustomerId(invoice.getClientIdentity().getCustomerId());
+            invoiceRecord.setUserId(invoice.getClientIdentity().getUserId());
+        }
 
         return invoiceRecord;
     }
