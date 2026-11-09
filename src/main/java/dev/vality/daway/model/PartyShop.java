@@ -9,8 +9,4 @@ public class PartyShop {
 
     private final String shopId;
 
-    private final String customerId;
-
-    private final String userId;
-
 }

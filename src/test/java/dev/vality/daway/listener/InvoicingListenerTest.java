@@ -8,7 +8,7 @@ import dev.vality.daway.exception.ParseException;
 import dev.vality.daway.mapper.invoice.InvoiceCreatedMapper;
 import dev.vality.daway.service.InvoiceWrapperService;
 import dev.vality.daway.service.InvoicingService;
-import dev.vality.daway.service.PartyShopCacheService;
+import dev.vality.daway.service.InvoiceContextCacheService;
 import dev.vality.daway.service.PaymentWrapperService;
 import dev.vality.daway.utils.MockUtils;
 import dev.vality.geck.common.util.TypeUtil;
@@ -37,7 +37,7 @@ import static org.mockito.ArgumentMatchers.anyList;
 public class InvoicingListenerTest {
 
     @Mock
-    private PartyShopCacheService partyShopCacheService;
+    private InvoiceContextCacheService invoiceContextCacheService;
     @Mock
     private InvoiceWrapperService invoiceBatchService;
     @Mock
@@ -55,7 +55,7 @@ public class InvoicingListenerTest {
                 new ArrayList<>(),
                 Collections.singletonList(new InvoiceCreatedMapper()),
                 new ArrayList<>(),
-                partyShopCacheService,
+                invoiceContextCacheService,
                 invoiceBatchService,
                 paymentWrapperService,
                 eventParser

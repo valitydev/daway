@@ -11,8 +11,8 @@ import dev.vality.daway.TestData;
 import dev.vality.daway.dao.invoicing.iface.InvoiceDao;
 import dev.vality.daway.mapper.payment.InvoicePaymentCreatedMapper;
 import dev.vality.daway.model.InvoiceWrapper;
-import dev.vality.daway.model.PartyShop;
-import dev.vality.daway.service.PartyShopCacheService;
+import dev.vality.daway.model.InvoiceContext;
+import dev.vality.daway.service.InvoiceContextCacheService;
 import dev.vality.daway.utils.MockUtils;
 import org.junit.jupiter.api.Test;
 
@@ -35,8 +35,8 @@ class InvoiceClientIdentityTest {
         assertEquals("user", wrapper.getInvoice().getUserId());
 
         var dao = mock(InvoiceDao.class);
-        var cache = Caffeine.newBuilder().<String, PartyShop>build();
-        var service = new PartyShopCacheService(dao, cache);
+        var cache = Caffeine.newBuilder().<String, InvoiceContext>build();
+        var service = new InvoiceContextCacheService(dao, cache);
         service.put(wrapper);
         assertPaymentIdentity(service, "customer", "user", "other-customer");
         verifyNoInteractions(dao);
@@ -52,7 +52,7 @@ class InvoiceClientIdentityTest {
         var wrapper = mapInvoice(MockUtils.buildInvoice("invoice"));
         assertNull(wrapper.getInvoice().getCustomerId());
         assertNull(wrapper.getInvoice().getUserId());
-        var service = new PartyShopCacheService(mock(InvoiceDao.class), Caffeine.newBuilder().build());
+        var service = new InvoiceContextCacheService(mock(InvoiceDao.class), Caffeine.newBuilder().build());
         service.put(wrapper);
         assertPaymentIdentity(service, null, null, null);
         assertPaymentIdentity(service, "legacy-customer", null, "legacy-customer");
@@ -63,7 +63,7 @@ class InvoiceClientIdentityTest {
         var invoice = MockUtils.buildInvoice("invoice");
         invoice.setClientIdentity(new ClientIdentity("customer"));
         var wrapper = mapInvoice(invoice);
-        var service = new PartyShopCacheService(mock(InvoiceDao.class), Caffeine.newBuilder().build());
+        var service = new InvoiceContextCacheService(mock(InvoiceDao.class), Caffeine.newBuilder().build());
         service.put(wrapper);
         assertPaymentIdentity(service, "customer", null, null);
     }
@@ -74,7 +74,7 @@ class InvoiceClientIdentityTest {
                 TestData.createInvoiceEvent("invoice", 1L, LocalDateTime.now()), 0);
     }
 
-    private void assertPaymentIdentity(PartyShopCacheService service, String customerId, String userId,
+    private void assertPaymentIdentity(InvoiceContextCacheService service, String customerId, String userId,
                                        String paymentCustomerId) {
         var payment = MockUtils.buildPayment("payment").setCustomerId(paymentCustomerId);
         var change = InvoiceChange.invoice_payment_change(new InvoicePaymentChange()

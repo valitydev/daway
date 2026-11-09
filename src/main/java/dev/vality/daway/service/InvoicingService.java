@@ -26,7 +26,7 @@ public class InvoicingService {
     private final List<InvoicingHandler> otherHandlers;
     private final List<Mapper<InvoiceWrapper>> invoiceMappers;
     private final List<Mapper<PaymentWrapper>> paymentMappers;
-    private final PartyShopCacheService partyShopCacheService;
+    private final InvoiceContextCacheService invoiceContextCacheService;
     private final InvoiceWrapperService invoiceWrapperService;
     private final PaymentWrapperService paymentWrapperService;
     private final MachineEventParser<EventPayload> parser;
@@ -88,7 +88,7 @@ public class InvoicingService {
         mapEntity(invoiceMappers, change, machineEvent, changeId)
                 .ifPresent(wrapper -> {
                     invoices.add(wrapper);
-                    partyShopCacheService.put(wrapper);
+                    invoiceContextCacheService.put(wrapper);
                 });
     }
 
