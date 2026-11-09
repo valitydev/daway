@@ -5,7 +5,8 @@ ALTER TABLE dw.invoice
 ALTER TABLE dw.payment_payer_info
     ADD COLUMN user_id CHARACTER VARYING;
 
--- Preserve the existing customer_id values (email for legacy events).
+-- The existing customer_id contains contact_info.email, not a Customer ID.
+ALTER TABLE dw.withdrawal RENAME COLUMN customer_id TO email;
 ALTER TABLE dw.withdrawal
-    ADD COLUMN email CHARACTER VARYING,
+    ADD COLUMN customer_id CHARACTER VARYING,
     ADD COLUMN user_id CHARACTER VARYING;

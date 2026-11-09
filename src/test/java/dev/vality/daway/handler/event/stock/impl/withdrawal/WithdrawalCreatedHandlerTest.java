@@ -29,8 +29,8 @@ class WithdrawalCreatedHandlerTest {
     }
 
     @Test
-    void usesEmailAsCustomerIdForLegacyEvents() {
-        assertIdentity(null, "contact@example.com", null);
+    void leavesCustomerIdEmptyForLegacyEvents() {
+        assertIdentity(null, null, null);
     }
 
     private void assertIdentity(ClientIdentity identity, String customerId, String userId) {
