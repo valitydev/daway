@@ -59,10 +59,12 @@ public class WithdrawalAdjustmentCreatedHandler implements WithdrawalHandler, Wi
             DataRevisionChangePlan newDomainRevision = changesPlan.getNewDomainRevision();
             withdrawalAdjustment.setType(WithdrawalAdjustmentType.domain_revision);
             withdrawalAdjustment.setDomainRevision(newDomainRevision.getNewDomainRevision());
-        } else if (changesPlan.isSetNewCashFlow()) {
-            withdrawalAdjustment.setType(WithdrawalAdjustmentType.cash_flow);
+        } else if (changesPlan.isSetNewBody()) {
+            withdrawalAdjustment.setType(WithdrawalAdjustmentType.new_body);
+            withdrawalAdjustment.setAmount(changesPlan.getNewBody().getNewBody().getAmount());
         }
         if (changesPlan.isSetNewCashFlow()) {
+            withdrawalAdjustment.setType(WithdrawalAdjustmentType.cash_flow);
             CashFlowChangePlan cashFlow = changesPlan.getNewCashFlow();
             long amount = computeAmount(cashFlow);
             withdrawalAdjustment.setAmount(amount);
