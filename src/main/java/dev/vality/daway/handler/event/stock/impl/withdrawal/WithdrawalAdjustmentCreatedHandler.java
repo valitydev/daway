@@ -62,8 +62,7 @@ public class WithdrawalAdjustmentCreatedHandler implements WithdrawalHandler, Wi
         } else if (changesPlan.isSetNewBody()) {
             withdrawalAdjustment.setType(WithdrawalAdjustmentType.new_body);
             withdrawalAdjustment.setAmount(changesPlan.getNewBody().getNewBody().getAmount());
-        }
-        if (changesPlan.isSetNewCashFlow()) {
+        } else if (changesPlan.isSetNewCashFlow()) {
             withdrawalAdjustment.setType(WithdrawalAdjustmentType.cash_flow);
             CashFlowChangePlan cashFlow = changesPlan.getNewCashFlow();
             long amount = computeAmount(cashFlow);
