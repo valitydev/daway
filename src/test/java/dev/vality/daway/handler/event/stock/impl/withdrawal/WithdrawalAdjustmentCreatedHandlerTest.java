@@ -6,7 +6,11 @@ import dev.vality.daway.dao.withdrawal.impl.WithdrawalAdjustmentDaoImpl;
 import dev.vality.daway.domain.enums.WithdrawalAdjustmentType;
 import dev.vality.daway.domain.tables.records.WithdrawalAdjustmentRecord;
 import dev.vality.daway.factory.machine.event.WithdrawalAdjustmentMachineEventCopyFactoryImpl;
+import dev.vality.fistful.base.Cash;
+import dev.vality.fistful.base.CurrencyRef;
 import dev.vality.fistful.withdrawal.TimestampedChange;
+import dev.vality.fistful.withdrawal.adjustment.BodyChangePlan;
+import dev.vality.fistful.withdrawal.adjustment.ChangesPlan;
 import org.jooq.DSLContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -74,5 +78,20 @@ class WithdrawalAdjustmentCreatedHandlerTest extends AbstractPostgresqlIntegrati
         assertNotNull(record.getProviderFee());
         assertNull(record.getWithdrawalStatus());
         assertNull(record.getDomainRevision());
+    }
+
+    @Test
+    void handleBodyChange() {
+        long amount = 300_000L;
+        TimestampedChange timestampedChange = TestData.createWithdrawalAdjustmentCreatedChange("adjustmentId");
+        timestampedChange.getChange().getAdjustment().getPayload().getCreated().getAdjustment()
+                .setChangesPlan(new ChangesPlan().setNewBody(new BodyChangePlan(new Cash(amount, new CurrencyRef("RUB")))));
+
+        handler.handle(timestampedChange, TestData.createMachineEvent(timestampedChange));
+
+        WithdrawalAdjustmentRecord record = dslContext.fetchAny(WITHDRAWAL_ADJUSTMENT);
+        assertNotNull(record);
+        assertEquals(WithdrawalAdjustmentType.new_body, record.getType());
+        assertEquals(amount, record.getAmount());
     }
 }
